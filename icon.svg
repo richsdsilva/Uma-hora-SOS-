@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Background circle red -->
+  <circle cx="256" cy="256" r="256" fill="#D41F1F"/>
+
+  <!-- White circle inner -->
+  <circle cx="256" cy="256" r="180" fill="white"/>
+
+  <!-- Number 1 in red -->
+  <text x="256" y="290" 
+    font-family="Arial Black, Arial, sans-serif" 
+    font-size="200" 
+    font-weight="900" 
+    fill="#D41F1F" 
+    text-anchor="middle" 
+    dominant-baseline="middle">1</text>
+
+  <!-- HORA text in blue -->
+  <text x="256" y="390" 
+    font-family="Arial Black, Arial, sans-serif" 
+    font-size="68" 
+    font-weight="900" 
+    fill="#1A5CC8" 
+    text-anchor="middle" 
+    dominant-baseline="middle">HORA</text>
+
+  <!-- Blue arc on top -->
+  <path d="M 100 256 A 156 156 0 0 1 412 256" 
+    fill="none" 
+    stroke="#1A5CC8" 
+    stroke-width="18" 
+    stroke-linecap="round"/>
+
+  <!-- Blue arc on bottom -->
+  <path d="M 412 256 A 156 156 0 0 1 100 256" 
+    fill="none" 
+    stroke="#1A5CC8" 
+    stroke-width="18" 
+    stroke-linecap="round"
+    stroke-dasharray="30 20"/>
+</svg>
