@@ -1448,6 +1448,15 @@ batSync('range');
 buildServices();
 waCount();
 applyRole();
+  // Fix iOS scroll on input focus
+document.querySelectorAll('input, select, textarea').forEach(el => {
+  el.addEventListener('focus', function(e) {
+    const scrollPos = document.getElementById('content').scrollTop;
+    setTimeout(() => {
+      document.getElementById('content').scrollTop = scrollPos;
+    }, 50);
+  });
+});
 
 // ─── ALTURA DINÂMICA (fix iOS 100vh bug) ───
 function setAppHeight() {
