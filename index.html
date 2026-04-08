@@ -1137,6 +1137,7 @@ let currentUserName = localStorage.getItem('1hora_username') || '';
 let selectedSvcs = [];
 let currentPhotoData = null;
 let currentOSId = null;
+let currentArchivedNum = null; // número da OS arquivada sendo editada no form
 let osList = [];
 let modelPrices = {};
 let osCounter = 2848;
@@ -1159,6 +1160,10 @@ function loadStorage() {
       ];
       osCounter = 2848;
     }
+    // Limpar duplicatas: se existe OS ativa (fila/conserto/pronto/entregue) e arquivada com mesmo num,
+    // remove o arquivado (o ativo tem precedência — resultado do bug anterior)
+    const activeNums=new Set(osList.filter(o=>o.status!=='arquivado').map(o=>o.num));
+    osList=osList.filter(o=>!(o.status==='arquivado'&&activeNums.has(o.num)));
     modelPrices = JSON.parse(localStorage.getItem('1hora_prices') || '{}');
     osCounter = parseInt(localStorage.getItem('1hora_counter') || String(osCounter));
   } catch(e) { osList = []; modelPrices = {}; osCounter = 2848; }
@@ -1469,24 +1474,33 @@ function collectDiag() {
 
 // ─── ARCHIVED ORDERS ───
 function openArchived() {
-  const archived=osList.filter(o=>o.status==='arquivado');
+  const archived=osList.filter(o=>o.status==='arquivado').sort((a,b)=>b.createdAt-a.createdAt);
   const bsList=document.querySelector('#archivedSheet .bs-list');
   bsList.innerHTML=archived.length?archived.map(os=>`
-    <div class="bs-item" onclick="loadArchived(${os.num})">
-      <div class="bs-item-ico">📋</div>
-      <div class="bs-item-info"><div class="bs-item-name">${os.clientName}</div><div class="bs-item-detail">${os.model} · ${os.problem} · ${new Date(os.createdAt).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</div></div>
-      <div class="bs-item-val">R$ ${os.total.toLocaleString('pt-BR')}</div>
+    <div style="display:flex;align-items:center;gap:0;border-bottom:1px solid var(--border);">
+      <div class="bs-item" style="flex:1;border-bottom:none;" onclick="loadArchived(${os.num})">
+        <div class="bs-item-ico">📋</div>
+        <div class="bs-item-info"><div class="bs-item-name">${os.clientName||'—'}</div><div class="bs-item-detail">${os.model||'—'} · ${os.problem||'Sem problema'} · ${new Date(os.createdAt).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</div></div>
+        <div class="bs-item-val">R$ ${(os.total||0).toLocaleString('pt-BR')}</div>
+      </div>
+      <button onclick="deleteArchived(${os.num})" style="flex-shrink:0;background:#FEE2E2;border:none;border-left:1px solid #FECACA;color:var(--red);padding:0 14px;height:100%;min-height:56px;font-size:18px;cursor:pointer;font-family:var(--sans);">🗑</button>
     </div>`).join(''):'<div class="bs-empty">Nenhum orçamento arquivado</div>';
   document.getElementById('archivedOverlay').classList.add('show');
   document.getElementById('archivedSheet').style.display='block';
+}
+function deleteArchived(num){
+  if(!confirm('Excluir este orçamento arquivado?'))return;
+  osList=osList.filter(o=>!(o.num===num&&o.status==='arquivado'));
+  persistOS();renderArchivedCount();openArchived();
 }
 function closeArchived() {
   document.getElementById('archivedOverlay').classList.remove('show');
   document.getElementById('archivedSheet').style.display='none';
 }
 function loadArchived(num) {
-  const os=osList.find(o=>o.num===num);closeArchived();
+  const os=osList.find(o=>o.num===num&&o.status==='arquivado');closeArchived();
   if(!os)return;
+  currentArchivedNum=num; // marca qual arquivado está sendo editado
 
   // ── Dados básicos ──
   document.getElementById('clientName').value=os.clientName||'';
@@ -1668,7 +1682,6 @@ function openOS() {
   const btn=document.getElementById('ctaBtn');
   const isArchived=btn.innerHTML.includes('Arquivar');
   const osAdesivo=document.getElementById('osAdesivo').value.trim();
-  if(!osAdesivo&&!isArchived){alert('⚠️ Informe o Nº OS do adesivo antes de abrir.');document.getElementById('osAdesivo').focus();return;}
   const name=document.getElementById('clientName').value.trim()||'Cliente';
   const wa=document.getElementById('clientWA').value.trim();
   const model=document.getElementById('modelInput').value.trim()||'iPhone';
@@ -1679,9 +1692,38 @@ function openOS() {
   const battery=parseInt(document.getElementById('batNum').value)||0;
   const total=selectedSvcs.reduce((s,x)=>s+x.price,0);
   const diag=collectDiag();
-  // Usa o número do adesivo como ID da OS; mantém counter como fallback
+
+  // ── MODO: Retomando orçamento arquivado ──
+  if(currentArchivedNum!==null){
+    const idx=osList.findIndex(o=>o.num===currentArchivedNum&&o.status==='arquivado');
+    if(idx===-1){alert('Orçamento não encontrado.');return;}
+    const existing=osList[idx];
+    // Atualiza campos editados
+    existing.clientName=name;existing.clientWA=wa;existing.model=model;
+    existing.problem=problem;existing.senha=senha;existing.osAdesivo=osAdesivo||String(existing.num);
+    existing.photo=currentPhotoData;existing.diagnosis=diag;existing.battery=battery;
+    existing.services=[...selectedSvcs];existing.total=total;existing.prazo=prazo;
+    existing.updatedAt=Date.now();
+    if(!isArchived){
+      // Converter para fila: sai dos arquivados e entra no painel
+      existing.status='fila';existing.tecnico=null;existing.createdAt=Date.now();
+    }
+    persistOS();renderArchivedCount();
+    btn.textContent=isArchived?'📋 Arquivado!':'✅ OS '+existing.id+' aberta!';
+    btn.style.background=isArchived?'var(--orange)':'var(--green)';
+    btn.style.boxShadow='0 4px 16px rgba(22,163,74,.3)';
+    setTimeout(()=>{
+      btn.innerHTML='📥 Abrir Ordem de Serviço';btn.style.background='';btn.style.boxShadow='';
+      resetForm();
+      if(!isArchived)goTo('painel',document.getElementById('nb-painel'));
+    },1800);
+    return;
+  }
+
+  // ── MODO: Nova OS / Novo orçamento ──
+  if(!osAdesivo&&!isArchived){alert('⚠️ Informe o Nº OS do adesivo antes de abrir.');document.getElementById('osAdesivo').focus();return;}
   const osNum=parseInt(osAdesivo)||++osCounter;
-  // Bloquear número duplicado (exceto arquivados, que podem ser reabertas)
+  // Bloquear duplicata em status ativo
   if(!isArchived){
     const dup=osList.find(o=>o.num===osNum&&o.status!=='arquivado');
     if(dup){
@@ -1717,6 +1759,7 @@ function resetForm() {
   const ctaBtn=document.getElementById('ctaBtn');
   ctaBtn.style.background='var(--blue)';ctaBtn.style.boxShadow='0 4px 16px rgba(26,92,200,.3)';ctaBtn.innerHTML='📥 Abrir Ordem de Serviço';
   document.querySelector('.apv.y').classList.add('sel');document.querySelector('.apv.n').classList.remove('sel');
+  currentArchivedNum=null;
 }
 
 // ─── PAINEL ───
