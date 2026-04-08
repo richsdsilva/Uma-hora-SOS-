@@ -1721,16 +1721,16 @@ function openOS() {
   }
 
   // ── MODO: Nova OS / Novo orçamento ──
-  if(!osAdesivo&&!isArchived){alert('⚠️ Informe o Nº OS do adesivo antes de abrir.');document.getElementById('osAdesivo').focus();return;}
-  const osNum=parseInt(osAdesivo)||++osCounter;
-  // Bloquear duplicata em status ativo
-  if(!isArchived){
-    const dup=osList.find(o=>o.num===osNum&&o.status!=='arquivado');
-    if(dup){
-      const st={fila:'na Fila',conserto:'em Conserto',pronto:'Pronto p/ entrega',entregue:'Entregue'};
-      alert(`⚠️ OS #${osNum} já está aberta!\n${dup.clientName} · ${st[dup.status]||dup.status}\n\nVerifique o número do adesivo.`);
-      return;
-    }
+  // Número do adesivo obrigatório em todos os casos
+  if(!osAdesivo){alert('⚠️ Informe o Nº OS do adesivo antes de continuar.');document.getElementById('osAdesivo').focus();return;}
+  const osNum=parseInt(osAdesivo);
+  if(!osNum){alert('⚠️ Número do adesivo inválido.');document.getElementById('osAdesivo').focus();return;}
+  // Bloquear se já existe OS ativa com esse número (independente de arquivar ou não)
+  const dup=osList.find(o=>o.num===osNum&&o.status!=='arquivado');
+  if(dup){
+    const st={fila:'na Fila',conserto:'em Conserto',pronto:'Pronto p/ entrega',entregue:'Entregue'};
+    alert(`⚠️ OS #${osNum} já está aberta!\n${dup.clientName} · ${st[dup.status]||dup.status}\n\nNão é possível arquivar um número já em uso.`);
+    return;
   }
   if(osNum>=osCounter) osCounter=osNum;
   localStorage.setItem('1hora_counter',String(osCounter));
