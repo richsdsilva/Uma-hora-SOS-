@@ -518,7 +518,8 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
           <div class="fi"><div class="fii">👤</div><div class="fic"><div class="lbl">Nome do Cliente</div><input id="clientName" type="text" placeholder="Nome completo..." value="Carlos Mendes"></div></div>
           <div class="fi"><div class="fii">💬</div><div class="fic"><div class="lbl">WhatsApp</div><input id="clientWA" type="tel" placeholder="+55 11 9 0000-0000" value="+55 11 9 8734-2291"></div></div>
           <div class="fi"><div class="fii">📱</div><div class="fic"><div class="lbl">Modelo</div><input id="modelInput" type="text" placeholder="Ex: iPhone 14 Pro" value="iPhone 14 Pro" oninput="buildServices()"></div></div>
-          <div class="fi"><div class="fii">🗣</div><div class="fic"><div class="lbl">Problema Relatado</div><input id="problemInput" type="text" placeholder="Descreva o problema..." value="Tela quebrada — canto inferior esq."></div></div>
+          <div class="fi"><div class="fii">🔑</div><div class="fic"><div class="lbl">Senha do iPhone</div><input id="senhaInput" type="text" placeholder="Ex: 123456 ou Sem senha"></div></div>
+          <div class="fi" style="align-items:flex-start;padding-top:12px;"><div class="fii" style="margin-top:1px;">🗣</div><div class="fic"><div class="lbl">Problema Relatado</div><textarea id="problemInput" placeholder="Descreva o problema..." rows="1" style="background:none;border:none;font-family:var(--sans);font-size:14px;font-weight:600;color:var(--text);width:100%;outline:none;resize:none;overflow:hidden;min-height:22px;line-height:1.5;" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'">Tela quebrada — canto inferior esq.</textarea></div></div>
         </div>
       </div>
 
@@ -592,6 +593,14 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
               <div class="pc" onclick="selP(this)">📅 Amanhã</div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Nº OS ADESIVO -->
+      <div class="sec">
+        <div class="sec-title">Nº OS (adesivo)</div>
+        <div class="card">
+          <div class="fi"><div class="fii">🏷</div><div class="fic"><div class="lbl">Número do adesivo colado no aparelho</div><input id="osAdesivo" type="number" inputmode="numeric" placeholder="Ex: 2847" style="font-size:20px;font-weight:800;letter-spacing:1px;"></div></div>
         </div>
       </div>
 
@@ -1410,24 +1419,68 @@ function startVoice() {
 function stopVoice() { if(recognition) recognition.stop(); document.getElementById('voiceOverlay').classList.remove('show'); }
 
 function processVoice(text) {
-  const t=text.toLowerCase();
-  if(t.includes('iphone')){
+  const t = text.toLowerCase();
+  let remaining = text;
+
+  // ── MODELO ──
+  if(t.includes('iphone')) {
     const models=['16 pro max','16 pro','16','15 pro max','15 pro','15 plus','15','14 pro max','14 pro','14 plus','14','13 pro max','13 pro','13 mini','13','12 pro max','12 pro','12 mini','12','11 pro max','11 pro','11'];
-    for(const m of models){if(t.includes(m)){document.getElementById('modelInput').value='iPhone '+m.split(' ').map(w=>w[0].toUpperCase()+w.slice(1)).join(' ');buildServices();break;}}
+    for(const m of models){
+      if(t.includes(m)){
+        const modelVal='iPhone '+m.split(' ').map(w=>w[0].toUpperCase()+w.slice(1)).join(' ');
+        document.getElementById('modelInput').value=modelVal;
+        buildServices();
+        remaining=remaining.replace(new RegExp('iphone\\s*'+m,'gi'),'').trim();
+        break;
+      }
+    }
   }
+
+  // ── BATERIA ──
   const batMatch=t.match(/bateria[^\d]*(\d+)/);
-  if(batMatch){document.getElementById('batV').value=batMatch[1];batU();}
-  document.getElementById('problemInput').value=text.charAt(0).toUpperCase()+text.slice(1);
+  if(batMatch){document.getElementById('batV').value=batMatch[1];batU();remaining=remaining.replace(new RegExp('bateria[^\\d]*'+batMatch[1],'gi'),'').trim();}
+
+  // ── NOME ──
+  const nomeMatch=t.match(/(?:nome[:\s]+|me chamo\s+|cliente\s+)([a-záàãâéêíóôõúüç][a-záàãâéêíóôõúüç\s]{2,40}?)(?=[,.]|\s+(?:telefone|whatsapp|celular|modelo|senha|problema|iphone|tela|bateria|$))/i);
+  if(nomeMatch){
+    const nome=nomeMatch[1].trim().replace(/\b\w/g,l=>l.toUpperCase());
+    document.getElementById('clientName').value=nome;
+    remaining=remaining.replace(new RegExp('(?:nome[:\\s]+|me chamo\\s+|cliente\\s+)'+nomeMatch[1].replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),'').trim();
+  }
+
+  // ── TELEFONE / WHATSAPP ──
+  const telMatch=t.match(/(?:telefone|celular|whatsapp|zap)[:\s]*([\d\s\-\(\)]{8,20})/);
+  if(telMatch){
+    const tel=telMatch[1].replace(/\s+/g,'').trim();
+    if(tel.length>=8)document.getElementById('clientWA').value=tel;
+    remaining=remaining.replace(new RegExp('(?:telefone|celular|whatsapp|zap)[:\\s]*'+telMatch[1].replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),'').trim();
+  }
+
+  // ── SENHA ──
+  const senhaMatch=t.match(/(?:senha|código)[:\s]+([a-z0-9]{4,10})/i);
+  if(senhaMatch){
+    document.getElementById('senhaInput').value=senhaMatch[1];
+    remaining=remaining.replace(new RegExp('(?:senha|código)[:\\s]+'+senhaMatch[1],'gi'),'').trim();
+  }
+
+  // ── PROBLEMA ── usa o que sobrou, ou o texto todo se nada foi extraído
+  const probEl=document.getElementById('problemInput');
+  const prob=remaining.replace(/^[,.\s]+|[,.\s]+$/g,'');
+  probEl.value=prob?prob.charAt(0).toUpperCase()+prob.slice(1):text.charAt(0).toUpperCase()+text.slice(1);
+  probEl.style.height='auto';probEl.style.height=probEl.scrollHeight+'px';
 }
 
 // ─── OPEN OS ───
 function openOS() {
   const btn=document.getElementById('ctaBtn');
   const isArchived=btn.innerHTML.includes('Arquivar');
+  const osAdesivo=document.getElementById('osAdesivo').value.trim();
+  if(!osAdesivo&&!isArchived){alert('⚠️ Informe o Nº OS do adesivo antes de abrir.');document.getElementById('osAdesivo').focus();return;}
   const name=document.getElementById('clientName').value.trim()||'Cliente';
   const wa=document.getElementById('clientWA').value.trim();
   const model=document.getElementById('modelInput').value.trim()||'iPhone';
   const problem=document.getElementById('problemInput').value.trim();
+  const senha=document.getElementById('senhaInput').value.trim();
   const prazoEl=document.querySelector('.pc.sel');
   const prazo=prazoEl?prazoEl.textContent:'⚡ 1h';
   const battery=parseInt(document.getElementById('batNum').value)||0;
@@ -1435,7 +1488,7 @@ function openOS() {
   const diag=collectDiag();
   osCounter++;
   localStorage.setItem('1hora_counter',String(osCounter));
-  const os={id:'#OS-'+osCounter,num:osCounter,clientName:name,clientWA:wa,model,problem,photo:currentPhotoData,diagnosis:diag,battery,services:[...selectedSvcs],total,prazo,status:isArchived?'arquivado':'fila',tecnico:null,createdAt:Date.now(),updatedAt:Date.now()};
+  const os={id:'#OS-'+osCounter,num:osCounter,osAdesivo,clientName:name,clientWA:wa,model,problem,senha,photo:currentPhotoData,diagnosis:diag,battery,services:[...selectedSvcs],total,prazo,status:isArchived?'arquivado':'fila',tecnico:null,createdAt:Date.now(),updatedAt:Date.now()};
   osList.push(os);persistOS();renderArchivedCount();
   btn.textContent=isArchived?'📋 Arquivado!':'✅ OS '+os.id+' Aberta!';
   btn.style.background=isArchived?'var(--orange)':'var(--green)';
@@ -1448,7 +1501,9 @@ function openOS() {
 
 function resetForm() {
   document.getElementById('clientName').value='';document.getElementById('clientWA').value='';
-  document.getElementById('modelInput').value='';document.getElementById('problemInput').value='';
+  document.getElementById('modelInput').value='';document.getElementById('senhaInput').value='';
+  document.getElementById('osAdesivo').value='';
+  const prob=document.getElementById('problemInput');prob.value='';prob.style.height='auto';
   currentPhotoData=null;
   document.getElementById('prev').src='https://images.unsplash.com/photo-1591337676887-a217a6970a8a?w=600&q=80';
   const lbl=document.getElementById('photo-detected-label');if(lbl)lbl.innerHTML='Adicionar foto';
