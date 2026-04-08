@@ -546,7 +546,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
         <div class="card">
           <div class="fi"><div class="fii">👤</div><div class="fic"><div class="lbl">Nome do Cliente</div><input id="clientName" type="text" placeholder="Nome completo..." value="Carlos Mendes"></div></div>
           <div class="fi"><div class="fii">💬</div><div class="fic"><div class="lbl">WhatsApp</div><input id="clientWA" type="tel" placeholder="+55 11 9 0000-0000" value="+55 11 9 8734-2291"></div></div>
-          <div class="fi"><div class="fii">📱</div><div class="fic"><div class="lbl">Modelo</div><input id="modelInput" type="text" placeholder="Ex: iPhone 14 Pro" value="iPhone 14 Pro" oninput="buildServices()"></div></div>
+          <div class="fi" onclick="openModelSheet()" style="cursor:pointer;"><div class="fii">📱</div><div class="fic"><div class="lbl">Modelo <span style="font-size:10px;color:var(--blue);font-weight:700;margin-left:4px;">▼ Toque para selecionar</span></div><input id="modelInput" type="text" placeholder="Ex: iPhone 14 Pro" value="iPhone 14 Pro" oninput="buildServices()" onclick="event.stopPropagation();openModelSheet()" style="pointer-events:auto;cursor:pointer;caret-color:var(--blue);" readonly></div></div>
           <div class="fi"><div class="fii">🔑</div><div class="fic"><div class="lbl">Senha do iPhone</div><input id="senhaInput" type="text" placeholder="Ex: 123456 ou Sem senha"></div></div>
           <div class="fi" style="align-items:flex-start;padding-top:12px;"><div class="fii" style="margin-top:1px;">🗣</div><div class="fic"><div class="lbl">Problema Relatado</div><textarea id="problemInput" placeholder="Descreva o problema..." rows="1" style="background:none;border:none;font-family:var(--sans);font-size:14px;font-weight:600;color:var(--text);width:100%;outline:none;resize:none;overflow:hidden;min-height:22px;line-height:1.5;" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'">Tela quebrada — canto inferior esq.</textarea></div></div>
         </div>
@@ -1079,6 +1079,20 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
     </div>
   </div>
 
+  <!-- MODEL SELECTOR SHEET -->
+  <div class="modal-overlay" id="modelSheetOverlay" onclick="closeModelSheet()"></div>
+  <div class="bottom-sheet" id="modelSheet" style="display:none;max-height:80vh;">
+    <div class="bs-handle"></div>
+    <div class="bs-header">
+      <div class="bs-title">📱 Selecionar Modelo</div>
+      <button class="bs-close" onclick="closeModelSheet()">✕</button>
+    </div>
+    <div style="padding:0 16px 8px;">
+      <input id="modelSearchInput" type="text" placeholder="Buscar modelo..." oninput="filterModelSheet(this.value)" autocomplete="off" style="width:100%;box-sizing:border-box;background:var(--g100);border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-size:14px;font-family:var(--sans);outline:none;color:var(--text);">
+    </div>
+    <div id="modelSheetList" class="bs-list" style="max-height:55vh;overflow-y:auto;padding:0 16px 12px;"></div>
+  </div>
+
   <!-- PRICES EDITOR MODAL -->
   <div class="modal-overlay" id="pricesOverlay" onclick="closePricesEditor()"></div>
   <div class="bottom-sheet" id="pricesSheet" style="display:none;">
@@ -1152,6 +1166,13 @@ function loadStorage() {
 
 function persistOS() { localStorage.setItem('1hora_os', JSON.stringify(osList)); }
 function persistPrices() { localStorage.setItem('1hora_prices', JSON.stringify(modelPrices)); }
+
+// ─── MODEL LIST ───
+const MODEL_LIST = [
+  {group:'iPhone', models:['iPhone 16 Pro Max','iPhone 16 Pro','iPhone 16','iPhone 15 Pro Max','iPhone 15 Pro','iPhone 15','iPhone 15 Plus','iPhone 14 Pro Max','iPhone 14 Pro','iPhone 14 Plus','iPhone 14','iPhone 13 Pro Max','iPhone 13 Pro','iPhone 13','iPhone 13 Mini','iPhone 12 Pro Max','iPhone 12 Pro','iPhone 12','iPhone 12 Mini','iPhone 11 Pro Max','iPhone 11 Pro','iPhone 11','iPhone SE (3ª geração)','iPhone SE (2ª geração)']},
+  {group:'Apple Watch', models:['Apple Watch Ultra 2','Apple Watch Series 10','Apple Watch Series 9','Apple Watch Series 8','Apple Watch Series 7','Apple Watch SE (2ª geração)','Apple Watch SE (1ª geração)','Apple Watch Series 6']},
+  {group:'iPad', models:['iPad Pro 13" (M4)','iPad Pro 11" (M4)','iPad Air 13" (M2)','iPad Air 11" (M2)','iPad (10ª geração)','iPad mini (6ª geração)']},
+];
 
 // ─── SERVICES DATA ───
 const SVCS = [
@@ -1936,6 +1957,47 @@ function finishOS() {
   },1800);
 }
 
+// ─── MODEL SHEET ───
+function openModelSheet(){
+  document.getElementById('modelSheetOverlay').classList.add('show');
+  document.getElementById('modelSheet').style.display='block';
+  const si=document.getElementById('modelSearchInput');si.value='';
+  filterModelSheet('');
+  setTimeout(()=>si.focus(),200);
+}
+function closeModelSheet(){
+  document.getElementById('modelSheetOverlay').classList.remove('show');
+  document.getElementById('modelSheet').style.display='none';
+}
+function selectModel(nm){
+  document.getElementById('modelInput').value=nm;
+  buildServices();
+  closeModelSheet();
+}
+function filterModelSheet(q){
+  const cont=document.getElementById('modelSheetList');cont.innerHTML='';
+  const lq=q.trim().toLowerCase();
+  MODEL_LIST.forEach(grp=>{
+    const matches=grp.models.filter(m=>!lq||m.toLowerCase().includes(lq));
+    if(!matches.length)return;
+    const grpEl=document.createElement('div');
+    grpEl.style.cssText='font-size:11px;font-weight:800;color:var(--muted);padding:12px 4px 4px;text-transform:uppercase;letter-spacing:.5px;';
+    grpEl.textContent=grp.group;cont.appendChild(grpEl);
+    matches.forEach(m=>{
+      const hasPrice=!!getModelKey(m);
+      const current=document.getElementById('modelInput').value.trim().toLowerCase()===m.toLowerCase();
+      const btn=document.createElement('button');
+      btn.style.cssText=`width:100%;text-align:left;background:${current?'var(--blue-s,#EFF6FF)':'none'};border:none;border-bottom:1px solid var(--border);padding:13px 4px;font-size:14px;font-weight:${current?'800':'600'};font-family:var(--sans);color:${hasPrice||current?'var(--blue)':'var(--text)'};cursor:pointer;display:flex;align-items:center;gap:8px;`;
+      btn.innerHTML=`<span style="flex:1;">${m}</span>${hasPrice?'<span style="font-size:11px;background:var(--blue);color:#fff;border-radius:6px;padding:2px 6px;font-weight:700;">R$</span>':''}${current?'<span style="font-size:16px;">✓</span>':''}`;
+      btn.onclick=()=>selectModel(m);
+      cont.appendChild(btn);
+    });
+  });
+  if(!cont.children.length){
+    const empty=document.createElement('div');empty.style.cssText='text-align:center;padding:24px;font-size:13px;color:var(--muted);';empty.textContent='Nenhum modelo encontrado';cont.appendChild(empty);
+  }
+}
+
 // ─── PRICES EDITOR ───
 function openPricesEditor(){document.getElementById('pricesOverlay').classList.add('show');document.getElementById('pricesSheet').style.display='block';renderPricesEditor(document.getElementById('priceModelSel').value);}
 function closePricesEditor(){document.getElementById('pricesOverlay').classList.remove('show');document.getElementById('pricesSheet').style.display='none';buildServices();}
@@ -1952,32 +2014,102 @@ function renderPricesEditor(model) {
       cont.appendChild(row);
     });
   });
-  // Seção de serviços personalizados do modelo
+  // Seção de serviços personalizados
   const key=getModelKey(model)||model;
   const lines=(modelPrices[key]&&modelPrices[key].__lines)||[];
   const secHd=document.createElement('div');
-  secHd.className='svc-cat';secHd.style.pointerEvents='none';secHd.textContent='⚙️ Personalizados';cont.appendChild(secHd);
+  secHd.className='svc-cat';secHd.style.cssText='pointer-events:none;margin-top:4px;';secHd.textContent='⚙️ Personalizados deste modelo';cont.appendChild(secHd);
   if(lines.length===0){
-    const empty=document.createElement('div');empty.style.cssText='font-size:12px;color:var(--muted);padding:8px 4px;';empty.textContent='Nenhum serviço personalizado.';cont.appendChild(empty);
+    const empty=document.createElement('div');empty.style.cssText='font-size:12px;color:var(--muted);padding:8px 4px 4px;';empty.textContent='Nenhum serviço personalizado ainda.';cont.appendChild(empty);
   }
-  lines.forEach((ln,i)=>{
-    const row=document.createElement('div');
-    row.style.cssText='display:flex;align-items:center;padding:8px 4px;border-bottom:1px solid var(--border);gap:6px;';
-    row.innerHTML=`<input type="text" value="${ln.nm.replace(/"/g,'&quot;')}" placeholder="Nome do serviço" style="flex:1;min-width:0;background:var(--g100);border:1.5px solid var(--border);border-radius:8px;padding:6px 8px;font-size:12px;font-weight:600;font-family:var(--sans);outline:none;color:var(--text);" onchange="updateCustomLine('${key.replace(/'/g,'&#39;')}',${i},'nm',this.value)"><span style="font-size:12px;color:var(--muted);flex-shrink:0;">R$</span><input type="number" min="0" max="9999" value="${ln.price}" style="width:66px;flex-shrink:0;background:var(--g100);border:1.5px solid var(--border);border-radius:8px;padding:6px;font-size:13px;font-weight:700;text-align:center;font-family:var(--sans);outline:none;color:var(--text);" onchange="updateCustomLine('${key.replace(/'/g,'&#39;')}',${i},'price',this.value)" onfocus="this.select()"><button onclick="deleteCustomLine('${key.replace(/'/g,'&#39;')}',${i})" style="flex-shrink:0;background:#FEE2E2;border:1px solid #FECACA;color:var(--red);border-radius:8px;padding:6px 8px;font-size:13px;font-weight:700;font-family:var(--sans);cursor:pointer;">✕</button>`;
-    cont.appendChild(row);
-  });
+  const linesWrap=document.createElement('div');linesWrap.id='customLinesWrap';cont.appendChild(linesWrap);
+  lines.forEach((ln,i)=>linesWrap.appendChild(buildCustomLineCard(key,ln,i,lines.length)));
   const addBtn=document.createElement('button');
-  addBtn.style.cssText='width:100%;margin-top:8px;background:var(--g100);border:1.5px dashed var(--border);border-radius:10px;padding:10px;font-size:13px;font-weight:700;font-family:var(--sans);color:var(--blue);cursor:pointer;';
+  addBtn.style.cssText='width:100%;margin-top:10px;background:var(--g100);border:1.5px dashed var(--border);border-radius:10px;padding:11px;font-size:13px;font-weight:700;font-family:var(--sans);color:var(--blue);cursor:pointer;';
   addBtn.textContent='＋ Adicionar serviço personalizado';
   addBtn.onclick=()=>addCustomLine(key);
   cont.appendChild(addBtn);
 }
+function buildCustomLineCard(key,ln,i,total){
+  const esc=s=>(s||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  const card=document.createElement('div');
+  card.dataset.lineIdx=i;
+  card.style.cssText='background:#fff;border:1.5px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden;touch-action:pan-y;';
+  card.innerHTML=`
+    <div style="display:flex;align-items:center;padding:10px 10px 6px;gap:8px;">
+      <span class="drag-handle" data-idx="${i}" style="font-size:20px;color:#C7C7CC;cursor:grab;touch-action:none;flex-shrink:0;padding:2px 4px;line-height:1;user-select:none;">⠿</span>
+      <input type="text" value="${esc(ln.nm)}" placeholder="Nome do serviço" style="flex:1;min-width:0;background:var(--g100);border:1.5px solid var(--border);border-radius:8px;padding:7px 8px;font-size:13px;font-weight:600;font-family:var(--sans);outline:none;color:var(--text);" onchange="updateCustomLine('${esc(key)}',${i},'nm',this.value)">
+      <span style="font-size:12px;color:var(--muted);flex-shrink:0;">R$</span>
+      <input type="number" min="0" max="9999" value="${ln.price||0}" style="width:64px;flex-shrink:0;background:var(--g100);border:1.5px solid var(--border);border-radius:8px;padding:7px 6px;font-size:13px;font-weight:700;text-align:center;font-family:var(--sans);outline:none;color:var(--text);" onchange="updateCustomLine('${esc(key)}',${i},'price',this.value)" onfocus="this.select()">
+      <div style="display:flex;flex-direction:column;gap:2px;flex-shrink:0;">
+        <button onclick="moveCustomLine('${esc(key)}',${i},-1)" ${i===0?'disabled':''} style="background:${i===0?'var(--g100)':'var(--g100)'};border:1px solid var(--border);border-radius:6px;width:26px;height:22px;font-size:11px;cursor:${i===0?'default':'pointer'};color:${i===0?'#C7C7CC':'var(--text)'};font-family:var(--sans);padding:0;display:flex;align-items:center;justify-content:center;">▲</button>
+        <button onclick="moveCustomLine('${esc(key)}',${i},1)" ${i===total-1?'disabled':''} style="background:var(--g100);border:1px solid var(--border);border-radius:6px;width:26px;height:22px;font-size:11px;cursor:${i===total-1?'default':'pointer'};color:${i===total-1?'#C7C7CC':'var(--text)'};font-family:var(--sans);padding:0;display:flex;align-items:center;justify-content:center;">▼</button>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;padding:0 10px 10px 46px;gap:8px;">
+      <input type="text" value="${esc(ln.desc||'')}" placeholder="Descrição (ex: Vidro + OLED · 90 dias)" style="flex:1;background:var(--g100);border:1.5px solid var(--border);border-radius:8px;padding:7px 8px;font-size:12px;font-weight:500;font-family:var(--sans);outline:none;color:var(--muted);" onchange="updateCustomLine('${esc(key)}',${i},'desc',this.value)">
+      <button onclick="deleteCustomLine('${esc(key)}',${i})" style="flex-shrink:0;background:#FEE2E2;border:1px solid #FECACA;color:var(--red);border-radius:8px;padding:7px 10px;font-size:12px;font-weight:700;font-family:var(--sans);cursor:pointer;white-space:nowrap;">🗑 Excluir</button>
+    </div>`;
+  // Attach drag events to handle
+  const handle=card.querySelector('.drag-handle');
+  handle.addEventListener('touchstart',e=>onDragStart(e,key,i),{passive:false});
+  return card;
+}
 function updateModelPrice(model,svcNm,value){const key=getModelKey(model)||model;if(!modelPrices[key])modelPrices[key]={};modelPrices[key][svcNm]=Math.max(0,parseInt(value)||0);persistPrices();}
-function addCustomLine(model){const key=getModelKey(model)||model;if(!modelPrices[key])modelPrices[key]={};if(!modelPrices[key].__lines)modelPrices[key].__lines=[];modelPrices[key].__lines.push({nm:'Novo serviço',price:0});persistPrices();renderPricesEditor(key);}
+function addCustomLine(model){const key=getModelKey(model)||model;if(!modelPrices[key])modelPrices[key]={};if(!modelPrices[key].__lines)modelPrices[key].__lines=[];modelPrices[key].__lines.push({nm:'Novo serviço',desc:'',price:0});persistPrices();renderPricesEditor(key);const wrap=document.getElementById('customLinesWrap');if(wrap)wrap.lastElementChild&&wrap.lastElementChild.querySelector('input').focus();}
 function deleteCustomLine(model,idx){const key=getModelKey(model)||model;if(modelPrices[key]&&modelPrices[key].__lines){modelPrices[key].__lines.splice(idx,1);persistPrices();renderPricesEditor(key);}}
+function moveCustomLine(model,idx,dir){const key=getModelKey(model)||model;const lines=modelPrices[key]&&modelPrices[key].__lines;if(!lines)return;const newIdx=idx+dir;if(newIdx<0||newIdx>=lines.length)return;[lines[idx],lines[newIdx]]=[lines[newIdx],lines[idx]];persistPrices();renderPricesEditor(key);}
 function updateCustomLine(model,idx,field,value){const key=getModelKey(model)||model;if(modelPrices[key]&&modelPrices[key].__lines&&modelPrices[key].__lines[idx]!==undefined){if(field==='price')modelPrices[key].__lines[idx].price=Math.max(0,parseInt(value)||0);else modelPrices[key].__lines[idx][field]=value;persistPrices();}}
 function changePriceModel(){renderPricesEditor(document.getElementById('priceModelSel').value);}
 function resetModelPrices(){const m=document.getElementById('priceModelSel').value;if(confirm('Resetar preços do '+m+' para padrão?')){delete modelPrices[m];persistPrices();renderPricesEditor(m);}}
+
+// ─── DRAG-AND-DROP TOUCH (linhas personalizadas) ───
+let _drag=null;
+function onDragStart(e,key,idx){
+  e.preventDefault();
+  const wrap=document.getElementById('customLinesWrap');
+  if(!wrap)return;
+  const cards=Array.from(wrap.querySelectorAll('[data-line-idx]'));
+  const card=cards[idx];
+  const rect=card.getBoundingClientRect();
+  // Clone visual seguindo o dedo
+  const clone=card.cloneNode(true);
+  clone.style.cssText=`position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;z-index:9999;pointer-events:none;opacity:.88;box-shadow:0 8px 28px rgba(0,0,0,.18);border-radius:12px;transition:none;`;
+  document.body.appendChild(clone);
+  card.style.opacity='.25';
+  _drag={key,startIdx:idx,curIdx:idx,clone,card,cards,wrap,cardH:rect.height,startY:e.touches[0].clientY,origTop:rect.top};
+  document.addEventListener('touchmove',onDragMove,{passive:false});
+  document.addEventListener('touchend',onDragEnd);
+}
+function onDragMove(e){
+  if(!_drag)return;
+  e.preventDefault();
+  const dy=e.touches[0].clientY-_drag.startY;
+  _drag.clone.style.top=(_drag.origTop+dy)+'px';
+  const newIdx=Math.max(0,Math.min(_drag.cards.length-1,_drag.startIdx+Math.round(dy/_drag.cardH)));
+  if(newIdx!==_drag.curIdx){
+    _drag.curIdx=newIdx;
+    _drag.cards.forEach((c,i)=>{
+      if(i===_drag.startIdx){c.style.transform='';return;}
+      const shift=_drag.startIdx<_drag.curIdx?(i>_drag.startIdx&&i<=_drag.curIdx?-_drag.cardH-8:0):(i<_drag.startIdx&&i>=_drag.curIdx?_drag.cardH+8:0);
+      c.style.transition='transform .15s';c.style.transform=shift?`translateY(${shift}px)`:'';
+    });
+  }
+}
+function onDragEnd(){
+  if(!_drag)return;
+  document.removeEventListener('touchmove',onDragMove);
+  document.removeEventListener('touchend',onDragEnd);
+  _drag.clone.remove();
+  _drag.cards.forEach(c=>{c.style.transform='';c.style.transition='';c.style.opacity='';});
+  const {key,startIdx,curIdx}=_drag;_drag=null;
+  if(startIdx!==curIdx){
+    const lines=modelPrices[key].__lines;
+    const [item]=lines.splice(startIdx,1);
+    lines.splice(curIdx,0,item);
+    persistPrices();renderPricesEditor(key);
+  }
+}
 
 // ─── RESULTADOS ───
 function renderResultados() {
