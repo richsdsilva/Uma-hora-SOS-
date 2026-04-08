@@ -1587,9 +1587,11 @@ function openOS() {
   const battery=parseInt(document.getElementById('batNum').value)||0;
   const total=selectedSvcs.reduce((s,x)=>s+x.price,0);
   const diag=collectDiag();
-  osCounter++;
+  // Usa o número do adesivo como ID da OS; mantém counter como fallback
+  const osNum=parseInt(osAdesivo)||++osCounter;
+  if(osNum>=osCounter) osCounter=osNum;
   localStorage.setItem('1hora_counter',String(osCounter));
-  const os={id:'#OS-'+osCounter,num:osCounter,osAdesivo,clientName:name,clientWA:wa,model,problem,senha,photo:currentPhotoData,diagnosis:diag,battery,services:[...selectedSvcs],total,prazo,status:isArchived?'arquivado':'fila',tecnico:null,createdAt:Date.now(),updatedAt:Date.now()};
+  const os={id:'#OS-'+osNum,num:osNum,osAdesivo,clientName:name,clientWA:wa,model,problem,senha,photo:currentPhotoData,diagnosis:diag,battery,services:[...selectedSvcs],total,prazo,status:isArchived?'arquivado':'fila',tecnico:null,createdAt:Date.now(),updatedAt:Date.now()};
   osList.push(os);persistOS();renderArchivedCount();
   btn.textContent=isArchived?'📋 Arquivado!':'✅ OS '+os.id+' Aberta!';
   btn.style.background=isArchived?'var(--orange)':'var(--green)';
