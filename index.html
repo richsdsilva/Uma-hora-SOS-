@@ -493,7 +493,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
           <div class="photo-zone" id="photoZone" onclick="document.getElementById('pi').click()">
             <img src="https://images.unsplash.com/photo-1591337676887-a217a6970a8a?w=600&q=80" id="prev">
             <div class="photo-ov"></div>
-            <div class="photo-detected"><span class="chk">✓</span> iPhone 14 Pro detectado</div>
+            <div class="photo-detected" id="photo-detected-label"><span class="chk">✓</span> Adicionar foto</div>
             <div class="photo-acts">
               <button class="pbtn voice" onclick="event.stopPropagation();startVoice()">🎙 Falar</button>
               <button class="pbtn" onclick="event.stopPropagation();document.getElementById('pi').click()">📷</button>
@@ -606,9 +606,9 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
     <div class="screen" id="screen-painel">
 
       <div class="panel-stats">
-        <div class="ps-card"><div class="ps-num" style="color:var(--blue)">23</div><div class="ps-lbl">Em fila</div></div>
-        <div class="ps-card"><div class="ps-num" style="color:var(--orange)">8</div><div class="ps-lbl">Consertando</div></div>
-        <div class="ps-card"><div class="ps-num" style="color:var(--green)">41</div><div class="ps-lbl">Prontos</div></div>
+        <div class="ps-card"><div class="ps-num" id="stat-fila" style="color:var(--blue)">0</div><div class="ps-lbl">Em fila</div></div>
+        <div class="ps-card"><div class="ps-num" id="stat-conserto" style="color:var(--orange)">0</div><div class="ps-lbl">Consertando</div></div>
+        <div class="ps-card"><div class="ps-num" id="stat-pronto" style="color:var(--green)">0</div><div class="ps-lbl">Prontos</div></div>
       </div>
       <div class="archived-pill-wrap">
         <div class="archived-pill no-border" onclick="openArchived()">
@@ -621,7 +621,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
         <div class="pb-col">
           <div class="pb-head">
             <div class="pb-name"><div class="pb-dot" style="background:var(--blue)"></div>FILA</div>
-            <div class="pb-cnt">5</div>
+            <div class="pb-cnt" id="panel-fila-cnt">0</div>
           </div>
           <div class="pb-body" id="colFila">
             <div class="pb-item" onclick="openOS_from_panel('#2847','Carlos M.','iPhone 14 Pro','42min','fila')"><div class="pb-item-row1"><div class="pb-item-os">#2847</div><div class="pb-item-timer t-ok">12min</div></div><div class="pb-item-name">Carlos M.</div></div>
@@ -636,14 +636,9 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
         <div class="pb-col">
           <div class="pb-head">
             <div class="pb-name"><div class="pb-dot" style="background:var(--orange)"></div>CONSERTO</div>
-            <div class="pb-cnt">8</div>
+            <div class="pb-cnt" id="panel-conserto-cnt">0</div>
           </div>
-          <div class="pb-body">
-            <div class="pb-item" onclick="openOS_from_panel('#2839','Fernanda C.','iPhone 12 Pro Max','72min','conserto')"><div class="pb-item-row1"><div class="pb-item-os">#2839</div><div class="pb-item-timer t-over">⚠ 72min</div></div><div class="pb-item-name">Fernanda C.</div></div>
-            <div class="pb-item" onclick="openOS_from_panel('#2836','Pedro A.','iPhone 14','52min','conserto')"><div class="pb-item-row1"><div class="pb-item-os">#2836</div><div class="pb-item-timer t-warn">52min</div></div><div class="pb-item-name">Pedro A.</div></div>
-            <div class="pb-item" onclick="openOS_from_panel('#2834','Beatriz R.','iPhone 13 Pro','44min','conserto')"><div class="pb-item-row1"><div class="pb-item-os">#2834</div><div class="pb-item-timer t-warn">44min</div></div><div class="pb-item-name">Beatriz R.</div></div>
-            <div class="pb-item" onclick="openOS_from_panel('#2832','Lucas M.','iPhone 15','18min','conserto')"><div class="pb-item-row1"><div class="pb-item-os">#2832</div><div class="pb-item-timer t-ok">18min</div></div><div class="pb-item-name">Lucas M.</div></div>
-            <div class="pb-item" onclick="openOS_from_panel('#2830','Camila T.','iPhone 14 Plus','32min','conserto')"><div class="pb-item-row1"><div class="pb-item-os">#2830</div><div class="pb-item-timer t-ok">32min</div></div><div class="pb-item-name">Camila T.</div></div>
+          <div class="pb-body" id="colConserto">
           </div>
         </div>
 
@@ -651,12 +646,9 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
         <div class="pb-col">
           <div class="pb-head">
             <div class="pb-name"><div class="pb-dot" style="background:var(--green)"></div>PRONTO</div>
-            <div class="pb-cnt">6</div>
+            <div class="pb-cnt" id="panel-pronto-cnt">0</div>
           </div>
-          <div class="pb-body">
-            <div class="pb-item" style="border-left:3px solid var(--green)" onclick="openOS_from_panel('#2831','João V.','iPhone 13 Mini','48min','pronto')"><div class="pb-item-row1"><div class="pb-item-os">#2831</div><div class="pb-item-timer t-ok">✓ 48min</div></div><div class="pb-item-name">João V.</div></div>
-            <div class="pb-item" style="border-left:3px solid var(--green)" onclick="openOS_from_panel('#2829','Patrícia N.','iPhone 15 Pro','35min','pronto')"><div class="pb-item-row1"><div class="pb-item-os">#2829</div><div class="pb-item-timer t-ok">✓ 35min</div></div><div class="pb-item-name">Patrícia N.</div></div>
-            <div class="pb-item" style="border-left:3px solid var(--green)" onclick="openOS_from_panel('#2827','Ricardo S.','iPhone 14 Pro Max','41min','pronto')"><div class="pb-item-row1"><div class="pb-item-os">#2827</div><div class="pb-item-timer t-ok">✓ 41min</div></div><div class="pb-item-name">Ricardo S.</div></div>
+          <div class="pb-body" id="colPronto">
           </div>
         </div>
       </div>
@@ -689,19 +681,24 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
         <div class="od-card">
           <!-- Header OS -->
           <div class="od-hd">
-            <div class="od-os" id="od-os-num">#OS-2847 · Aberta há 42 min · iPhone 14 Pro</div>
-            <div class="od-model" id="od-client-name">Carlos Mendes</div>
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <div style="flex:1;">
+                <div class="od-os" id="od-os-num">#OS-2847 · Aberta há 42 min · iPhone 14 Pro</div>
+                <div class="od-model" id="od-client-name">Carlos Mendes</div>
+              </div>
+              <img id="od-photo-thumb" style="display:none;width:56px;height:56px;object-fit:cover;border-radius:10px;border:2px solid rgba(212,31,31,.2);flex-shrink:0;" src="">
+            </div>
             <div id="od-status-wrap"><span class="od-status-badge status-fila" id="od-status-badge">⏳ Aguardando técnico</span></div>
             <div class="od-meta">
               <span class="od-client" id="od-model-chip">📱 iPhone 14 Pro</span>
-              <span class="od-time">💬 +55 11 9 8734-2291</span>
+              <span class="od-time" id="od-wa-display">💬 +55 11 9 8734-2291</span>
             </div>
           </div>
 
           <!-- Diagnóstico entrada -->
           <div class="od-section">
             <div class="od-section-title">Diagnóstico de entrada</div>
-            <div class="od-chips">
+            <div class="od-chips" id="od-chips">
               <span class="od-chip ck-ok">Face ID ✓</span>
               <span class="od-chip ck-fail">Tela ✗</span>
               <span class="od-chip ck-ok">Touch ✓</span>
@@ -713,10 +710,12 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
           <!-- Serviços -->
           <div class="od-section">
             <div class="od-section-title">Serviços a realizar</div>
-            <div class="od-svc-row"><div class="od-svc-nm">Troca de Tela OLED Original</div><div class="od-svc-pr">R$ 480</div></div>
-            <div class="od-svc-row"><div class="od-svc-nm">Higienização</div><div class="od-svc-pr">R$ 50</div></div>
-            <div class="od-svc-row"><div class="od-svc-nm">Garantia Estendida 90 dias</div><div class="od-svc-pr">R$ 80</div></div>
-            <div class="od-total-row"><div class="od-total-nm">Total</div><div class="od-total-pr">R$ 610</div></div>
+            <div id="od-svcs">
+              <div class="od-svc-row"><div class="od-svc-nm">Troca de Tela OLED Original</div><div class="od-svc-pr">R$ 480</div></div>
+              <div class="od-svc-row"><div class="od-svc-nm">Higienização</div><div class="od-svc-pr">R$ 50</div></div>
+              <div class="od-svc-row"><div class="od-svc-nm">Garantia Estendida 90 dias</div><div class="od-svc-pr">R$ 80</div></div>
+              <div class="od-total-row"><div class="od-total-nm">Total</div><div class="od-total-pr">R$ 610</div></div>
+            </div>
           </div>
 
           <!-- Técnico responsável -->
@@ -926,6 +925,23 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
         </div>
       </div>
 
+      <!-- PREÇOS (só dono vê) -->
+      <div class="sec" id="pricesSection">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <div class="sec-title" style="margin-bottom:0;">Tabela de Preços</div>
+          <button onclick="openPricesEditor()" style="background:var(--blue-s);border:1px solid #BFDBFE;color:var(--blue);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;font-family:var(--sans);cursor:pointer;">✏️ Editar</button>
+        </div>
+        <div class="card">
+          <div class="fi">
+            <div class="fii">💰</div>
+            <div class="fic">
+              <div class="lbl">Preços personalizados por modelo</div>
+              <div style="font-size:13px;font-weight:600;color:var(--text);">Toque em Editar para personalizar</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- TROCAR PERFIL (só dono vê) -->
       <div class="sec" id="switchProfileSection">
         <div class="sec-title">Trocar Perfil</div>
@@ -979,6 +995,29 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
     </div>
   </div>
 
+  <!-- PRICES EDITOR MODAL -->
+  <div class="modal-overlay" id="pricesOverlay" onclick="closePricesEditor()"></div>
+  <div class="bottom-sheet" id="pricesSheet" style="display:none;">
+    <div class="bs-handle"></div>
+    <div class="bs-header">
+      <div class="bs-title">✏️ Preços por Modelo</div>
+      <button class="bs-close" onclick="closePricesEditor()">✕</button>
+    </div>
+    <div style="padding:0 16px 8px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+        <span style="font-size:12px;font-weight:600;color:var(--mid);flex-shrink:0;">Modelo:</span>
+        <select id="priceModelSel" onchange="changePriceModel()" style="flex:1;background:var(--g100);border:1.5px solid var(--border);border-radius:8px;padding:7px 8px;font-size:13px;font-weight:600;font-family:var(--sans);outline:none;color:var(--text);-webkit-appearance:none;">
+          <option>iPhone 16 Pro Max</option><option>iPhone 16 Pro</option><option>iPhone 16</option><option>iPhone 15 Pro Max</option><option>iPhone 15 Pro</option><option>iPhone 15</option><option>iPhone 15 Plus</option><option>iPhone 14 Pro Max</option><option selected>iPhone 14 Pro</option><option>iPhone 14 Plus</option><option>iPhone 14</option><option>iPhone 13 Pro Max</option><option>iPhone 13 Pro</option><option>iPhone 13</option><option>iPhone 13 Mini</option><option>iPhone 12 Pro Max</option><option>iPhone 12 Pro</option><option>iPhone 12</option><option>iPhone 12 Mini</option><option>iPhone 11 Pro Max</option><option>iPhone 11 Pro</option><option>iPhone 11</option><option>iPhone SE (3ª geração)</option><option>iPhone SE (2ª geração)</option>
+        </select>
+        <button onclick="resetModelPrices()" style="background:var(--red-s);border:1px solid #FECACA;color:var(--red);border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700;font-family:var(--sans);cursor:pointer;flex-shrink:0;">↺</button>
+      </div>
+    </div>
+    <div class="bs-list" id="pricesEditorItems" style="max-height:55vh;overflow-y:auto;padding:0 12px 4px;"></div>
+    <div style="padding:10px 16px 8px;">
+      <button onclick="closePricesEditor()" style="width:100%;background:var(--green);color:#fff;border:none;border-radius:12px;height:46px;font-family:var(--sans);font-size:14px;font-weight:800;cursor:pointer;">✓ Salvo automaticamente</button>
+    </div>
+  </div>
+
   <!-- BOTTOM NAV -->
   <div class="bnav" id="bnav">
     <div class="bnav-icons">
@@ -997,8 +1036,37 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
 // ─── STATE ───
 let role = 'dono';
 let selectedSvcs = [];
+let currentPhotoData = null;
+let currentOSId = null;
+let osList = [];
+let modelPrices = {};
+let osCounter = 2848;
 
-const WA_DEFAULT = `Olá, Carlos! 👋\n\nSeu iPhone 14 Pro está pronto para retirada! ✅\n\n🔧 Serviços: Troca de Tela OLED + Higienização\n💰 Total: R$ 610\n⏱ Tempo: 42 minutos\n\n🛡 Garantia estendida 90 dias inclusa.\n\nEstamos no Shopping Oriental, Loja 120.\nUma Hora Assistência Técnica 🔵🔴`;
+// ─── STORAGE ───
+function loadStorage() {
+  try {
+    const saved = localStorage.getItem('1hora_os');
+    osList = saved ? JSON.parse(saved) : null;
+    if (!osList) {
+      const now = Date.now();
+      osList = [
+        {id:'#OS-2847',num:2847,clientName:'Carlos Mendes',clientWA:'+5511987342291',model:'iPhone 14 Pro',problem:'Tela quebrada — canto inf. esq.',photo:null,diagnosis:[{label:'Face ID',ok:true},{label:'Tela & Display',ok:false},{label:'Touch Screen',ok:true},{label:'Alto-falante',ok:true},{label:'Câmera Frontal',ok:true},{label:'Câmera Traseira',ok:true},{label:'Botões Físicos',ok:true},{label:'Conector',ok:true}],battery:34,services:[{nm:'Troca de Tela OLED Original',price:480,group:'tela'},{nm:'Higienização Completa',price:50},{nm:'Garantia 3 meses',price:120,guarantee:true,group:'garantia'}],total:650,prazo:'⚡ 1h',status:'fila',tecnico:null,createdAt:now-12*60000,updatedAt:now-12*60000},
+        {id:'#OS-2846',num:2846,clientName:'Ana Santos',clientWA:'',model:'iPhone 13',problem:'Bateria fraca',photo:null,diagnosis:[],battery:72,services:[{nm:'Troca de Bateria Original',price:220}],total:220,prazo:'⚡ 1h',status:'fila',tecnico:null,createdAt:now-8*60000,updatedAt:now-8*60000},
+        {id:'#OS-2845',num:2845,clientName:'Rafael Lima',clientWA:'',model:'iPhone 15 Pro',problem:'Tela manchada',photo:null,diagnosis:[],battery:89,services:[{nm:'Troca de Tela OLED Original',price:580}],total:580,prazo:'⚡ 1h',status:'fila',tecnico:null,createdAt:now-25*60000,updatedAt:now-25*60000},
+        {id:'#OS-2839',num:2839,clientName:'Fernanda Costa',clientWA:'',model:'iPhone 12 Pro Max',problem:'Tela + câmera',photo:null,diagnosis:[],battery:91,services:[{nm:'Troca de Tela OLED Original',price:380},{nm:'Câmera Traseira',price:320}],total:700,prazo:'⏱ 2h',status:'conserto',tecnico:'Wei Zhang',createdAt:now-90*60000,updatedAt:now-72*60000},
+        {id:'#OS-2836',num:2836,clientName:'Pedro Alves',clientWA:'',model:'iPhone 14',problem:'Conector',photo:null,diagnosis:[],battery:85,services:[{nm:'Conector USB-C / Lightning',price:190}],total:190,prazo:'⚡ 1h',status:'conserto',tecnico:'Li Chen',createdAt:now-70*60000,updatedAt:now-52*60000},
+        {id:'#OS-2831',num:2831,clientName:'João Vitor',clientWA:'',model:'iPhone 13 Mini',problem:'Tela',photo:null,diagnosis:[],battery:78,services:[{nm:'Troca de Tela Compatível',price:220}],total:220,prazo:'⚡ 1h',status:'pronto',tecnico:'Juan Park',createdAt:now-100*60000,updatedAt:now-48*60000},
+        {id:'#OS-2829',num:2829,clientName:'Patrícia Nunes',clientWA:'',model:'iPhone 15 Pro',problem:'Alto-falante',photo:null,diagnosis:[],battery:93,services:[{nm:'Alto-falante',price:150}],total:150,prazo:'⚡ 1h',status:'pronto',tecnico:'Wei Zhang',createdAt:now-85*60000,updatedAt:now-35*60000},
+      ];
+      osCounter = 2848;
+    }
+    modelPrices = JSON.parse(localStorage.getItem('1hora_prices') || '{}');
+    osCounter = parseInt(localStorage.getItem('1hora_counter') || String(osCounter));
+  } catch(e) { osList = []; modelPrices = {}; osCounter = 2848; }
+}
+
+function persistOS() { localStorage.setItem('1hora_os', JSON.stringify(osList)); }
+function persistPrices() { localStorage.setItem('1hora_prices', JSON.stringify(modelPrices)); }
 
 // ─── SERVICES DATA ───
 const SVCS = [
@@ -1028,13 +1096,19 @@ const SVCS = [
   ]},
 ];
 
+// ─── HELPERS ───
+function getModelPrice(model,svcNm,defaultPrice){const m=(model||'').trim();return(modelPrices[m]&&modelPrices[m][svcNm]!==undefined)?modelPrices[m][svcNm]:defaultPrice;}
+function formatTime(ts){const d=Math.floor((Date.now()-ts)/60000);if(d<1)return'1min';if(d<60)return d+'min';const h=Math.floor(d/60),m=d%60;return h+'h'+(m?m+'min':'');}
+function timerClass(ts){const d=Math.floor((Date.now()-ts)/60000);if(d>=60)return't-over';if(d>=30)return't-warn';return't-ok';}
+
 // ─── NAV ───
 function goTo(tab, btn) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
   document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
   document.getElementById('screen-' + tab).classList.add('on');
-  btn.classList.add('on');
+  if(btn) btn.classList.add('on');
   document.getElementById('content').scrollTop = 0;
+  if(tab==='painel') renderPainel();
 }
 
 // ─── ROLE ───
@@ -1051,39 +1125,30 @@ function setRole(r) {
 }
 
 function applyRole() {
-  const chip = document.getElementById('roleChip');
-  const nbRes = document.getElementById('nb-resultados');
-  const nbEnt = document.getElementById('nb-entrada');
-
-  // Reset sel indicators
-  ['Dono','Atendente','Tecnico'].forEach(r => {
-    const el = document.getElementById('sel'+r);
-    if(el) el.style.opacity = '0';
-  });
-
-  if(role === 'dono') {
-    chip.textContent = '👑 Dono';
-    nbRes.classList.remove('locked');
-    nbEnt.classList.remove('locked');
-    document.getElementById('selDono').style.opacity = '1';
-    document.getElementById('profileName').textContent = 'Administrador';
-    document.getElementById('profileRole').textContent = 'Dono · Acesso completo';
-  } else if(role === 'atendente') {
-    chip.textContent = '🧑‍💼 Atendente';
-    nbRes.classList.add('locked');
-    nbEnt.classList.remove('locked');
-    document.getElementById('selAtendente').style.opacity = '1';
-    document.getElementById('profileName').textContent = 'Atendente';
-    document.getElementById('profileRole').textContent = 'Atendente · Entrada e Entrega';
-    goTo('entrada', document.getElementById('nb-entrada'));
+  const chip=document.getElementById('roleChip');
+  const nbRes=document.getElementById('nb-resultados'),nbEnt=document.getElementById('nb-entrada');
+  const pricesSec=document.getElementById('pricesSection'),switchSec=document.getElementById('switchProfileSection');
+  ['Dono','Atendente','Tecnico'].forEach(r=>{const el=document.getElementById('sel'+r);if(el)el.style.opacity='0';});
+  if(role==='dono'){
+    chip.textContent='👑 Dono';nbRes.classList.remove('locked');nbEnt.classList.remove('locked');
+    document.getElementById('selDono').style.opacity='1';
+    document.getElementById('profileName').textContent='Administrador';
+    document.getElementById('profileRole').textContent='Dono · Acesso completo';
+    if(pricesSec)pricesSec.style.display='block';if(switchSec)switchSec.style.display='block';
+  } else if(role==='atendente'){
+    chip.textContent='🧑‍💼 Atendente';nbRes.classList.add('locked');nbEnt.classList.remove('locked');
+    document.getElementById('selAtendente').style.opacity='1';
+    document.getElementById('profileName').textContent='Atendente';
+    document.getElementById('profileRole').textContent='Atendente · Entrada e Entrega';
+    if(pricesSec)pricesSec.style.display='none';
+    goTo('entrada',document.getElementById('nb-entrada'));
   } else {
-    chip.textContent = '🔧 Técnico';
-    nbRes.classList.add('locked');
-    nbEnt.classList.add('locked');
-    document.getElementById('selTecnico').style.opacity = '1';
-    document.getElementById('profileName').textContent = 'Técnico';
-    document.getElementById('profileRole').textContent = 'Técnico · Conserto e Entrega';
-    goTo('painel', document.getElementById('nb-painel'));
+    chip.textContent='🔧 Técnico';nbRes.classList.add('locked');nbEnt.classList.add('locked');
+    document.getElementById('selTecnico').style.opacity='1';
+    document.getElementById('profileName').textContent='Técnico';
+    document.getElementById('profileRole').textContent='Técnico · Conserto e Entrega';
+    if(pricesSec)pricesSec.style.display='none';
+    goTo('painel',document.getElementById('nb-painel'));
   }
 }
 
@@ -1096,43 +1161,34 @@ function toggleDiagSection(btn) {
 }
 
 function buildServices() {
-  const model = document.getElementById('modelInput').value || 'iPhone';
-  document.getElementById('svcTitle').textContent = model + ' — Tabela de preços';
-  const list = document.getElementById('svcList');
-  // Remember open state before rebuild
-  const openCats = {};
-  list.querySelectorAll('.svc-cat-body').forEach(b => {
-    if(b.style.display !== 'none') openCats[b.dataset.cat] = true;
-  });
-  list.innerHTML = '';
-  SVCS.forEach(cat => {
-    const catKey = cat.cat;
-    const isOpen = openCats[catKey] || false;
-    const catHd = document.createElement('div');
-    catHd.className = 'svc-cat';
-    catHd.style.cssText = 'display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;';
-    catHd.innerHTML = `<span>${cat.cat}</span><span class="svc-arr" style="font-size:11px;color:var(--muted);transition:transform .2s;display:inline-block;">${isOpen?'▲':'▼'}</span>`;
-    const catBody = document.createElement('div');
-    catBody.className = 'svc-cat-body';
-    catBody.dataset.cat = catKey;
-    catBody.style.display = isOpen ? 'block' : 'none';
-    catHd.onclick = () => {
-      const isNowOpen = catBody.style.display !== 'none';
-      // Close all
-      list.querySelectorAll('.svc-cat-body').forEach(b => { b.style.display='none'; });
-      list.querySelectorAll('.svc-arr').forEach(a => { a.textContent='▼'; a.style.transform=''; });
-      // Open this one if it was closed
-      if(isNowOpen) return;
-      catBody.style.display = 'block';
-      catHd.querySelector('.svc-arr').textContent = '▲';
+  const model=document.getElementById('modelInput').value||'iPhone';
+  document.getElementById('svcTitle').textContent=model+' — Tabela de preços';
+  const list=document.getElementById('svcList');
+  const openCats={};
+  list.querySelectorAll('.svc-cat-body').forEach(b=>{if(b.style.display!=='none')openCats[b.dataset.cat]=true;});
+  list.innerHTML='';
+  SVCS.forEach(cat=>{
+    const catKey=cat.cat,isOpen=openCats[catKey]||false;
+    const catHd=document.createElement('div');
+    catHd.className='svc-cat';catHd.style.cssText='display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;';
+    catHd.innerHTML=`<span>${cat.cat}</span><span class="svc-arr" style="font-size:11px;color:var(--muted);transition:transform .2s;display:inline-block;">${isOpen?'▲':'▼'}</span>`;
+    const catBody=document.createElement('div');
+    catBody.className='svc-cat-body';catBody.dataset.cat=catKey;catBody.style.display=isOpen?'block':'none';
+    catHd.onclick=()=>{
+      const isNowOpen=catBody.style.display!=='none';
+      list.querySelectorAll('.svc-cat-body').forEach(b=>{b.style.display='none';});
+      list.querySelectorAll('.svc-arr').forEach(a=>{a.textContent='▼';a.style.transform='';});
+      if(isNowOpen)return;
+      catBody.style.display='block';catHd.querySelector('.svc-arr').textContent='▲';
     };
     list.appendChild(catHd);
-    cat.items.forEach(item => {
-      const isSel = selectedSvcs.find(s => s.nm === item.nm);
-      const d = document.createElement('div');
-      d.className = 'svc-item' + (isSel ? ' selected' : '') + (item.guarantee ? ' guarantee-item' : '');
-      d.innerHTML = `<div class="svc-ico">${cat.cat.split(' ')[0]}</div><div class="svc-info"><div class="svc-nm">${item.nm}</div><div class="svc-desc">${item.desc}</div></div><div class="svc-price">${item.price === 0 ? 'Grátis' : 'R$ '+item.price}</div><div class="svc-chk">${isSel ? '✓' : ''}</div>`;
-      d.onclick = () => toggleSvc(item, d);
+    cat.items.forEach(item=>{
+      const price=getModelPrice(model,item.nm,item.price);
+      const isSel=selectedSvcs.find(s=>s.nm===item.nm);
+      const d=document.createElement('div');
+      d.className='svc-item'+(isSel?' selected':'')+(item.guarantee?' guarantee-item':'');
+      d.innerHTML=`<div class="svc-ico">${cat.cat.split(' ')[0]}</div><div class="svc-info"><div class="svc-nm">${item.nm}</div><div class="svc-desc">${item.desc}</div></div><div class="svc-price">${price===0?'Grátis':'R$ '+price}</div><div class="svc-chk">${isSel?'✓':''}</div>`;
+      d.onclick=()=>toggleSvc({...item,price},d);
       catBody.appendChild(d);
     });
     list.appendChild(catBody);
@@ -1258,36 +1314,72 @@ function selA(btn) {
 }
 function selP(c) { c.closest('.pc-chips').querySelectorAll('.pc').forEach(x => x.classList.remove('sel')); c.classList.add('sel'); }
 
+// ─── COLLECT DIAGNOSIS ───
+function collectDiag() {
+  const diag=[];
+  document.querySelectorAll('#diagBody .di').forEach(row=>{
+    const label=row.querySelector('.dnm')?.textContent;
+    if(!label||label==='Bateria')return;
+    const toggle=row.querySelector('.ios-toggle');
+    diag.push({label,ok:!toggle?.classList.contains('fail')});
+  });
+  return diag;
+}
+
 // ─── ARCHIVED ORDERS ───
 function openArchived() {
+  const archived=osList.filter(o=>o.status==='arquivado');
+  const bsList=document.querySelector('#archivedSheet .bs-list');
+  bsList.innerHTML=archived.length?archived.map(os=>`
+    <div class="bs-item" onclick="loadArchived(${os.num})">
+      <div class="bs-item-ico">📋</div>
+      <div class="bs-item-info"><div class="bs-item-name">${os.clientName}</div><div class="bs-item-detail">${os.model} · ${os.problem} · ${new Date(os.createdAt).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</div></div>
+      <div class="bs-item-val">R$ ${os.total.toLocaleString('pt-BR')}</div>
+    </div>`).join(''):'<div class="bs-empty">Nenhum orçamento arquivado</div>';
   document.getElementById('archivedOverlay').classList.add('show');
-  document.getElementById('archivedSheet').style.display = 'block';
+  document.getElementById('archivedSheet').style.display='block';
 }
 function closeArchived() {
   document.getElementById('archivedOverlay').classList.remove('show');
-  document.getElementById('archivedSheet').style.display = 'none';
+  document.getElementById('archivedSheet').style.display='none';
 }
-function loadArchived(name, model, service) {
-  closeArchived();
-  document.getElementById('clientName').value = name;
-  document.getElementById('modelInput').value = model;
-  document.getElementById('problemInput').value = service;
+function loadArchived(num) {
+  const os=osList.find(o=>o.num===num);closeArchived();
+  if(!os)return;
+  document.getElementById('clientName').value=os.clientName;
+  document.getElementById('clientWA').value=os.clientWA||'';
+  document.getElementById('modelInput').value=os.model;
+  document.getElementById('problemInput').value=os.problem;
   buildServices();
-  goTo('entrada', document.getElementById('nb-entrada'));
-  document.getElementById('content').scrollTop = 0;
-  const cta = document.getElementById('ctaBtn');
-  cta.style.background = 'var(--blue)';
-  cta.style.boxShadow = '0 4px 16px rgba(26,92,200,.3)';
-  cta.innerHTML = '📥 Abrir Ordem de Serviço';
-  document.querySelector('.apv.y').classList.add('sel');
-  document.querySelector('.apv.n').classList.remove('sel');
+  goTo('entrada',document.getElementById('nb-entrada'));
 }
 
 // ─── TECH SELECTOR ───
-function selTech(c) { c.closest('.tech-selector').querySelectorAll('.tech-chip').forEach(x => x.classList.remove('sel')); c.classList.add('sel'); }
+function selTech(c){c.closest('.tech-selector').querySelectorAll('.tech-chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');}
 
 // ─── PHOTO ───
-function handlePhoto(i) { if(i.files&&i.files[0]){const r=new FileReader();r.onload=e=>{document.getElementById('prev').src=e.target.result;};r.readAsDataURL(i.files[0]);} }
+function handlePhoto(input) {
+  if(!input.files||!input.files[0])return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=new Image();
+    img.onload=()=>{
+      const canvas=document.createElement('canvas');
+      const MAX=800;let w=img.width,h=img.height;
+      if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      let data=canvas.toDataURL('image/jpeg',0.65);
+      if(data.length>200000)data=canvas.toDataURL('image/jpeg',0.35);
+      currentPhotoData=data;
+      document.getElementById('prev').src=data;
+      const lbl=document.getElementById('photo-detected-label');
+      if(lbl)lbl.innerHTML='<span class="chk">✓</span> Foto capturada';
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
 
 // ─── VOICE ───
 let recognition = null;
@@ -1318,118 +1410,183 @@ function startVoice() {
 function stopVoice() { if(recognition) recognition.stop(); document.getElementById('voiceOverlay').classList.remove('show'); }
 
 function processVoice(text) {
-  const t = text.toLowerCase();
-  if(t.includes('iphone')) {
-    const models = ['15 pro max','15 pro','15','14 pro max','14 pro','14','13 pro','13','12'];
-    for(const m of models) { if(t.includes(m)) { document.getElementById('modelInput').value = 'iPhone '+m.split(' ').map(w=>w[0].toUpperCase()+w.slice(1)).join(' '); buildServices(); break; } }
+  const t=text.toLowerCase();
+  if(t.includes('iphone')){
+    const models=['16 pro max','16 pro','16','15 pro max','15 pro','15 plus','15','14 pro max','14 pro','14 plus','14','13 pro max','13 pro','13 mini','13','12 pro max','12 pro','12 mini','12','11 pro max','11 pro','11'];
+    for(const m of models){if(t.includes(m)){document.getElementById('modelInput').value='iPhone '+m.split(' ').map(w=>w[0].toUpperCase()+w.slice(1)).join(' ');buildServices();break;}}
   }
-  const batMatch = t.match(/bateria[^\d]*(\d+)/);
-  if(batMatch) { document.getElementById('batV').value = batMatch[1]; batU(); }
-  document.getElementById('problemInput').value = text.charAt(0).toUpperCase() + text.slice(1);
+  const batMatch=t.match(/bateria[^\d]*(\d+)/);
+  if(batMatch){document.getElementById('batV').value=batMatch[1];batU();}
+  document.getElementById('problemInput').value=text.charAt(0).toUpperCase()+text.slice(1);
 }
 
 // ─── OPEN OS ───
 function openOS() {
-  const btn = document.getElementById('ctaBtn');
-  btn.textContent = '✅ OS #2848 Aberta!';
-  btn.style.background = 'var(--green)';
-  btn.style.boxShadow = '0 4px 16px rgba(22,163,74,.3)';
-  setTimeout(() => {
-    btn.innerHTML = '📥 Abrir Ordem de Serviço';
-    btn.style.background = '';
-    btn.style.boxShadow = '';
-    goTo('painel', document.getElementById('nb-painel'));
-  }, 1800);
+  const btn=document.getElementById('ctaBtn');
+  const isArchived=btn.innerHTML.includes('Arquivar');
+  const name=document.getElementById('clientName').value.trim()||'Cliente';
+  const wa=document.getElementById('clientWA').value.trim();
+  const model=document.getElementById('modelInput').value.trim()||'iPhone';
+  const problem=document.getElementById('problemInput').value.trim();
+  const prazoEl=document.querySelector('.pc.sel');
+  const prazo=prazoEl?prazoEl.textContent:'⚡ 1h';
+  const battery=parseInt(document.getElementById('batNum').value)||0;
+  const total=selectedSvcs.reduce((s,x)=>s+x.price,0);
+  const diag=collectDiag();
+  osCounter++;
+  localStorage.setItem('1hora_counter',String(osCounter));
+  const os={id:'#OS-'+osCounter,num:osCounter,clientName:name,clientWA:wa,model,problem,photo:currentPhotoData,diagnosis:diag,battery,services:[...selectedSvcs],total,prazo,status:isArchived?'arquivado':'fila',tecnico:null,createdAt:Date.now(),updatedAt:Date.now()};
+  osList.push(os);persistOS();renderArchivedCount();
+  btn.textContent=isArchived?'📋 Arquivado!':'✅ OS '+os.id+' Aberta!';
+  btn.style.background=isArchived?'var(--orange)':'var(--green)';
+  btn.style.boxShadow='0 4px 16px rgba(22,163,74,.3)';
+  setTimeout(()=>{
+    btn.innerHTML='📥 Abrir Ordem de Serviço';btn.style.background='';btn.style.boxShadow='';
+    resetForm();if(!isArchived)goTo('painel',document.getElementById('nb-painel'));
+  },1800);
+}
+
+function resetForm() {
+  document.getElementById('clientName').value='';document.getElementById('clientWA').value='';
+  document.getElementById('modelInput').value='';document.getElementById('problemInput').value='';
+  currentPhotoData=null;
+  document.getElementById('prev').src='https://images.unsplash.com/photo-1591337676887-a217a6970a8a?w=600&q=80';
+  const lbl=document.getElementById('photo-detected-label');if(lbl)lbl.innerHTML='Adicionar foto';
+  selectedSvcs=[];updateSummary();buildServices();
+  document.getElementById('batV').value=100;document.getElementById('batNum').value=100;batSync('range');
+  document.querySelectorAll('#diagBody .ios-toggle').forEach(t=>t.classList.remove('fail'));
+  const ctaBtn=document.getElementById('ctaBtn');
+  ctaBtn.style.background='var(--blue)';ctaBtn.style.boxShadow='0 4px 16px rgba(26,92,200,.3)';ctaBtn.innerHTML='📥 Abrir Ordem de Serviço';
+  document.querySelector('.apv.y').classList.add('sel');document.querySelector('.apv.n').classList.remove('sel');
+}
+
+// ─── PAINEL ───
+function renderPainel() {
+  const fila=osList.filter(o=>o.status==='fila').sort((a,b)=>a.createdAt-b.createdAt);
+  const conserto=osList.filter(o=>o.status==='conserto').sort((a,b)=>b.updatedAt-a.updatedAt);
+  const pronto=osList.filter(o=>o.status==='pronto').sort((a,b)=>b.updatedAt-a.updatedAt);
+  const entregue=osList.filter(o=>o.status==='entregue').length;
+  const sf=document.getElementById('stat-fila'),sc=document.getElementById('stat-conserto'),sp=document.getElementById('stat-pronto');
+  if(sf)sf.textContent=fila.length;if(sc)sc.textContent=conserto.length;if(sp)sp.textContent=pronto.length+entregue;
+  const pf=document.getElementById('panel-fila-cnt'),pc=document.getElementById('panel-conserto-cnt'),pp=document.getElementById('panel-pronto-cnt');
+  if(pf)pf.textContent=fila.length;if(pc)pc.textContent=conserto.length;if(pp)pp.textContent=pronto.length;
+  renderOSColumn('colFila',fila,'fila');renderOSColumn('colConserto',conserto,'conserto');renderOSColumn('colPronto',pronto,'pronto');
+  renderArchivedCount();
+}
+function renderOSColumn(colId,list,status) {
+  const col=document.getElementById(colId);if(!col)return;
+  if(!list.length){col.innerHTML='<div style="padding:12px 8px;font-size:11px;color:var(--muted);text-align:center;">Vazio</div>';return;}
+  col.innerHTML=list.map(os=>{
+    const ts=status==='fila'?os.createdAt:os.updatedAt;
+    const time=formatTime(ts),tc=timerClass(ts);
+    const timerTxt=status==='pronto'?'✓ '+time:(tc==='t-over'?'⚠ '+time:time);
+    const bStyle=status==='pronto'?'border-left:3px solid var(--green);':'';
+    const parts=os.clientName.split(' ');const sn=parts[0]+(parts.length>1?' '+parts[parts.length-1][0]+'.':'');
+    return `<div class="pb-item" style="${bStyle}" onclick="openOS_from_panel(${os.num})"><div class="pb-item-row1"><div class="pb-item-os">${os.id}</div><div class="pb-item-timer ${tc}">${timerTxt}</div></div><div class="pb-item-name">${sn}</div></div>`;
+  }).join('');
+}
+function renderArchivedCount() {
+  const n=osList.filter(o=>o.status==='arquivado').length;
+  document.querySelectorAll('.archived-pill-count').forEach(el=>el.textContent=n);
 }
 
 // ─── SEARCH OS ───
 function doSearch() {
-  document.getElementById('odWrap').classList.add('show');
-  document.getElementById('content').scrollTop = 200;
+  const q=document.getElementById('osSearch').value.trim().toLowerCase();if(!q)return;
+  const found=osList.find(os=>os.id.toLowerCase().includes(q)||os.clientName.toLowerCase().includes(q)||String(os.num)===q.replace('#os-','').replace('#','').trim());
+  if(found)loadOSToEntrega(found);
+  else{document.getElementById('odWrap').classList.remove('show');alert('OS não encontrada.');}
 }
-function openOS_from_panel(os, client, model, time, status) {
-  document.getElementById('od-os-num').textContent = os + ' · Aberta há ' + time + ' · ' + model;
-  document.getElementById('od-client-name').textContent = client;
-  document.getElementById('od-model-chip').textContent = '📱 ' + model;
-
-  const badge = document.getElementById('od-status-badge');
-  const btn = document.getElementById('od-action-btn');
-  const confSection = document.getElementById('conf-section');
-
-  btn.style.background = '';
-
-  if(status === 'fila') {
-    badge.className = 'od-status-badge status-fila';
-    badge.textContent = '⏳ Aguardando técnico';
-    btn.className = 'od-action-btn od-action-pegar';
-    btn.textContent = '🔧 Pegar este serviço';
-    if(confSection) confSection.style.display = 'none';
-
-  } else if(status === 'conserto') {
-    badge.className = 'od-status-badge status-conserto';
-    badge.textContent = '🔧 Em conserto · ' + time;
-    btn.className = 'od-action-btn od-action-finalizar';
-    btn.textContent = '✅ Concluir conserto';
-    if(confSection) confSection.style.display = 'block';
-
-  } else if(status === 'pronto') {
-    badge.className = 'od-status-badge status-pronto';
-    badge.textContent = '✅ Pronto · aguardando entrega';
-    btn.className = 'od-action-btn od-action-finalizar';
-    btn.style.background = '#075E54';
-    btn.textContent = '📲 Entregar e enviar WhatsApp';
-    if(confSection) confSection.style.display = 'block';
+function openOS_from_panel(num) {
+  const os=osList.find(o=>o.num===num);if(os)loadOSToEntrega(os);
+}
+function loadOSToEntrega(os) {
+  currentOSId=os.num;
+  document.getElementById('od-os-num').textContent=os.id+' · Aberta há '+formatTime(os.createdAt)+' · '+os.model;
+  document.getElementById('od-client-name').textContent=os.clientName;
+  document.getElementById('od-model-chip').textContent='📱 '+os.model;
+  const waEl=document.getElementById('od-wa-display');if(waEl)waEl.innerHTML='💬 '+(os.clientWA||'—');
+  const thumb=document.getElementById('od-photo-thumb');
+  if(thumb){thumb.style.display=os.photo?'block':'none';if(os.photo)thumb.src=os.photo;}
+  const chips=document.getElementById('od-chips');
+  if(chips){
+    let html='';
+    if(os.diagnosis&&os.diagnosis.length){os.diagnosis.forEach(d=>{html+=`<span class="od-chip ck-${d.ok?'ok':'fail'}">${d.label} ${d.ok?'✓':'✗'}</span>`;});}
+    else{html='<span class="od-chip" style="background:var(--g100);color:var(--muted);">Sem diagnóstico</span>';}
+    html+=`<span class="od-chip ck-${(os.battery||0)<80?'fail':'ok'}">🔋 ${os.battery||'?'}%</span>`;
+    chips.innerHTML=html;
   }
-
+  const svcsDiv=document.getElementById('od-svcs');
+  if(svcsDiv&&os.services){
+    svcsDiv.innerHTML=os.services.map(s=>`<div class="od-svc-row"><div class="od-svc-nm">${s.nm}</div><div class="od-svc-pr">R$ ${s.price.toLocaleString('pt-BR')}</div></div>`).join('')+
+      `<div class="od-total-row"><div class="od-total-nm">Total</div><div class="od-total-pr">R$ ${os.total.toLocaleString('pt-BR')}</div></div>`;
+  }
+  updateEntregaStatus(os.status);buildWAMessage(os);
   document.getElementById('odWrap').classList.add('show');
-  goTo('entrega', document.getElementById('nb-entrega'));
-  document.getElementById('content').scrollTop = 0;
+  goTo('entrega',document.getElementById('nb-entrega'));document.getElementById('content').scrollTop=0;
+}
+function updateEntregaStatus(status) {
+  const badge=document.getElementById('od-status-badge'),btn=document.getElementById('od-action-btn'),conf=document.getElementById('conf-section');
+  btn.style.background='';btn.disabled=false;
+  if(status==='fila'){badge.className='od-status-badge status-fila';badge.textContent='⏳ Aguardando técnico';btn.className='od-action-btn od-action-pegar';btn.textContent='🔧 Pegar este serviço';if(conf)conf.style.display='none';}
+  else if(status==='conserto'){badge.className='od-status-badge status-conserto';badge.textContent='🔧 Em conserto';btn.className='od-action-btn od-action-finalizar';btn.textContent='✅ Concluir conserto';if(conf)conf.style.display='block';}
+  else if(status==='pronto'){badge.className='od-status-badge status-pronto';badge.textContent='✅ Pronto · aguardando entrega';btn.className='od-action-btn od-action-finalizar';btn.style.background='#075E54';btn.textContent='📲 Entregar e enviar WhatsApp';if(conf)conf.style.display='block';}
+  else if(status==='entregue'){badge.className='od-status-badge status-pronto';badge.textContent='✅ Entregue';btn.className='od-action-btn';btn.style.background='var(--mid)';btn.textContent='✓ OS Concluída';btn.disabled=true;if(conf)conf.style.display='none';}
 }
 
 function handleOSAction() {
-  const btn = document.getElementById('od-action-btn');
-  const badge = document.getElementById('od-status-badge');
-  const confSection = document.getElementById('conf-section');
-
-  if(btn.textContent.includes('Pegar')) {
-    if(role === 'atendente') {
-      if(!confirm('⚠️ Esta ação é para técnicos.\nConfirma que vai iniciar o conserto?')) return;
-    }
-    badge.className = 'od-status-badge status-conserto';
-    badge.textContent = '🔧 Em conserto · iniciado agora';
-    btn.className = 'od-action-btn od-action-finalizar';
-    btn.textContent = '✅ Concluir conserto';
-    if(confSection) confSection.style.display = 'block';
-
-  } else if(btn.textContent.includes('Concluir')) {
-    badge.className = 'od-status-badge status-pronto';
-    badge.textContent = '✅ Pronto · aguardando entrega';
-    btn.style.background = '#075E54';
-    btn.textContent = '📲 Entregar e enviar WhatsApp';
-
-  } else {
-    finishOS();
-  }
+  const btn=document.getElementById('od-action-btn');
+  const os=currentOSId?osList.find(o=>o.num===currentOSId):null;
+  if(btn.textContent.includes('Pegar')){
+    if(role==='atendente'){if(!confirm('⚠️ Esta ação é para técnicos.\nConfirmar?'))return;}
+    const selTechEl=document.querySelector('.tech-chip.sel');
+    if(os){os.status='conserto';os.tecnico=selTechEl?selTechEl.textContent:null;os.updatedAt=Date.now();persistOS();}
+    updateEntregaStatus('conserto');renderPainel();
+  } else if(btn.textContent.includes('Concluir')){
+    if(os){os.status='pronto';os.updatedAt=Date.now();persistOS();}
+    updateEntregaStatus('pronto');renderPainel();
+  } else {finishOS();}
 }
 
 // ─── WHATSAPP ───
-function waCount() {
-  const len = document.getElementById('waMsg').value.length;
-  document.getElementById('waChar').textContent = len + ' / 500';
+function buildWAMessage(os) {
+  const svcsText=os.services?os.services.map(s=>s.nm).join(' + '):'—';
+  const msg=`Olá, ${os.clientName.split(' ')[0]}! 👋\n\nSeu ${os.model} está pronto para retirada! ✅\n\n🔧 Serviços: ${svcsText}\n💰 Total: R$ ${os.total.toLocaleString('pt-BR')}\n⏱ Tempo: ${formatTime(os.createdAt)}\n\n🛡 Garantia inclusa.\n\nEstamos no Shopping Oriental, Loja 120.\nUma Hora Assistência Técnica 🔵🔴`;
+  const el=document.getElementById('waMsg');if(el){el.value=msg;waCount();}
+  const hd=document.querySelector('.wa-hd-text');if(hd)hd.textContent='WhatsApp · '+os.clientName;
 }
-function resetWA() { document.getElementById('waMsg').value = WA_DEFAULT; waCount(); }
+function waCount(){const len=document.getElementById('waMsg').value.length;document.getElementById('waChar').textContent=len+' / 500';}
+function resetWA(){const os=currentOSId?osList.find(o=>o.num===currentOSId):null;if(os)buildWAMessage(os);}
 
 // ─── FINISH OS ───
 function finishOS() {
-  const btn = document.getElementById('finBtn');
-  btn.textContent = '✅ Enviado! Cliente notificado.';
-  btn.style.background = 'var(--green)';
-  setTimeout(() => {
-    btn.innerHTML = '<span>📲</span> Finalizar e Enviar WhatsApp';
-    btn.style.background = '';
-    goTo('painel', document.getElementById('nb-painel'));
-  }, 2200);
+  const btn=document.getElementById('finBtn');
+  const os=currentOSId?osList.find(o=>o.num===currentOSId):null;
+  if(os&&os.clientWA){const wa=os.clientWA.replace(/\D/g,'');const msg=encodeURIComponent(document.getElementById('waMsg').value);window.open('https://wa.me/'+wa+'?text='+msg,'_blank');}
+  if(os){os.status='entregue';os.updatedAt=Date.now();persistOS();}
+  btn.textContent='✅ Enviado! Cliente notificado.';btn.style.background='var(--green)';
+  setTimeout(()=>{btn.innerHTML='<span>📲</span> Finalizar e Enviar WhatsApp';btn.style.background='';document.getElementById('odWrap').classList.remove('show');currentOSId=null;goTo('painel',document.getElementById('nb-painel'));},2200);
 }
+
+// ─── PRICES EDITOR ───
+function openPricesEditor(){document.getElementById('pricesOverlay').classList.add('show');document.getElementById('pricesSheet').style.display='block';renderPricesEditor(document.getElementById('priceModelSel').value);}
+function closePricesEditor(){document.getElementById('pricesOverlay').classList.remove('show');document.getElementById('pricesSheet').style.display='none';buildServices();}
+function renderPricesEditor(model) {
+  const cont=document.getElementById('pricesEditorItems');cont.innerHTML='';
+  SVCS.forEach(cat=>{
+    const hd=document.createElement('div');hd.className='svc-cat';hd.style.pointerEvents='none';hd.textContent=cat.cat;cont.appendChild(hd);
+    cat.items.forEach(item=>{
+      const price=getModelPrice(model,item.nm,item.price);
+      const row=document.createElement('div');
+      row.style.cssText='display:flex;align-items:center;padding:10px 4px;border-bottom:1px solid var(--border);gap:8px;';
+      row.innerHTML=`<div style="flex:1;font-size:13px;font-weight:600;color:var(--text);">${item.nm}</div><span style="font-size:12px;color:var(--muted);">R$</span><input type="number" min="0" max="9999" value="${price}" style="width:72px;background:var(--g100);border:1.5px solid var(--border);border-radius:8px;padding:6px;font-size:13px;font-weight:700;text-align:center;font-family:var(--sans);outline:none;color:var(--text);" onchange="updateModelPrice('${model.replace(/'/g,'&#39;')}','${item.nm.replace(/'/g,'&#39;')}',this.value)" onfocus="this.select()">`;
+      cont.appendChild(row);
+    });
+  });
+}
+function updateModelPrice(model,svcNm,value){if(!modelPrices[model])modelPrices[model]={};modelPrices[model][svcNm]=Math.max(0,parseInt(value)||0);persistPrices();}
+function changePriceModel(){renderPricesEditor(document.getElementById('priceModelSel').value);}
+function resetModelPrices(){const m=document.getElementById('priceModelSel').value;if(confirm('Resetar preços do '+m+' para padrão?')){delete modelPrices[m];persistPrices();renderPricesEditor(m);}}
 
 // ─── SHARE PANEL ───
 function sharePanel() {
@@ -1444,10 +1601,13 @@ function sharePanel() {
 function rkPeriod(btn, period) { btn.closest('.rk-period').querySelectorAll('button').forEach(b => b.classList.remove('on')); btn.classList.add('on'); }
 
 // ─── INIT ───
+loadStorage();
 batSync('range');
 buildServices();
 waCount();
 applyRole();
+renderPainel();
+renderArchivedCount();
   // Fix iOS scroll on input focus
 document.querySelectorAll('input, select, textarea').forEach(el => {
   el.addEventListener('focus', function(e) {
