@@ -1801,47 +1801,52 @@ function updateEntregaStatus(status) {
 }
 
 function handleOSAction() {
-  const btn=document.getElementById('od-action-btn');
   const os=currentOSId?osList.find(o=>o.num===currentOSId):null;
+  if(!os)return;
+  const btn=document.getElementById('od-action-btn');
 
-  if(btn.textContent.includes('Pegar')){
+  // Usa os.status do localStorage — imune a bug de texto de botão
+  if(os.status==='fila'){
     if(role==='atendente'){alert('⚠️ Apenas técnicos podem pegar serviços.');return;}
     const selTechEl=document.querySelector('.tech-chip.sel');
-    if(os){os.status='conserto';os.tecnico=selTechEl?selTechEl.textContent:(currentUserName||null);os.updatedAt=Date.now();persistOS();}
+    os.status='conserto';os.tecnico=selTechEl?selTechEl.textContent:(currentUserName||null);os.updatedAt=Date.now();persistOS();
     btn.textContent='✅ Serviço pego!';btn.style.background='var(--green)';btn.disabled=true;
     renderPainel();
     setTimeout(()=>goTo('painel',document.getElementById('nb-painel')),1200);
 
-  } else if(btn.textContent.includes('Concluir')){
+  } else if(os.status==='conserto'){
     if(role==='atendente'){alert('⚠️ Apenas técnicos podem finalizar consertos.');return;}
-    if(os){os.status='pronto';os.updatedAt=Date.now();persistOS();}
-    if(os&&os.clientWA){
+    os.status='pronto';os.updatedAt=Date.now();persistOS();
+    if(os.clientWA){
       const wa=os.clientWA.replace(/\D/g,'');
       const waEl=document.getElementById('waMsg');
-      const msg=encodeURIComponent(waEl?waEl.value:'');
-      window.open('https://wa.me/'+wa+'?text='+msg,'_blank');
+      window.open('https://wa.me/'+wa+'?text='+encodeURIComponent(waEl?waEl.value:''),'_blank');
     }
     btn.textContent='✅ Cliente notificado!';btn.style.background='var(--green)';btn.disabled=true;
     renderPainel();
     setTimeout(()=>goTo('painel',document.getElementById('nb-painel')),1500);
 
-  } else if(btn.textContent.includes('Confirmar')||btn.textContent.includes('Entregar')){
+  } else if(os.status==='pronto'){
     if(role==='tecnico'){alert('⚠️ Apenas atendentes podem fazer a entrega.');return;}
     finishOS();
+
+  } else if(os.status==='entregue'){
+    // já entregue — só volta ao painel
+    goTo('painel',document.getElementById('nb-painel'));
   }
 }
 
 function handleFinBtn() {
   const os=currentOSId?osList.find(o=>o.num===currentOSId):null;
   if(!os)return;
+  // Usa os.status — mesma lógica robusta do handleOSAction
   if(os.status==='conserto'){
     if(role==='atendente'){alert('⚠️ Apenas técnicos podem finalizar consertos.');return;}
     os.status='pronto';os.updatedAt=Date.now();persistOS();
     if(os.clientWA){
       const wa=os.clientWA.replace(/\D/g,'');
       const waEl=document.getElementById('waMsg');
-      const msg=encodeURIComponent(waEl?waEl.value:'');
-      window.open('https://wa.me/'+wa+'?text='+msg,'_blank');
+      window.open('https://wa.me/'+wa+'?text='+encodeURIComponent(waEl?waEl.value:''),'_blank');
     }
     const btn=document.getElementById('finBtn');
     if(btn){btn.innerHTML='✅ Pronto! Cliente notificado.';btn.style.background='var(--green)';}
