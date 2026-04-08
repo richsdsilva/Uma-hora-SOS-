@@ -374,7 +374,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .bar-row .bv{font-size:12px;font-weight:800;width:30px;text-align:right;flex-shrink:0;}
 
 /* ─── PERFIL / RANKING ─── */
-.profile-hero{background:linear-gradient(135deg,var(--red),var(--red-d));margin:14px 16px 0;border-radius:16px;padding:18px;color:#fff;box-shadow:0 4px 20px rgba(212,31,31,.3);}
+.profile-hero{background:linear-gradient(135deg,var(--red),var(--red-d));margin:14px 16px 0;border-radius:16px;padding:18px;color:#fff;box-shadow:0 4px 20px rgba(212,31,31,.3);position:relative;}
 .ph-top{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
 .ph-avatar{width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
 .ph-info .ph-name{font-size:18px;font-weight:800;}
@@ -445,6 +445,35 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .pr-badge{font-size:9px;font-weight:800;padding:2px 7px;border-radius:8px;text-transform:uppercase;}
 .pb-c{background:var(--green-s);color:var(--green);}
 .pb-p{background:var(--orange-s);color:var(--orange);}
+
+/* ─── ENTREGA EMPTY STATE ─── */
+.entrega-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:65vh;padding:32px;text-align:center;}
+.entrega-big-input{font-size:36px;font-weight:800;text-align:center;border:none;border-bottom:3px solid var(--border);background:transparent;outline:none;font-family:var(--sans);color:var(--text);width:100%;max-width:220px;letter-spacing:4px;padding-bottom:8px;transition:border-color .2s;}
+.entrega-big-input::placeholder{color:var(--border);font-size:22px;font-weight:400;letter-spacing:1px;}
+.entrega-big-input:focus{border-bottom-color:var(--red);}
+
+/* ─── PROOF SECTION ─── */
+.proof-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;}
+.proof-zone{height:90px;background:var(--g100);border-radius:12px;border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;position:relative;transition:.15s;}
+.proof-zone:active{opacity:.7;}
+.proof-zone img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.proof-ok{border-color:var(--green);background:var(--green-s);}
+
+/* ─── PROFILE TOP-SHEET MODAL ─── */
+.top-sheet{position:fixed;top:0;left:50%;transform:translateX(-50%) translateY(-120%);width:100%;max-width:430px;background:white;border-radius:0 0 24px 24px;z-index:400;padding-top:calc(var(--sat) + 8px);transition:transform .32s cubic-bezier(.4,0,.2,1);box-shadow:0 8px 40px rgba(0,0,0,.25);}
+.top-sheet.show{transform:translateX(-50%) translateY(0);}
+.ts-pad{padding:4px 20px 24px;}
+.ts-title{font-size:15px;font-weight:800;margin-bottom:16px;}
+.ts-field{margin-bottom:14px;}
+.ts-lbl{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:5px;}
+.ts-inp{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-size:14px;font-weight:600;font-family:var(--sans);outline:none;color:var(--text);background:#fff;-webkit-appearance:none;}
+.ts-inp:focus{border-color:var(--blue);}
+
+/* ─── HISTORY CARD ─── */
+.hist-row{display:flex;align-items:center;justify-content:space-between;padding:12px 15px;border-bottom:1px solid var(--border);}
+.hist-row:last-child{border-bottom:none;}
+.hist-lbl{font-size:13px;font-weight:600;color:var(--mid);}
+.hist-val{font-size:16px;font-weight:800;color:var(--text);}
 </style>
 </head>
 <body>
@@ -675,18 +704,17 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
     ══════════════════════════════════════ -->
     <div class="screen" id="screen-entrega">
 
-      <div class="sec">
-        <div class="sec-title">Buscar Ordem de Serviço</div>
-        <div class="search-card">
-          <div class="search-row">
-            <div class="search-ico">🔍</div>
-            <input class="search-input" type="text" placeholder="Número da OS ou nome do cliente..." id="osSearch">
-            <button class="search-btn" onclick="doSearch()">Buscar</button>
-          </div>
-        </div>
+      <!-- ESTADO INICIAL: apenas input centralizado -->
+      <div id="entregaEmpty" class="entrega-empty">
+        <div style="font-size:48px;margin-bottom:10px;">📦</div>
+        <div style="font-size:15px;font-weight:700;color:var(--mid);margin-bottom:6px;">Buscar OS</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:28px;">Digite o número do adesivo</div>
+        <input class="entrega-big-input" id="osSearch" type="text" inputmode="numeric" placeholder="0000" onkeydown="if(event.key==='Enter')doSearch()">
+        <button class="cta" style="margin-top:28px;max-width:220px;background:var(--red);box-shadow:0 4px 16px rgba(212,31,31,.3);" onclick="doSearch()">🔍 Buscar</button>
       </div>
 
-      <div class="sec od-wrap show" id="odWrap">
+      <!-- DADOS DA OS (oculto até busca) -->
+      <div class="sec od-wrap" id="odWrap">
         <div class="od-card">
           <!-- Header OS -->
           <div class="od-hd">
@@ -756,7 +784,8 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
         </div>
       </div>
 
-      <!-- WhatsApp EDITÁVEL -->
+      <!-- WhatsApp — visível apenas status CONSERTO -->
+      <div id="waSection" style="display:none;">
       <div class="sec">
         <div class="sec-title">Mensagem para o Cliente</div>
         <div class="wa-preview">
@@ -782,9 +811,37 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
           <div class="wa-footer"><span class="wa-char" id="waChar">0 / 500</span></div>
         </div>
       </div>
+      </div><!-- /waSection -->
+
+      <!-- Registro de Entrega — visível apenas status PRONTO -->
+      <div id="proofSection" style="display:none;">
+      <div class="sec">
+        <div class="sec-title">Registro de Entrega</div>
+        <div class="card" style="padding:14px 15px;">
+          <div class="proof-grid">
+            <div>
+              <div style="font-size:10px;font-weight:600;color:var(--muted);margin-bottom:6px;">📱 Aparelho pronto</div>
+              <div class="proof-zone" id="proofZone1" onclick="document.getElementById('proofInput1').click()">
+                <img id="proofThumb1" style="display:none;" src="">
+                <span id="proofIcon1" style="font-size:22px;">📷</span>
+              </div>
+              <input type="file" id="proofInput1" accept="image/*" capture="environment" style="display:none" onchange="handleProofPhoto(this,1)">
+            </div>
+            <div>
+              <div style="font-size:10px;font-weight:600;color:var(--muted);margin-bottom:6px;">💳 Comprovante PIX</div>
+              <div class="proof-zone" id="proofZone2" onclick="document.getElementById('proofInput2').click()">
+                <img id="proofThumb2" style="display:none;" src="">
+                <span id="proofIcon2" style="font-size:22px;">💳</span>
+              </div>
+              <input type="file" id="proofInput2" accept="image/*" capture="environment" style="display:none" onchange="handleProofPhoto(this,2)">
+            </div>
+          </div>
+        </div>
+      </div>
+      </div><!-- /proofSection -->
 
       <div class="cta-wrap">
-        <button class="finish-btn" id="finBtn" onclick="finishOS()">
+        <button class="finish-btn" id="finBtn" onclick="handleFinBtn()" style="display:none;">
           <span>📲</span> Finalizar e Enviar WhatsApp
         </button>
       </div>
@@ -797,53 +854,22 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
     <div class="screen" id="screen-resultados">
 
       <div class="sec">
-        <div class="results-summary">
-          <div class="rs-card"><div class="rs-num" style="color:var(--red)">R$18.240</div><div class="rs-lbl">Faturado hoje</div></div>
-          <div class="rs-card"><div class="rs-num" style="color:var(--green)">82</div><div class="rs-lbl">OS entregues</div></div>
-          <div class="rs-card"><div class="rs-num" style="color:var(--blue)">43min</div><div class="rs-lbl">Tempo médio</div></div>
-          <div class="rs-card"><div class="rs-num" style="color:var(--orange)">3</div><div class="rs-lbl">Retrabalhos</div></div>
+        <div class="results-summary" style="grid-template-columns:repeat(2,1fr);">
+          <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-faturado" style="color:var(--red)">R$0</div><div class="rs-lbl">Faturado hoje</div></div>
+          <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-os" style="color:var(--green)">0</div><div class="rs-lbl">OS entregues</div></div>
+          <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-tempo" style="color:var(--blue)">—</div><div class="rs-lbl">Tempo médio</div></div>
+          <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-retrab" style="color:var(--orange)">0</div><div class="rs-lbl">Retrabalhos</div></div>
+          <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-extra" style="color:var(--purple)">R$0</div><div class="rs-lbl">Extra</div></div>
+          <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-ticket" style="color:var(--gold)">—</div><div class="rs-lbl">Ticket Médio</div></div>
+          <div class="rs-card" style="text-align:center;grid-column:span 2;"><div class="rs-num" id="res-taxa" style="color:var(--blue)">0%</div><div class="rs-lbl">Taxa de Aprovação</div></div>
         </div>
       </div>
 
       <div class="sec">
         <div class="sec-title">OS por Técnico — Hoje</div>
         <div class="chart-wrap">
-          <div class="bar-chart">
-            <div class="bar-row">
-              <div class="bar-label">Wei Zhang</div>
-              <div class="bar-track"><div class="bar-fill" style="width:85%;background:var(--red)"><span class="bar-val">34</span></div></div>
-              <div class="bv" style="color:var(--red)">34</div>
-            </div>
-            <div class="bar-row">
-              <div class="bar-label">Li Chen</div>
-              <div class="bar-track"><div class="bar-fill" style="width:65%;background:var(--blue)"><span class="bar-val">26</span></div></div>
-              <div class="bv" style="color:var(--blue)">26</div>
-            </div>
-            <div class="bar-row">
-              <div class="bar-label">Juan Park</div>
-              <div class="bar-track"><div class="bar-fill" style="width:55%;background:var(--orange)"><span class="bar-val">22</span></div></div>
-              <div class="bv" style="color:var(--orange)">22</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="sec">
-        <div class="sec-title">Tempo médio por técnico</div>
-        <div class="chart-wrap">
-          <div class="bar-chart">
-            <div class="bar-row">
-              <div class="bar-label">Wei Zhang</div>
-              <div class="bar-track"><div class="bar-fill" style="width:40%;background:var(--green)"><span class="bar-val">38min</span></div></div>
-            </div>
-            <div class="bar-row">
-              <div class="bar-label">Juan Park</div>
-              <div class="bar-track"><div class="bar-fill" style="width:50%;background:var(--green)"><span class="bar-val">43min</span></div></div>
-            </div>
-            <div class="bar-row">
-              <div class="bar-label">Li Chen</div>
-              <div class="bar-track"><div class="bar-fill" style="width:62%;background:var(--orange)"><span class="bar-val">54min</span></div></div>
-            </div>
+          <div class="bar-chart" id="techOSChart">
+            <div style="text-align:center;padding:12px;font-size:13px;color:var(--muted);">Nenhum dado hoje ainda</div>
           </div>
         </div>
       </div>
@@ -852,16 +878,23 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
         <div class="sec-title">Pagamentos do Dia</div>
         <div class="fin-hero" style="margin:0 0 10px;">
           <div class="fh-lbl">Faturado hoje</div>
-          <div class="fh-val">R$ 18.240</div>
+          <div class="fh-val" id="res-faturado2">R$ 0</div>
           <div class="fh-row">
-            <div><div class="fm-lbl">Pendente</div><div class="fm-val">R$ 2.890</div></div>
-            <div style="text-align:right"><div class="fm-lbl">Líquido</div><div class="fm-val">R$ 15.350</div></div>
+            <div><div class="fm-lbl">Entregues</div><div class="fm-val" id="res-os2">0</div></div>
+            <div style="text-align:right"><div class="fm-lbl">Ticket médio</div><div class="fm-val" id="res-ticket2">—</div></div>
           </div>
         </div>
-        <div class="pix-list">
-          <div class="pr"><div class="pr-ico ico-c">✅</div><div class="pr-info"><div class="pr-os">#OS-2831</div><div class="pr-name">Carlos Mendes</div><div class="pr-det">Tela · Wei Zhang</div></div><div class="pr-right"><div class="pr-val">R$ 610</div><div class="pr-badge pb-c">Pago</div></div></div>
-          <div class="pr"><div class="pr-ico ico-p">⏳</div><div class="pr-info"><div class="pr-os">#OS-2844</div><div class="pr-name">Rafael Lima</div><div class="pr-det">Bateria · Li Chen</div></div><div class="pr-right"><div class="pr-val">R$ 220</div><div class="pr-badge pb-p">Pendente</div></div></div>
-          <div class="pr"><div class="pr-ico ico-c">✅</div><div class="pr-info"><div class="pr-os">#OS-2820</div><div class="pr-name">Fernanda Costa</div><div class="pr-det">Tela + câmera · Li Chen</div></div><div class="pr-right"><div class="pr-val">R$ 750</div><div class="pr-badge pb-c">Pago</div></div></div>
+        <div class="pix-list" id="paymentsList">
+          <div class="bs-empty">Nenhuma entrega hoje ainda</div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-title">Tempo médio por técnico</div>
+        <div class="chart-wrap">
+          <div class="bar-chart" id="techAvgChart">
+            <div style="text-align:center;padding:12px;font-size:13px;color:var(--muted);">Nenhum dado hoje ainda</div>
+          </div>
         </div>
       </div>
 
@@ -872,18 +905,19 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
     ══════════════════════════════════════ -->
     <div class="screen" id="screen-perfil">
 
-      <div class="profile-hero">
+      <div class="profile-hero" onclick="openProfileEdit()" style="cursor:pointer;">
+        <div style="position:absolute;top:12px;right:14px;background:rgba(255,255,255,.2);border-radius:8px;padding:3px 8px;font-size:10px;font-weight:700;color:#fff;">✏️ Editar</div>
         <div class="ph-top">
           <div class="ph-avatar">👤</div>
           <div class="ph-info">
-            <div class="ph-name" id="profileName">Wei Zhang</div>
-            <div class="ph-role" id="profileRole">Técnico · Turno manhã</div>
+            <div class="ph-name" id="profileName">Usuário</div>
+            <div class="ph-role" id="profileRole">Toque para editar</div>
           </div>
         </div>
         <div class="ph-stats">
-          <div class="ph-stat"><div class="phsv">34</div><div class="phsl">Check-outs</div></div>
-          <div class="ph-stat"><div class="phsv">38min</div><div class="phsl">Tempo médio</div></div>
-          <div class="ph-stat"><div class="phsv">1</div><div class="phsl">Retrabalhos</div></div>
+          <div class="ph-stat"><div class="phsv" id="ph-os">0</div><div class="phsl">OS hoje</div></div>
+          <div class="ph-stat"><div class="phsv" id="ph-tempo">—</div><div class="phsl">Tempo médio</div></div>
+          <div class="ph-stat"><div class="phsv" id="ph-retrab">0</div><div class="phsl">Retrabalhos</div></div>
         </div>
       </div>
 
@@ -934,6 +968,23 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
         </div>
       </div>
 
+      <!-- MEU HISTÓRICO -->
+      <div class="sec">
+        <div class="sec-title">Meu Histórico</div>
+        <div class="card" id="myHistorico">
+          <div class="hist-row"><span class="hist-lbl">OS atendidas</span><span class="hist-val">—</span></div>
+        </div>
+      </div>
+
+      <!-- EQUIPE -->
+      <div class="sec" id="equipeSection">
+        <div class="sec-title">Equipe — Técnicos</div>
+        <div class="ranking-card">
+          <div class="rk-hd"><div class="rk-title">🔧 Por OS finalizadas</div></div>
+          <div id="equipe-tecnicos"><div class="bs-empty">Nenhum dado ainda</div></div>
+        </div>
+      </div>
+
       <!-- PREÇOS (só dono vê) -->
       <div class="sec" id="pricesSection">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
@@ -976,6 +1027,30 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
     </div>
 
   </div><!-- /content -->
+
+  <!-- PROFILE EDIT MODAL (slide from top) -->
+  <div class="modal-overlay" id="profileEditOverlay" onclick="closeProfileEdit()"></div>
+  <div class="top-sheet" id="profileEditSheet">
+    <div class="ts-pad">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-top:8px;">
+        <div class="ts-title">✏️ Editar Perfil</div>
+        <button class="bs-close" onclick="closeProfileEdit()">✕</button>
+      </div>
+      <div class="ts-field">
+        <div class="ts-lbl">Nome</div>
+        <input class="ts-inp" id="editProfileName" type="text" placeholder="Seu nome">
+      </div>
+      <div class="ts-field">
+        <div class="ts-lbl">Função</div>
+        <select class="ts-inp" id="editProfileRole">
+          <option value="dono">👑 Dono</option>
+          <option value="atendente">🧑‍💼 Atendente</option>
+          <option value="tecnico">🔧 Técnico</option>
+        </select>
+      </div>
+      <button onclick="saveProfileEdit()" style="width:100%;background:var(--blue);color:#fff;border:none;border-radius:12px;height:46px;font-family:var(--sans);font-size:14px;font-weight:800;cursor:pointer;">✓ Salvar</button>
+    </div>
+  </div>
 
   <!-- ARCHIVED MODAL -->
   <div class="modal-overlay" id="archivedOverlay" onclick="closeArchived()"></div>
@@ -1044,6 +1119,7 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
 <script>
 // ─── STATE ───
 let role = 'dono';
+let currentUserName = localStorage.getItem('1hora_username') || '';
 let selectedSvcs = [];
 let currentPhotoData = null;
 let currentOSId = null;
@@ -1118,6 +1194,24 @@ function goTo(tab, btn) {
   if(btn) btn.classList.add('on');
   document.getElementById('content').scrollTop = 0;
   if(tab==='painel') renderPainel();
+  if(tab==='entrega') resetEntrega();
+  if(tab==='resultados') renderResultados();
+  if(tab==='perfil') { renderHistorico(); renderEquipe(); }
+}
+
+function resetEntrega() {
+  const empty=document.getElementById('entregaEmpty');
+  const wrap=document.getElementById('odWrap');
+  const waSection=document.getElementById('waSection');
+  const proofSection=document.getElementById('proofSection');
+  const finBtn=document.getElementById('finBtn');
+  if(empty)empty.style.display='flex';
+  if(wrap)wrap.classList.remove('show');
+  if(waSection)waSection.style.display='none';
+  if(proofSection)proofSection.style.display='none';
+  if(finBtn)finBtn.style.display='none';
+  const srch=document.getElementById('osSearch');if(srch)srch.value='';
+  currentOSId=null;
 }
 
 // ─── ROLE ───
@@ -1138,24 +1232,21 @@ function applyRole() {
   const nbRes=document.getElementById('nb-resultados'),nbEnt=document.getElementById('nb-entrada');
   const pricesSec=document.getElementById('pricesSection'),switchSec=document.getElementById('switchProfileSection');
   ['Dono','Atendente','Tecnico'].forEach(r=>{const el=document.getElementById('sel'+r);if(el)el.style.opacity='0';});
+  const roleLabels={dono:'Dono · Acesso completo',atendente:'Atendente · Entrada e Entrega',tecnico:'Técnico · Conserto e Entrega'};
+  const nm=currentUserName||{dono:'Administrador',atendente:'Atendente',tecnico:'Técnico'}[role];
+  document.getElementById('profileName').textContent=nm;
+  document.getElementById('profileRole').textContent=roleLabels[role]||role;
   if(role==='dono'){
     chip.textContent='👑 Dono';nbRes.classList.remove('locked');nbEnt.classList.remove('locked');
     document.getElementById('selDono').style.opacity='1';
-    document.getElementById('profileName').textContent='Administrador';
-    document.getElementById('profileRole').textContent='Dono · Acesso completo';
     if(pricesSec)pricesSec.style.display='block';if(switchSec)switchSec.style.display='block';
   } else if(role==='atendente'){
     chip.textContent='🧑‍💼 Atendente';nbRes.classList.add('locked');nbEnt.classList.remove('locked');
     document.getElementById('selAtendente').style.opacity='1';
-    document.getElementById('profileName').textContent='Atendente';
-    document.getElementById('profileRole').textContent='Atendente · Entrada e Entrega';
     if(pricesSec)pricesSec.style.display='none';
-    goTo('entrada',document.getElementById('nb-entrada'));
   } else {
     chip.textContent='🔧 Técnico';nbRes.classList.add('locked');nbEnt.classList.add('locked');
     document.getElementById('selTecnico').style.opacity='1';
-    document.getElementById('profileName').textContent='Técnico';
-    document.getElementById('profileRole').textContent='Técnico · Conserto e Entrega';
     if(pricesSec)pricesSec.style.display='none';
     goTo('painel',document.getElementById('nb-painel'));
   }
@@ -1577,30 +1668,151 @@ function loadOSToEntrega(os) {
       `<div class="od-total-row"><div class="od-total-nm">Total</div><div class="od-total-pr">R$ ${os.total.toLocaleString('pt-BR')}</div></div>`;
   }
   updateEntregaStatus(os.status);buildWAMessage(os);
+  // Resetar proofs
+  ['1','2'].forEach(n=>{
+    const t=document.getElementById('proofThumb'+n);const ic=document.getElementById('proofIcon'+n);const z=document.getElementById('proofZone'+n);
+    if(t){t.style.display='none';t.src='';}if(ic)ic.style.display='';if(z)z.classList.remove('proof-ok');
+  });
+  // Mostrar tela sem resetar estado
+  document.getElementById('entregaEmpty').style.display='none';
   document.getElementById('odWrap').classList.add('show');
-  goTo('entrega',document.getElementById('nb-entrega'));document.getElementById('content').scrollTop=0;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('screen-entrega').classList.add('on');
+  document.getElementById('nb-entrega').classList.add('on');
+  document.getElementById('content').scrollTop=0;
 }
 function updateEntregaStatus(status) {
-  const badge=document.getElementById('od-status-badge'),btn=document.getElementById('od-action-btn'),conf=document.getElementById('conf-section');
+  const badge=document.getElementById('od-status-badge');
+  const btn=document.getElementById('od-action-btn');
+  const conf=document.getElementById('conf-section');
+  const waSection=document.getElementById('waSection');
+  const proofSection=document.getElementById('proofSection');
+  const finBtn=document.getElementById('finBtn');
   btn.style.background='';btn.disabled=false;
-  if(status==='fila'){badge.className='od-status-badge status-fila';badge.textContent='⏳ Aguardando técnico';btn.className='od-action-btn od-action-pegar';btn.textContent='🔧 Pegar este serviço';if(conf)conf.style.display='none';}
-  else if(status==='conserto'){badge.className='od-status-badge status-conserto';badge.textContent='🔧 Em conserto';btn.className='od-action-btn od-action-finalizar';btn.textContent='✅ Concluir conserto';if(conf)conf.style.display='block';}
-  else if(status==='pronto'){badge.className='od-status-badge status-pronto';badge.textContent='✅ Pronto · aguardando entrega';btn.className='od-action-btn od-action-finalizar';btn.style.background='#075E54';btn.textContent='📲 Entregar e enviar WhatsApp';if(conf)conf.style.display='block';}
-  else if(status==='entregue'){badge.className='od-status-badge status-pronto';badge.textContent='✅ Entregue';btn.className='od-action-btn';btn.style.background='var(--mid)';btn.textContent='✓ OS Concluída';btn.disabled=true;if(conf)conf.style.display='none';}
+  if(waSection)waSection.style.display='none';
+  if(proofSection)proofSection.style.display='none';
+  if(finBtn)finBtn.style.display='none';
+
+  if(status==='fila'){
+    badge.className='od-status-badge status-fila';badge.textContent='⏳ Aguardando técnico';
+    if(conf)conf.style.display='none';
+    if(role==='atendente'){
+      btn.className='od-action-btn';btn.style.background='var(--mid)';
+      btn.textContent='⏳ Aguardando técnico';btn.disabled=true;
+    } else {
+      btn.className='od-action-btn od-action-pegar';btn.textContent='🔧 Pegar este serviço';
+    }
+
+  } else if(status==='conserto'){
+    badge.className='od-status-badge status-conserto';badge.textContent='🔧 Em conserto';
+    if(conf)conf.style.display='block';
+    if(role==='atendente'){
+      btn.className='od-action-btn';btn.style.background='var(--mid)';
+      btn.textContent='🔧 Em andamento pelo técnico';btn.disabled=true;
+    } else {
+      btn.className='od-action-btn od-action-finalizar';btn.textContent='✅ Concluir conserto';
+      if(waSection)waSection.style.display='block';
+      if(finBtn){finBtn.style.display='flex';finBtn.innerHTML='<span>📲</span> Concluir e Notificar Cliente';finBtn.style.background='#075E54';finBtn.style.boxShadow='0 4px 16px rgba(7,94,84,.3)';}
+    }
+
+  } else if(status==='pronto'){
+    badge.className='od-status-badge status-pronto';badge.textContent='✅ Pronto · aguardando entrega';
+    if(conf)conf.style.display='block';
+    if(role==='tecnico'){
+      btn.className='od-action-btn';btn.style.background='var(--mid)';
+      btn.textContent='✅ Pronto · aguardando atendente';btn.disabled=true;
+    } else {
+      btn.className='od-action-btn od-action-finalizar';btn.style.background='var(--green)';
+      btn.textContent='📦 Confirmar Entrega';
+      if(proofSection)proofSection.style.display='block';
+      if(finBtn){finBtn.style.display='flex';finBtn.innerHTML='<span>📦</span> Confirmar Entrega ao Cliente';finBtn.style.background='var(--green)';finBtn.style.boxShadow='0 4px 16px rgba(22,163,74,.3)';}
+    }
+
+  } else if(status==='entregue'){
+    badge.className='od-status-badge status-pronto';badge.textContent='✅ Entregue';
+    btn.className='od-action-btn';btn.style.background='var(--mid)';
+    btn.textContent='✓ OS Concluída';btn.disabled=true;
+    if(conf)conf.style.display='none';
+  }
 }
 
 function handleOSAction() {
   const btn=document.getElementById('od-action-btn');
   const os=currentOSId?osList.find(o=>o.num===currentOSId):null;
+
   if(btn.textContent.includes('Pegar')){
-    if(role==='atendente'){if(!confirm('⚠️ Esta ação é para técnicos.\nConfirmar?'))return;}
+    if(role==='atendente'){alert('⚠️ Apenas técnicos podem pegar serviços.');return;}
     const selTechEl=document.querySelector('.tech-chip.sel');
-    if(os){os.status='conserto';os.tecnico=selTechEl?selTechEl.textContent:null;os.updatedAt=Date.now();persistOS();}
-    updateEntregaStatus('conserto');renderPainel();
+    if(os){os.status='conserto';os.tecnico=selTechEl?selTechEl.textContent:(currentUserName||null);os.updatedAt=Date.now();persistOS();}
+    btn.textContent='✅ Serviço pego!';btn.style.background='var(--green)';btn.disabled=true;
+    renderPainel();
+    setTimeout(()=>goTo('painel',document.getElementById('nb-painel')),1200);
+
   } else if(btn.textContent.includes('Concluir')){
+    if(role==='atendente'){alert('⚠️ Apenas técnicos podem finalizar consertos.');return;}
     if(os){os.status='pronto';os.updatedAt=Date.now();persistOS();}
-    updateEntregaStatus('pronto');renderPainel();
-  } else {finishOS();}
+    if(os&&os.clientWA){
+      const wa=os.clientWA.replace(/\D/g,'');
+      const waEl=document.getElementById('waMsg');
+      const msg=encodeURIComponent(waEl?waEl.value:'');
+      window.open('https://wa.me/'+wa+'?text='+msg,'_blank');
+    }
+    btn.textContent='✅ Cliente notificado!';btn.style.background='var(--green)';btn.disabled=true;
+    renderPainel();
+    setTimeout(()=>goTo('painel',document.getElementById('nb-painel')),1500);
+
+  } else if(btn.textContent.includes('Confirmar')||btn.textContent.includes('Entregar')){
+    if(role==='tecnico'){alert('⚠️ Apenas atendentes podem fazer a entrega.');return;}
+    finishOS();
+  }
+}
+
+function handleFinBtn() {
+  const os=currentOSId?osList.find(o=>o.num===currentOSId):null;
+  if(!os)return;
+  if(os.status==='conserto'){
+    if(role==='atendente'){alert('⚠️ Apenas técnicos podem finalizar consertos.');return;}
+    os.status='pronto';os.updatedAt=Date.now();persistOS();
+    if(os.clientWA){
+      const wa=os.clientWA.replace(/\D/g,'');
+      const waEl=document.getElementById('waMsg');
+      const msg=encodeURIComponent(waEl?waEl.value:'');
+      window.open('https://wa.me/'+wa+'?text='+msg,'_blank');
+    }
+    const btn=document.getElementById('finBtn');
+    if(btn){btn.innerHTML='✅ Pronto! Cliente notificado.';btn.style.background='var(--green)';}
+    renderPainel();
+    setTimeout(()=>goTo('painel',document.getElementById('nb-painel')),1500);
+  } else if(os.status==='pronto'){
+    finishOS();
+  }
+}
+
+// ─── PROOF PHOTOS ───
+function handleProofPhoto(input, num) {
+  if(!input.files||!input.files[0])return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=new Image();
+    img.onload=()=>{
+      const canvas=document.createElement('canvas');
+      const MAX=600;let w=img.width,h=img.height;
+      if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      const data=canvas.toDataURL('image/jpeg',0.6);
+      const thumb=document.getElementById('proofThumb'+num);
+      const icon=document.getElementById('proofIcon'+num);
+      const zone=document.getElementById('proofZone'+num);
+      if(thumb){thumb.src=data;thumb.style.display='block';}
+      if(icon)icon.style.display='none';
+      if(zone)zone.classList.add('proof-ok');
+      if(currentOSId){const os=osList.find(o=>o.num===currentOSId);if(os){os['proof'+num]=data;persistOS();}}
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(input.files[0]);
 }
 
 // ─── WHATSAPP ───
@@ -1617,10 +1829,14 @@ function resetWA(){const os=currentOSId?osList.find(o=>o.num===currentOSId):null
 function finishOS() {
   const btn=document.getElementById('finBtn');
   const os=currentOSId?osList.find(o=>o.num===currentOSId):null;
-  if(os&&os.clientWA){const wa=os.clientWA.replace(/\D/g,'');const msg=encodeURIComponent(document.getElementById('waMsg').value);window.open('https://wa.me/'+wa+'?text='+msg,'_blank');}
   if(os){os.status='entregue';os.updatedAt=Date.now();persistOS();}
-  btn.textContent='✅ Enviado! Cliente notificado.';btn.style.background='var(--green)';
-  setTimeout(()=>{btn.innerHTML='<span>📲</span> Finalizar e Enviar WhatsApp';btn.style.background='';document.getElementById('odWrap').classList.remove('show');currentOSId=null;goTo('painel',document.getElementById('nb-painel'));},2200);
+  if(btn){btn.innerHTML='✅ Entregue!';btn.style.background='var(--green)';}
+  renderPainel();
+  setTimeout(()=>{
+    document.getElementById('odWrap').classList.remove('show');
+    currentOSId=null;
+    goTo('painel',document.getElementById('nb-painel'));
+  },1800);
 }
 
 // ─── PRICES EDITOR ───
@@ -1643,6 +1859,62 @@ function updateModelPrice(model,svcNm,value){if(!modelPrices[model])modelPrices[
 function changePriceModel(){renderPricesEditor(document.getElementById('priceModelSel').value);}
 function resetModelPrices(){const m=document.getElementById('priceModelSel').value;if(confirm('Resetar preços do '+m+' para padrão?')){delete modelPrices[m];persistPrices();renderPricesEditor(m);}}
 
+// ─── RESULTADOS ───
+function renderResultados() {
+  const today=new Date();today.setHours(0,0,0,0);const todayTs=today.getTime();
+  const todayOS=osList.filter(o=>o.createdAt>=todayTs);
+  const entregues=todayOS.filter(o=>o.status==='entregue');
+  const aprovadas=todayOS.filter(o=>o.status!=='arquivado').length;
+  const recusadas=todayOS.filter(o=>o.status==='arquivado').length;
+  const faturado=entregues.reduce((s,o)=>s+(o.total||0),0);
+  const osCount=entregues.length;
+  const retrabalhos=osList.filter(o=>o.retrabalho).length;
+  const extra=entregues.reduce((s,o)=>s+(o.services?o.services.filter(sv=>sv.guarantee&&sv.price>0).reduce((a,sv)=>a+sv.price,0):0),0);
+  const ticket=osCount>0?Math.round(faturado/osCount):0;
+  const taxa=(aprovadas+recusadas)>0?Math.round(aprovadas/(aprovadas+recusadas)*100):0;
+  const avgTime=osCount>0?Math.round(entregues.reduce((s,o)=>s+(o.updatedAt-o.createdAt),0)/osCount/60000):0;
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  set('res-faturado',faturado>0?'R$'+faturado.toLocaleString('pt-BR'):'R$0');
+  set('res-os',osCount);
+  set('res-tempo',avgTime>0?avgTime+'min':'—');
+  set('res-retrab',retrabalhos);
+  set('res-extra',extra>0?'R$'+extra.toLocaleString('pt-BR'):'R$0');
+  set('res-ticket',ticket>0?'R$'+ticket.toLocaleString('pt-BR'):'—');
+  set('res-taxa',taxa+'%');
+  set('res-faturado2','R$ '+faturado.toLocaleString('pt-BR'));
+  set('res-os2',osCount);
+  set('res-ticket2',ticket>0?'R$'+ticket.toLocaleString('pt-BR'):'—');
+  // Payments list
+  const pList=document.getElementById('paymentsList');
+  if(pList){
+    pList.innerHTML=entregues.length?entregues.slice(-10).reverse().map(o=>`
+      <div class="pr"><div class="pr-ico ico-c">✅</div><div class="pr-info"><div class="pr-os">${o.id}</div><div class="pr-name">${o.clientName}</div><div class="pr-det">${o.services&&o.services[0]?o.services[0].nm:'—'}${o.tecnico?' · '+o.tecnico:''}</div></div><div class="pr-right"><div class="pr-val" style="color:var(--blue)">R$ ${(o.total||0).toLocaleString('pt-BR')}</div><div class="pr-badge pb-c">Entregue</div></div></div>`).join('')
+    :'<div class="bs-empty">Nenhuma entrega hoje ainda</div>';
+  }
+  // Tech OS chart
+  const tecMap={};
+  osList.filter(o=>o.tecnico&&o.status==='entregue'&&o.createdAt>=todayTs).forEach(o=>{
+    if(!tecMap[o.tecnico])tecMap[o.tecnico]={count:0,totalTime:0};
+    tecMap[o.tecnico].count++;tecMap[o.tecnico].totalTime+=o.updatedAt-o.createdAt;
+  });
+  const tecList=Object.entries(tecMap).sort((a,b)=>b[1].count-a[1].count);
+  const colors=['var(--red)','var(--blue)','var(--orange)','var(--green)','var(--purple)'];
+  const maxCount=tecList.length?tecList[0][1].count:1;
+  const osChart=document.getElementById('techOSChart');
+  if(osChart)osChart.innerHTML=tecList.length?tecList.map(([nm,d],i)=>`<div class="bar-row"><div class="bar-label">${nm.split(' ')[0]}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(d.count/maxCount*100)}%;background:${colors[i%colors.length]}"><span class="bar-val">${d.count}</span></div></div><div class="bv" style="color:${colors[i%colors.length]}">${d.count}</div></div>`).join(''):'<div style="text-align:center;padding:12px;font-size:13px;color:var(--muted);">Nenhum dado hoje ainda</div>';
+  const avgChart=document.getElementById('techAvgChart');
+  if(avgChart){
+    const sorted=[...tecList].filter(([,d])=>d.count>0).sort((a,b)=>(a[1].totalTime/a[1].count)-(b[1].totalTime/b[1].count));
+    const maxAvgMs=sorted.length?sorted[sorted.length-1][1].totalTime/sorted[sorted.length-1][1].count:1;
+    avgChart.innerHTML=sorted.length?sorted.map(([nm,d])=>{
+      const avgMin=Math.round(d.totalTime/d.count/60000);
+      const pct=Math.round((d.totalTime/d.count)/maxAvgMs*100);
+      const c=avgMin<=45?'var(--green)':avgMin<=60?'var(--orange)':'var(--red)';
+      return `<div class="bar-row"><div class="bar-label">${nm.split(' ')[0]}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${c}"><span class="bar-val">${avgMin}min</span></div></div></div>`;
+    }).join(''):'<div style="text-align:center;padding:12px;font-size:13px;color:var(--muted);">Nenhum dado hoje ainda</div>';
+  }
+}
+
 // ─── SHARE PANEL ───
 function sharePanel() {
   if(navigator.share) {
@@ -1650,6 +1922,87 @@ function sharePanel() {
   } else {
     alert('Link copiado!\numahora.app/painel/live\n\nCompartilhe pelo WhatsApp com o cliente.');
   }
+}
+
+// ─── PROFILE EDIT ───
+function openProfileEdit() {
+  const nameEl=document.getElementById('editProfileName');
+  const roleEl=document.getElementById('editProfileRole');
+  if(nameEl)nameEl.value=currentUserName||document.getElementById('profileName').textContent;
+  if(roleEl)roleEl.value=role;
+  document.getElementById('profileEditOverlay').classList.add('show');
+  document.getElementById('profileEditSheet').classList.add('show');
+}
+function closeProfileEdit() {
+  document.getElementById('profileEditOverlay').classList.remove('show');
+  document.getElementById('profileEditSheet').classList.remove('show');
+}
+function saveProfileEdit() {
+  const name=document.getElementById('editProfileName').value.trim();
+  const newRole=document.getElementById('editProfileRole').value;
+  if(!name){alert('Informe o nome.');return;}
+  currentUserName=name;
+  localStorage.setItem('1hora_username',name);
+  role=newRole;
+  applyRole();
+  closeProfileEdit();
+  renderHistorico();renderEquipe();
+}
+
+// ─── MEU HISTÓRICO ───
+function renderHistorico() {
+  const el=document.getElementById('myHistorico');if(!el)return;
+  let atendidas=0,entregues=0,svcs=0,retrab=0;
+  if(role==='tecnico'&&currentUserName){
+    const first=currentUserName.split(' ')[0].toLowerCase();
+    osList.forEach(o=>{
+      if(o.tecnico&&o.tecnico.toLowerCase().includes(first)){
+        if(o.status==='conserto'||o.status==='pronto'||o.status==='entregue')atendidas++;
+        if(o.status==='entregue')entregues++;
+        if(o.services)svcs+=o.services.length;
+        if(o.retrabalho)retrab++;
+      }
+    });
+  } else {
+    atendidas=osList.filter(o=>o.status!=='arquivado').length;
+    entregues=osList.filter(o=>o.status==='entregue').length;
+    svcs=osList.reduce((s,o)=>s+(o.services?o.services.length:0),0);
+    retrab=osList.filter(o=>o.retrabalho).length;
+  }
+  // Atualiza stats no hero
+  const today=new Date();today.setHours(0,0,0,0);
+  const todayOS=osList.filter(o=>o.createdAt>=today.getTime()&&o.status==='entregue');
+  const meusTodayOS=role==='tecnico'&&currentUserName?todayOS.filter(o=>o.tecnico&&o.tecnico.toLowerCase().includes(currentUserName.split(' ')[0].toLowerCase())):todayOS;
+  const avgMin=meusTodayOS.length?Math.round(meusTodayOS.reduce((s,o)=>s+(o.updatedAt-o.createdAt),0)/meusTodayOS.length/60000):0;
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  set('ph-os',meusTodayOS.length);set('ph-tempo',avgMin>0?avgMin+'min':'—');set('ph-retrab',retrab);
+  el.innerHTML=`
+    <div class="hist-row"><span class="hist-lbl">OS atendidas</span><span class="hist-val">${atendidas}</span></div>
+    <div class="hist-row"><span class="hist-lbl">OS entregues</span><span class="hist-val">${entregues}</span></div>
+    <div class="hist-row"><span class="hist-lbl">Serviços realizados</span><span class="hist-val">${svcs}</span></div>
+    <div class="hist-row"><span class="hist-lbl">Retrabalhos</span><span class="hist-val" style="color:${retrab>0?'var(--red)':'var(--green)'}">${retrab}</span></div>`;
+}
+
+// ─── EQUIPE RANKING ───
+function renderEquipe() {
+  const tecMap={};
+  osList.forEach(o=>{
+    if(o.tecnico){
+      if(!tecMap[o.tecnico])tecMap[o.tecnico]={finalizadas:0};
+      if(o.status==='entregue'||o.status==='pronto')tecMap[o.tecnico].finalizadas++;
+    }
+  });
+  const tecList=Object.entries(tecMap).sort((a,b)=>b[1].finalizadas-a[1].finalizadas);
+  const medals=['🥇','🥈','🥉'];
+  const el=document.getElementById('equipe-tecnicos');
+  if(el)el.innerHTML=tecList.length?tecList.map(([nm,d],i)=>`
+    <div class="rk-row">
+      <div class="rk-pos ${i<3?'pos-'+(i+1):'pos-n'}">${i+1}</div>
+      <div class="rk-avatar">👨‍🔧</div>
+      <div class="rk-info"><div class="rk-name">${nm}</div><div class="rk-detail">${d.finalizadas} OS finalizadas</div></div>
+      <div class="rk-score"><div class="rk-os">${d.finalizadas}</div><div class="rk-sub">finalizadas</div></div>
+      ${i<3?`<div class="rk-medal">${medals[i]}</div>`:''}
+    </div>`).join(''):'<div class="bs-empty">Nenhum dado ainda</div>';
 }
 
 // ─── RANKING PERIOD ───
@@ -1663,6 +2016,8 @@ waCount();
 applyRole();
 renderPainel();
 renderArchivedCount();
+renderHistorico();
+renderEquipe();
   // Fix iOS scroll on input focus
 document.querySelectorAll('input, select, textarea').forEach(el => {
   el.addEventListener('focus', function(e) {
