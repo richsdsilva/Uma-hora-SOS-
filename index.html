@@ -1698,16 +1698,28 @@ function openOS() {
     const idx=osList.findIndex(o=>o.num===currentArchivedNum&&o.status==='arquivado');
     if(idx===-1){alert('Orçamento não encontrado.');return;}
     const existing=osList[idx];
-    // Atualiza campos editados
+    if(!isArchived){
+      // Convertendo para fila: exige número do adesivo agora
+      if(!osAdesivo){alert('⚠️ Para abrir a OS informe o Nº do adesivo.');document.getElementById('osAdesivo').focus();return;}
+      const newNum=parseInt(osAdesivo);
+      if(!newNum){alert('⚠️ Número do adesivo inválido.');document.getElementById('osAdesivo').focus();return;}
+      // Verificar duplicata (ignora o próprio arquivado)
+      const dup=osList.find(o=>o.num===newNum&&o.status!=='arquivado');
+      if(dup){
+        const st={fila:'na Fila',conserto:'em Conserto',pronto:'Pronto p/ entrega',entregue:'Entregue'};
+        alert(`⚠️ OS #${newNum} já está aberta!\n${dup.clientName} · ${st[dup.status]||dup.status}`);
+        return;
+      }
+      existing.num=newNum;existing.id='#'+newNum;existing.osAdesivo=osAdesivo;
+      if(newNum>=osCounter){osCounter=newNum;localStorage.setItem('1hora_counter',String(osCounter));}
+      existing.status='fila';existing.tecnico=null;existing.createdAt=Date.now();
+    }
+    // Atualiza campos editados (ambos os casos)
     existing.clientName=name;existing.clientWA=wa;existing.model=model;
-    existing.problem=problem;existing.senha=senha;existing.osAdesivo=osAdesivo||String(existing.num);
+    existing.problem=problem;existing.senha=senha;
     existing.photo=currentPhotoData;existing.diagnosis=diag;existing.battery=battery;
     existing.services=[...selectedSvcs];existing.total=total;existing.prazo=prazo;
     existing.updatedAt=Date.now();
-    if(!isArchived){
-      // Converter para fila: sai dos arquivados e entra no painel
-      existing.status='fila';existing.tecnico=null;existing.createdAt=Date.now();
-    }
     persistOS();renderArchivedCount();
     btn.textContent=isArchived?'📋 Arquivado!':'✅ OS '+existing.id+' aberta!';
     btn.style.background=isArchived?'var(--orange)':'var(--green)';
@@ -1720,29 +1732,35 @@ function openOS() {
     return;
   }
 
-  // ── MODO: Nova OS / Novo orçamento ──
-  // Número do adesivo obrigatório em todos os casos
-  if(!osAdesivo){alert('⚠️ Informe o Nº OS do adesivo antes de continuar.');document.getElementById('osAdesivo').focus();return;}
-  const osNum=parseInt(osAdesivo);
-  if(!osNum){alert('⚠️ Número do adesivo inválido.');document.getElementById('osAdesivo').focus();return;}
-  // Bloquear se já existe OS ativa com esse número (independente de arquivar ou não)
-  const dup=osList.find(o=>o.num===osNum&&o.status!=='arquivado');
-  if(dup){
-    const st={fila:'na Fila',conserto:'em Conserto',pronto:'Pronto p/ entrega',entregue:'Entregue'};
-    alert(`⚠️ OS #${osNum} já está aberta!\n${dup.clientName} · ${st[dup.status]||dup.status}\n\nNão é possível arquivar um número já em uso.`);
+  // ── MODO: Nova OS (Sim) — número obrigatório ──
+  // ── Novo orçamento (Não) — sem número, ID interno ──
+  if(!isArchived){
+    if(!osAdesivo){alert('⚠️ Informe o Nº OS do adesivo antes de abrir.');document.getElementById('osAdesivo').focus();return;}
+    const osNum=parseInt(osAdesivo);
+    if(!osNum){alert('⚠️ Número do adesivo inválido.');document.getElementById('osAdesivo').focus();return;}
+    // Verificar duplicata (ativo ou arquivado com mesmo número)
+    const dup=osList.find(o=>o.num===osNum);
+    if(dup){
+      const st={fila:'na Fila',conserto:'em Conserto',pronto:'Pronto p/ entrega',entregue:'Entregue',arquivado:'Arquivado'};
+      alert(`⚠️ OS #${osNum} já existe no sistema!\n${dup.clientName} · ${st[dup.status]||dup.status}`);
+      return;
+    }
+    if(osNum>=osCounter){osCounter=osNum;localStorage.setItem('1hora_counter',String(osCounter));}
+    const os={id:'#'+osNum,num:osNum,osAdesivo,clientName:name,clientWA:wa,model,problem,senha,photo:currentPhotoData,diagnosis:diag,battery,services:[...selectedSvcs],total,prazo,status:'fila',tecnico:null,createdAt:Date.now(),updatedAt:Date.now()};
+    osList.push(os);persistOS();renderArchivedCount();
+    btn.textContent='✅ OS '+os.id+' aberta!';
+    btn.style.background='var(--green)';btn.style.boxShadow='0 4px 16px rgba(22,163,74,.3)';
+    setTimeout(()=>{btn.innerHTML='📥 Abrir Ordem de Serviço';btn.style.background='';btn.style.boxShadow='';resetForm();goTo('painel',document.getElementById('nb-painel'));},1800);
     return;
   }
-  if(osNum>=osCounter) osCounter=osNum;
-  localStorage.setItem('1hora_counter',String(osCounter));
-  const os={id:'#'+osNum,num:osNum,osAdesivo,clientName:name,clientWA:wa,model,problem,senha,photo:currentPhotoData,diagnosis:diag,battery,services:[...selectedSvcs],total,prazo,status:isArchived?'arquivado':'fila',tecnico:null,createdAt:Date.now(),updatedAt:Date.now()};
+  // Arquivar novo orçamento: sem número, ID interno automático
+  // ID interno negativo para não colidir com números reais de adesivo
+  const arcNum=-(Date.now());
+  const os={id:'Orç.',num:arcNum,osAdesivo:'',clientName:name,clientWA:wa,model,problem,senha,photo:currentPhotoData,diagnosis:diag,battery,services:[...selectedSvcs],total,prazo,status:'arquivado',tecnico:null,createdAt:Date.now(),updatedAt:Date.now()};
   osList.push(os);persistOS();renderArchivedCount();
-  btn.textContent=isArchived?'📋 Arquivado!':'✅ OS '+os.id+' aberta!';
-  btn.style.background=isArchived?'var(--orange)':'var(--green)';
-  btn.style.boxShadow='0 4px 16px rgba(22,163,74,.3)';
-  setTimeout(()=>{
-    btn.innerHTML='📥 Abrir Ordem de Serviço';btn.style.background='';btn.style.boxShadow='';
-    resetForm();if(!isArchived)goTo('painel',document.getElementById('nb-painel'));
-  },1800);
+  btn.textContent='📋 Arquivado!';
+  btn.style.background='var(--orange)';btn.style.boxShadow='0 4px 16px rgba(212,31,31,.3)';
+  setTimeout(()=>{btn.innerHTML='📥 Abrir Ordem de Serviço';btn.style.background='';btn.style.boxShadow='';resetForm();},1800);
 }
 
 function resetForm() {
