@@ -1446,11 +1446,62 @@ function closeArchived() {
 function loadArchived(num) {
   const os=osList.find(o=>o.num===num);closeArchived();
   if(!os)return;
-  document.getElementById('clientName').value=os.clientName;
+
+  // ── Dados básicos ──
+  document.getElementById('clientName').value=os.clientName||'';
   document.getElementById('clientWA').value=os.clientWA||'';
-  document.getElementById('modelInput').value=os.model;
-  document.getElementById('problemInput').value=os.problem;
+  document.getElementById('modelInput').value=os.model||'';
+  const senhaEl=document.getElementById('senhaInput');if(senhaEl)senhaEl.value=os.senha||'';
+  const osAdesEl=document.getElementById('osAdesivo');if(osAdesEl)osAdesEl.value=os.osAdesivo||'';
+  const probEl=document.getElementById('problemInput');
+  probEl.value=os.problem||'';probEl.style.height='auto';probEl.style.height=probEl.scrollHeight+'px';
+
+  // ── Bateria ──
+  if(os.battery!==undefined){
+    document.getElementById('batV').value=os.battery;
+    document.getElementById('batNum').value=os.battery;
+    batSync('range');
+  }
+
+  // ── Foto ──
+  if(os.photo){
+    currentPhotoData=os.photo;
+    document.getElementById('prev').src=os.photo;
+    const lbl=document.getElementById('photo-detected-label');
+    if(lbl)lbl.innerHTML='<span class="chk">✓</span> Foto carregada';
+  }
+
+  // ── Diagnóstico ──
+  document.querySelectorAll('#diagBody .di').forEach(row=>{
+    const label=row.querySelector('.dnm')?.textContent;
+    if(!label)return;
+    const d=os.diagnosis?.find(x=>x.label===label);
+    if(!d)return;
+    const tog=row.querySelector('.ios-toggle');
+    if(tog){d.ok?tog.classList.remove('fail'):tog.classList.add('fail');}
+  });
+
+  // ── Serviços: rebuild e re-seleciona ──
   buildServices();
+  if(os.services?.length){
+    selectedSvcs=[...os.services];
+    setTimeout(()=>{
+      document.querySelectorAll('.svc-item').forEach(el=>{
+        const nm=el.querySelector('.svc-nm')?.textContent;
+        const sel=selectedSvcs.find(s=>s.nm===nm);
+        if(sel){el.classList.add('selected');const chk=el.querySelector('.svc-chk');if(chk)chk.textContent='✓';}
+      });
+      updateSummary();
+    },60);
+  }
+
+  // ── Botão CTA no modo "Arquivar" ──
+  const ctaBtn=document.getElementById('ctaBtn');
+  ctaBtn.style.background='var(--red)';ctaBtn.style.boxShadow='0 4px 16px rgba(212,31,31,.3)';
+  ctaBtn.innerHTML='📋 Arquivar Orçamento';
+  document.querySelector('.apv.y')?.classList.remove('sel');
+  document.querySelector('.apv.n')?.classList.add('sel');
+
   goTo('entrada',document.getElementById('nb-entrada'));
 }
 
