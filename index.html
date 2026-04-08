@@ -1091,7 +1091,7 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
         <span style="font-size:12px;font-weight:600;color:var(--mid);flex-shrink:0;">Modelo:</span>
         <select id="priceModelSel" onchange="changePriceModel()" style="flex:1;background:var(--g100);border:1.5px solid var(--border);border-radius:8px;padding:7px 8px;font-size:13px;font-weight:600;font-family:var(--sans);outline:none;color:var(--text);-webkit-appearance:none;">
-          <option>iPhone 16 Pro Max</option><option>iPhone 16 Pro</option><option>iPhone 16</option><option>iPhone 15 Pro Max</option><option>iPhone 15 Pro</option><option>iPhone 15</option><option>iPhone 15 Plus</option><option>iPhone 14 Pro Max</option><option selected>iPhone 14 Pro</option><option>iPhone 14 Plus</option><option>iPhone 14</option><option>iPhone 13 Pro Max</option><option>iPhone 13 Pro</option><option>iPhone 13</option><option>iPhone 13 Mini</option><option>iPhone 12 Pro Max</option><option>iPhone 12 Pro</option><option>iPhone 12</option><option>iPhone 12 Mini</option><option>iPhone 11 Pro Max</option><option>iPhone 11 Pro</option><option>iPhone 11</option><option>iPhone SE (3ª geração)</option><option>iPhone SE (2ª geração)</option>
+          <optgroup label="── iPhone ──"><option>iPhone 16 Pro Max</option><option>iPhone 16 Pro</option><option>iPhone 16</option><option>iPhone 15 Pro Max</option><option>iPhone 15 Pro</option><option>iPhone 15</option><option>iPhone 15 Plus</option><option>iPhone 14 Pro Max</option><option selected>iPhone 14 Pro</option><option>iPhone 14 Plus</option><option>iPhone 14</option><option>iPhone 13 Pro Max</option><option>iPhone 13 Pro</option><option>iPhone 13</option><option>iPhone 13 Mini</option><option>iPhone 12 Pro Max</option><option>iPhone 12 Pro</option><option>iPhone 12</option><option>iPhone 12 Mini</option><option>iPhone 11 Pro Max</option><option>iPhone 11 Pro</option><option>iPhone 11</option><option>iPhone SE (3ª geração)</option><option>iPhone SE (2ª geração)</option></optgroup><optgroup label="── Apple Watch ──"><option>Apple Watch Ultra 2</option><option>Apple Watch Series 10</option><option>Apple Watch Series 9</option><option>Apple Watch Series 8</option><option>Apple Watch Series 7</option><option>Apple Watch SE (2ª geração)</option><option>Apple Watch SE (1ª geração)</option><option>Apple Watch Series 6</option></optgroup><optgroup label="── iPad ──"><option>iPad Pro 13" (M4)</option><option>iPad Pro 11" (M4)</option><option>iPad Air 13" (M2)</option><option>iPad Air 11" (M2)</option><option>iPad (10ª geração)</option><option>iPad mini (6ª geração)</option></optgroup>
         </select>
         <button onclick="resetModelPrices()" style="background:var(--red-s);border:1px solid #FECACA;color:var(--red);border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700;font-family:var(--sans);cursor:pointer;flex-shrink:0;">↺</button>
       </div>
@@ -1182,7 +1182,8 @@ const SVCS = [
 ];
 
 // ─── HELPERS ───
-function getModelPrice(model,svcNm,defaultPrice){const m=(model||'').trim();return(modelPrices[m]&&modelPrices[m][svcNm]!==undefined)?modelPrices[m][svcNm]:defaultPrice;}
+function getModelKey(model){const m=(model||'').trim().toLowerCase();return Object.keys(modelPrices).find(k=>k.toLowerCase()===m)||null;}
+function getModelPrice(model,svcNm,defaultPrice){const key=getModelKey(model);return(key&&modelPrices[key][svcNm]!==undefined)?modelPrices[key][svcNm]:defaultPrice;}
 function formatTime(ts){const d=Math.floor((Date.now()-ts)/60000);if(d<1)return'1min';if(d<60)return d+'min';const h=Math.floor(d/60),m=d%60;return h+'h'+(m?m+'min':'');}
 function timerClass(ts){const d=Math.floor((Date.now()-ts)/60000);if(d>=60)return't-over';if(d>=30)return't-warn';return't-ok';}
 
@@ -1293,6 +1294,25 @@ function buildServices() {
     });
     list.appendChild(catBody);
   });
+  // Linhas personalizadas do modelo (ex: Apple Watch)
+  const modelKey=getModelKey(model);
+  const customLines=modelKey&&modelPrices[modelKey]&&modelPrices[modelKey].__lines;
+  if(customLines&&customLines.length>0){
+    const catKey='⚙️ Personalizados';const isOpen=openCats[catKey]||false;
+    const catHd=document.createElement('div');catHd.className='svc-cat';catHd.style.cssText='display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;';
+    catHd.innerHTML=`<span>${catKey}</span><span class="svc-arr" style="font-size:11px;color:var(--muted);transition:transform .2s;display:inline-block;">${isOpen?'▲':'▼'}</span>`;
+    const catBody=document.createElement('div');catBody.className='svc-cat-body';catBody.dataset.cat=catKey;catBody.style.display=isOpen?'block':'none';
+    catHd.onclick=()=>{const isNowOpen=catBody.style.display!=='none';list.querySelectorAll('.svc-cat-body').forEach(b=>{b.style.display='none';});list.querySelectorAll('.svc-arr').forEach(a=>{a.textContent='▼';a.style.transform='';});if(isNowOpen)return;catBody.style.display='block';catHd.querySelector('.svc-arr').textContent='▲';};
+    list.appendChild(catHd);
+    customLines.forEach(ln=>{
+      const isSel=selectedSvcs.find(s=>s.nm===ln.nm);
+      const d=document.createElement('div');d.className='svc-item'+(isSel?' selected':'');
+      d.innerHTML=`<div class="svc-ico">⚙️</div><div class="svc-info"><div class="svc-nm">${ln.nm}</div><div class="svc-desc">${ln.desc||'Serviço personalizado'}</div></div><div class="svc-price">${ln.price===0?'Grátis':'R$ '+ln.price}</div><div class="svc-chk">${isSel?'✓':''}</div>`;
+      d.onclick=()=>toggleSvc({...ln},d);
+      catBody.appendChild(d);
+    });
+    list.appendChild(catBody);
+  }
 }
 
 function toggleSvc(item, el) {
@@ -1640,6 +1660,15 @@ function openOS() {
   const diag=collectDiag();
   // Usa o número do adesivo como ID da OS; mantém counter como fallback
   const osNum=parseInt(osAdesivo)||++osCounter;
+  // Bloquear número duplicado (exceto arquivados, que podem ser reabertas)
+  if(!isArchived){
+    const dup=osList.find(o=>o.num===osNum&&o.status!=='arquivado');
+    if(dup){
+      const st={fila:'na Fila',conserto:'em Conserto',pronto:'Pronto p/ entrega',entregue:'Entregue'};
+      alert(`⚠️ OS #${osNum} já está aberta!\n${dup.clientName} · ${st[dup.status]||dup.status}\n\nVerifique o número do adesivo.`);
+      return;
+    }
+  }
   if(osNum>=osCounter) osCounter=osNum;
   localStorage.setItem('1hora_counter',String(osCounter));
   const os={id:'#'+osNum,num:osNum,osAdesivo,clientName:name,clientWA:wa,model,problem,senha,photo:currentPhotoData,diagnosis:diag,battery,services:[...selectedSvcs],total,prazo,status:isArchived?'arquivado':'fila',tecnico:null,createdAt:Date.now(),updatedAt:Date.now()};
@@ -1912,6 +1941,7 @@ function openPricesEditor(){document.getElementById('pricesOverlay').classList.a
 function closePricesEditor(){document.getElementById('pricesOverlay').classList.remove('show');document.getElementById('pricesSheet').style.display='none';buildServices();}
 function renderPricesEditor(model) {
   const cont=document.getElementById('pricesEditorItems');cont.innerHTML='';
+  // Serviços padrão (mesma ordem do buildServices)
   SVCS.forEach(cat=>{
     const hd=document.createElement('div');hd.className='svc-cat';hd.style.pointerEvents='none';hd.textContent=cat.cat;cont.appendChild(hd);
     cat.items.forEach(item=>{
@@ -1922,8 +1952,30 @@ function renderPricesEditor(model) {
       cont.appendChild(row);
     });
   });
+  // Seção de serviços personalizados do modelo
+  const key=getModelKey(model)||model;
+  const lines=(modelPrices[key]&&modelPrices[key].__lines)||[];
+  const secHd=document.createElement('div');
+  secHd.className='svc-cat';secHd.style.pointerEvents='none';secHd.textContent='⚙️ Personalizados';cont.appendChild(secHd);
+  if(lines.length===0){
+    const empty=document.createElement('div');empty.style.cssText='font-size:12px;color:var(--muted);padding:8px 4px;';empty.textContent='Nenhum serviço personalizado.';cont.appendChild(empty);
+  }
+  lines.forEach((ln,i)=>{
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;padding:8px 4px;border-bottom:1px solid var(--border);gap:6px;';
+    row.innerHTML=`<input type="text" value="${ln.nm.replace(/"/g,'&quot;')}" placeholder="Nome do serviço" style="flex:1;min-width:0;background:var(--g100);border:1.5px solid var(--border);border-radius:8px;padding:6px 8px;font-size:12px;font-weight:600;font-family:var(--sans);outline:none;color:var(--text);" onchange="updateCustomLine('${key.replace(/'/g,'&#39;')}',${i},'nm',this.value)"><span style="font-size:12px;color:var(--muted);flex-shrink:0;">R$</span><input type="number" min="0" max="9999" value="${ln.price}" style="width:66px;flex-shrink:0;background:var(--g100);border:1.5px solid var(--border);border-radius:8px;padding:6px;font-size:13px;font-weight:700;text-align:center;font-family:var(--sans);outline:none;color:var(--text);" onchange="updateCustomLine('${key.replace(/'/g,'&#39;')}',${i},'price',this.value)" onfocus="this.select()"><button onclick="deleteCustomLine('${key.replace(/'/g,'&#39;')}',${i})" style="flex-shrink:0;background:#FEE2E2;border:1px solid #FECACA;color:var(--red);border-radius:8px;padding:6px 8px;font-size:13px;font-weight:700;font-family:var(--sans);cursor:pointer;">✕</button>`;
+    cont.appendChild(row);
+  });
+  const addBtn=document.createElement('button');
+  addBtn.style.cssText='width:100%;margin-top:8px;background:var(--g100);border:1.5px dashed var(--border);border-radius:10px;padding:10px;font-size:13px;font-weight:700;font-family:var(--sans);color:var(--blue);cursor:pointer;';
+  addBtn.textContent='＋ Adicionar serviço personalizado';
+  addBtn.onclick=()=>addCustomLine(key);
+  cont.appendChild(addBtn);
 }
-function updateModelPrice(model,svcNm,value){if(!modelPrices[model])modelPrices[model]={};modelPrices[model][svcNm]=Math.max(0,parseInt(value)||0);persistPrices();}
+function updateModelPrice(model,svcNm,value){const key=getModelKey(model)||model;if(!modelPrices[key])modelPrices[key]={};modelPrices[key][svcNm]=Math.max(0,parseInt(value)||0);persistPrices();}
+function addCustomLine(model){const key=getModelKey(model)||model;if(!modelPrices[key])modelPrices[key]={};if(!modelPrices[key].__lines)modelPrices[key].__lines=[];modelPrices[key].__lines.push({nm:'Novo serviço',price:0});persistPrices();renderPricesEditor(key);}
+function deleteCustomLine(model,idx){const key=getModelKey(model)||model;if(modelPrices[key]&&modelPrices[key].__lines){modelPrices[key].__lines.splice(idx,1);persistPrices();renderPricesEditor(key);}}
+function updateCustomLine(model,idx,field,value){const key=getModelKey(model)||model;if(modelPrices[key]&&modelPrices[key].__lines&&modelPrices[key].__lines[idx]!==undefined){if(field==='price')modelPrices[key].__lines[idx].price=Math.max(0,parseInt(value)||0);else modelPrices[key].__lines[idx][field]=value;persistPrices();}}
 function changePriceModel(){renderPricesEditor(document.getElementById('priceModelSel').value);}
 function resetModelPrices(){const m=document.getElementById('priceModelSel').value;if(confirm('Resetar preços do '+m+' para padrão?')){delete modelPrices[m];persistPrices();renderPricesEditor(m);}}
 
