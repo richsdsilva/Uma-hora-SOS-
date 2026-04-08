@@ -1510,55 +1510,65 @@ function startVoice() {
 function stopVoice() { if(recognition) recognition.stop(); document.getElementById('voiceOverlay').classList.remove('show'); }
 
 function processVoice(text) {
-  const t = text.toLowerCase();
-  let remaining = text;
+  const lower = text.toLowerCase();
 
   // ── MODELO ──
-  if(t.includes('iphone')) {
+  if(lower.includes('iphone')) {
     const models=['16 pro max','16 pro','16','15 pro max','15 pro','15 plus','15','14 pro max','14 pro','14 plus','14','13 pro max','13 pro','13 mini','13','12 pro max','12 pro','12 mini','12','11 pro max','11 pro','11'];
     for(const m of models){
-      if(t.includes(m)){
-        const modelVal='iPhone '+m.split(' ').map(w=>w[0].toUpperCase()+w.slice(1)).join(' ');
-        document.getElementById('modelInput').value=modelVal;
-        buildServices();
-        remaining=remaining.replace(new RegExp('iphone\\s*'+m,'gi'),'').trim();
-        break;
+      if(lower.includes(m)){
+        document.getElementById('modelInput').value='iPhone '+m.split(' ').map(w=>w[0].toUpperCase()+w.slice(1)).join(' ');
+        buildServices();break;
       }
     }
   }
 
   // ── BATERIA ──
-  const batMatch=t.match(/bateria[^\d]*(\d+)/);
-  if(batMatch){document.getElementById('batV').value=batMatch[1];batU();remaining=remaining.replace(new RegExp('bateria[^\\d]*'+batMatch[1],'gi'),'').trim();}
+  const batMatch=lower.match(/bateria[^\d]*(\d+)/);
+  if(batMatch){document.getElementById('batV').value=batMatch[1];batU();}
 
-  // ── NOME ──
-  const nomeMatch=t.match(/(?:nome[:\s]+|me chamo\s+|cliente\s+)([a-záàãâéêíóôõúüç][a-záàãâéêíóôõúüç\s]{2,40}?)(?=[,.]|\s+(?:telefone|whatsapp|celular|modelo|senha|problema|iphone|tela|bateria|$))/i);
-  if(nomeMatch){
-    const nome=nomeMatch[1].trim().replace(/\b\w/g,l=>l.toUpperCase());
-    document.getElementById('clientName').value=nome;
-    remaining=remaining.replace(new RegExp('(?:nome[:\\s]+|me chamo\\s+|cliente\\s+)'+nomeMatch[1].replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),'').trim();
+  // ── NORMALIZE (remove acentos para matching de keywords) ──
+  const norm=lower
+    .replace(/[áàãâä]/g,'a').replace(/[éêè]/g,'e')
+    .replace(/[íì]/g,'i').replace(/[óôõò]/g,'o')
+    .replace(/[úùû]/g,'u').replace(/ç/g,'c');
+
+  // ── NOME: "nome [do] cliente [é] VALUE" → para na próxima keyword ──
+  const nomeRx=/(?:nome(?:\s+do)?\s+cliente|nome)\s+(?:e\s+)?([^,]+?)(?=\s+(?:whatsapp|telefone|celular|zap|modelo|iphone|senha|codigo|problema|defeito|bateria)|$)/;
+  const nomeM=norm.match(nomeRx);
+  if(nomeM){
+    let nm=nomeM[1].trim().replace(/^(e |o |a |um |uma )+/gi,'');
+    nm=nm.replace(/\b\w/g,l=>l.toUpperCase()).trim();
+    if(nm.length>1) document.getElementById('clientName').value=nm;
   }
 
-  // ── TELEFONE / WHATSAPP ──
-  const telMatch=t.match(/(?:telefone|celular|whatsapp|zap)[:\s]*([\d\s\-\(\)]{8,20})/);
-  if(telMatch){
-    const tel=telMatch[1].replace(/\s+/g,'').trim();
-    if(tel.length>=8)document.getElementById('clientWA').value=tel;
-    remaining=remaining.replace(new RegExp('(?:telefone|celular|whatsapp|zap)[:\\s]*'+telMatch[1].replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),'').trim();
+  // ── TELEFONE: dígitos imediatamente após keyword ──
+  const telRx=/(?:whatsapp|telefone|celular|zap|numero)[^\d]*(\d[\d\s]{8,14}\d)/;
+  const telM=norm.match(telRx);
+  if(telM){
+    const digits=telM[1].replace(/\s/g,'');
+    if(digits.length>=8&&digits.length<=13) document.getElementById('clientWA').value=digits;
   }
 
-  // ── SENHA ──
-  const senhaMatch=t.match(/(?:senha|código)[:\s]+([a-z0-9]{4,10})/i);
-  if(senhaMatch){
-    document.getElementById('senhaInput').value=senhaMatch[1];
-    remaining=remaining.replace(new RegExp('(?:senha|código)[:\\s]+'+senhaMatch[1],'gi'),'').trim();
+  // ── SENHA: sequência curta após keyword ──
+  const senhaRx=/(?:senha|codigo)\s+(?:e\s+)?([a-z0-9]{3,10})/;
+  const senhaM=norm.match(senhaRx);
+  if(senhaM){
+    const senhaEl=document.getElementById('senhaInput');
+    if(senhaEl) senhaEl.value=senhaM[1].trim();
   }
 
-  // ── PROBLEMA ── usa o que sobrou, ou o texto todo se nada foi extraído
+  // ── PROBLEMA: tudo após "problema [é/e]" ou "defeito [é/e]" ──
+  const probRx=/(?:e\s+)?(?:o\s+)?(?:problema|defeito)\s+(?:relatado\s+)?(?:e\s+)?(?:um\s+|uma\s+)?/;
+  const probM=norm.match(probRx);
   const probEl=document.getElementById('problemInput');
-  const prob=remaining.replace(/^[,.\s]+|[,.\s]+$/g,'');
-  probEl.value=prob?prob.charAt(0).toUpperCase()+prob.slice(1):text.charAt(0).toUpperCase()+text.slice(1);
-  probEl.style.height='auto';probEl.style.height=probEl.scrollHeight+'px';
+  if(probM){
+    const idx=norm.indexOf(probM[0])+probM[0].length;
+    let prob=text.slice(idx).trim().replace(/[,.]$/,'').trim();
+    prob=prob.charAt(0).toUpperCase()+prob.slice(1);
+    if(prob.length>2){probEl.value=prob;probEl.style.height='auto';probEl.style.height=probEl.scrollHeight+'px';}
+  }
+  // Se nenhuma keyword de problema encontrada, não preenche (evita lixo)
 }
 
 // ─── OPEN OS ───
