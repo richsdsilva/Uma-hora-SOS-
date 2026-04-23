@@ -206,12 +206,13 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .bat-fill{height:100%;border-radius:3px;transition:width .3s,background .3s;}
 
 /* ─── SERVICES ─── */
-.svc-banner{background:linear-gradient(135deg,var(--blue),#1e3a8a);border-radius:12px;padding:11px 14px;margin-bottom:10px;color:#fff;display:flex;align-items:center;gap:10px;}
-.svc-banner .sbi{font-size:20px;}
-.svc-banner .sba{font-size:13px;font-weight:700;}
-.svc-banner .sbb{font-size:11px;opacity:.75;}
-.svc-list{background:#fff;border-radius:var(--radius-card);overflow:hidden;box-shadow:var(--shadow-card);}
-.svc-cat{padding:8px 15px;font-size:12px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;background:var(--g100);border-bottom:1px solid var(--border);}
+.svc-banner{background:#fff;border-radius:0;padding:13px 15px;margin-bottom:0;color:var(--text);display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s;}
+.svc-banner:active{background:var(--g100);}
+.svc-banner .sbi{display:none;}
+.svc-banner .sba{font-size:14px;font-weight:700;color:var(--text);text-transform:none;letter-spacing:normal;}
+.svc-banner .sbb{display:none;}
+.svc-list{background:#fff;border-radius:0 0 var(--radius-card) var(--radius-card);overflow:hidden;box-shadow:none;}
+.svc-cat{padding:13px 15px;font-size:12px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;background:#fff;border-bottom:1px solid var(--border);}
 .svc-item{display:flex;align-items:center;padding:11px 15px;border-bottom:1px solid var(--border);gap:10px;cursor:pointer;transition:background .1s;}
 .svc-item:last-child{border-bottom:none;}
 .svc-item:active{background:var(--g100);}
@@ -237,7 +238,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .sum-row:last-child{border-bottom:none;}
 .sum-name{flex:1;font-size:13px;font-weight:600;}
 .sum-price{font-size:13px;font-weight:800;color:var(--blue);}
-.sum-remove{background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:0 2px;line-height:1;}
+.sum-remove{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:0 2px;line-height:1;opacity:.5;}
 .sum-total{display:flex;justify-content:space-between;align-items:center;padding:12px 15px;background:var(--blue-s);border-top:2px solid #BFDBFE;}
 .sum-total-lbl{font-size:13px;font-weight:700;color:var(--blue);}
 .sum-total-val{font-size:22px;font-weight:800;color:var(--blue);}
@@ -741,12 +742,13 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
           <button onclick="toggleSvcSection(this)" id="svcToggleBtn" class="sec-toggle">Minimizar ▲</button>
         </div>
         <div id="svcBody">
-        <div class="svc-banner" onclick="openModelSheet()" style="cursor:pointer;">
-          <div class="sbi"></div>
-          <div style="flex:1;"><div class="sba" id="svcTitle">iPhone 14 Pro — Tabela de preços</div><div class="sbb">Preço fixo · Sem negociação · Garantia inclusa</div></div>
-          <div style="color:rgba(255,255,255,.8);font-size:11px;font-weight:700;flex-shrink:0;">Trocar ▼</div>
+        <div class="card" style="overflow:hidden;margin-bottom:0;">
+        <div class="svc-banner" onclick="openModelSheet()">
+          <div style="flex:1;"><div class="sba" id="svcTitle">iPhone 14 Pro</div></div>
+          <div style="color:var(--muted);font-size:11px;font-weight:700;flex-shrink:0;">Trocar ▼</div>
         </div>
         <div class="svc-list" id="svcList"></div>
+        </div><!-- /card -->
         </div><!-- /svcBody -->
       </div>
 
@@ -1520,7 +1522,7 @@ function toggleDiagSection(btn) {
 
 function buildServices() {
   const model=document.getElementById('modelInput').value||'iPhone';
-  document.getElementById('svcTitle').textContent=model+' — Tabela de preços';
+  document.getElementById('svcTitle').textContent=model;
   const list=document.getElementById('svcList');
   const openCats={};
   list.querySelectorAll('.svc-cat-body').forEach(b=>{if(b.style.display!=='none')openCats[b.dataset.cat]=true;});
@@ -2499,7 +2501,7 @@ function renderPricesEditor(model) {
   const cont=document.getElementById('pricesEditorItems');cont.innerHTML='';
   // Serviços padrão (mesma ordem do buildServices)
   SVCS.forEach(cat=>{
-    const hd=document.createElement('div');hd.className='svc-cat';hd.style.pointerEvents='none';hd.textContent=cat.cat;cont.appendChild(hd);
+    hd.className='svc-cat';hd.style.pointerEvents='none';hd.textContent=cat.cat;cont.appendChild(hd);
     cat.items.forEach(item=>{
       const price=getModelPrice(model,item.nm,item.price);
       const row=document.createElement('div');
