@@ -11,9 +11,17 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <title>1Hora — Assistência Técnica · MVP</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+/* ─── PHOSPHOR ICONS ─── */
+.ph-ico{display:inline-flex;align-items:center;justify-content:center;line-height:1;flex-shrink:0;}
+.nb .ph-ico{font-size:22px;display:flex;margin:0 auto 1px;}
+.fii .ph-ico{font-size:18px;color:var(--muted);}
+.conf-ico .ph-ico{font-size:20px;}
+
 :root{
+  /* ─ Colors ─ */
   --red:#D41F1F;--red-d:#A81818;--red-s:#FEF2F2;
   --blue:#1A5CC8;--blue-s:#EFF6FF;
   --green:#16A34A;--green-s:#F0FDF4;
@@ -23,7 +31,16 @@
   --bg:#F2F2F7;--white:#fff;
   --border:#E5E5EA;--g100:#F5F5F5;
   --mid:#6B7280;--muted:#9CA3AF;--text:#0A0A0A;
+  /* ─ Typography ─ */
   --sans:'Plus Jakarta Sans',sans-serif;
+  /* ─ Radius ─ */
+  --radius-card:16px;
+  --radius-inner:12px;
+  --radius-chip:8px;
+  /* ─ Shadows ─ */
+  --shadow-card:0 0 1px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
+  --shadow-soft:0 1px 3px rgba(0,0,0,.08);
+  /* ─ Safe Area ─ */
   --sat:env(safe-area-inset-top,0px);
   --sab:env(safe-area-inset-bottom,0px);
 }
@@ -76,7 +93,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 }
 .bnav-icons{display:flex;height:44px;overflow:visible;position:relative;z-index:2;}
 .bnav-safe{background:transparent;position:relative;z-index:1;}
-.nb{flex:1;padding:0;border:none;background:none;color:var(--muted);font-family:var(--sans);font-size:9px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:5px;gap:3px;transition:.15s;position:relative;overflow:visible;}
+.nb{flex:1;padding:0;border:none;background:none;color:var(--muted);font-family:var(--sans);font-size:10px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:5px;gap:3px;transition:.15s;position:relative;overflow:visible;}
 .nb .ni{line-height:1;transition:.15s;display:flex;align-items:center;justify-content:center;height:24px;}
 .nb.on{color:var(--red);}
 .nb.on .ni{transform:scale(1.05);}
@@ -107,9 +124,10 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 }
 .ios-toggle.fail .ios-thumb{margin-left:0;margin-right:auto;}
 .ios-badge{display:none;}
-.sec{padding:10px 16px 0;}
-.sec-title{font-size:11px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;}
-.card{background:var(--white);border-radius:16px;overflow:hidden;box-shadow:0 0 1px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.06);}
+.sec{padding:12px 16px 0;}
+.sec-title,.od-section-title{font-size:12px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:9px;}
+.sec-toggle{background:none;border:none;color:var(--muted);font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;padding:0;letter-spacing:.01em;}
+.card{background:var(--white);border-radius:var(--radius-card);overflow:hidden;box-shadow:var(--shadow-card);}
 
 /* ─── INSTALL BANNER ─── */
 .install{margin:14px 16px 0;background:var(--blue);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;color:#fff;}
@@ -163,7 +181,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .diag-group-arrow.open{transform:rotate(90deg);background:var(--blue-s);color:var(--blue);}
 .diag-group-body{display:none;border-top:1px solid var(--border);}
 .diag-group-body.open{display:block;}
-.diag-hd{padding:9px 15px;font-size:11px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.07em;background:var(--g100);border-bottom:1px solid var(--border);}
+.diag-hd{padding:9px 15px;font-size:12px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;background:var(--g100);border-bottom:1px solid var(--border);}
 .di{display:flex;align-items:center;padding:10px 15px;border-bottom:1px solid var(--border);gap:10px;}
 .di:last-child{border-bottom:none;}
 .di .dii{font-size:18px;width:26px;text-align:center;flex-shrink:0;}
@@ -189,8 +207,8 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .svc-banner .sbi{font-size:20px;}
 .svc-banner .sba{font-size:13px;font-weight:700;}
 .svc-banner .sbb{font-size:11px;opacity:.75;}
-.svc-list{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 0 1px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.06);}
-.svc-cat{padding:8px 15px;font-size:11px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.07em;background:var(--g100);border-bottom:1px solid var(--border);}
+.svc-list{background:#fff;border-radius:var(--radius-card);overflow:hidden;box-shadow:var(--shadow-card);}
+.svc-cat{padding:8px 15px;font-size:12px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;background:var(--g100);border-bottom:1px solid var(--border);}
 .svc-item{display:flex;align-items:center;padding:11px 15px;border-bottom:1px solid var(--border);gap:10px;cursor:pointer;transition:background .1s;}
 .svc-item:last-child{border-bottom:none;}
 .svc-item:active{background:var(--g100);}
@@ -199,7 +217,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .svc-info{flex:1;}
 .svc-nm{font-size:13px;font-weight:700;}
 .svc-desc{font-size:11px;color:var(--muted);}
-.svc-price{font-size:14px;font-weight:800;color:var(--blue);flex-shrink:0;}
+.svc-price{font-size:14px;font-weight:700;color:var(--blue);flex-shrink:0;}
 .svc-chk{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;color:transparent;flex-shrink:0;transition:.12s;}
 .svc-item.selected .svc-chk{background:var(--blue);border-color:var(--blue);color:#fff;}
 
@@ -210,7 +228,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .svc-item.guarantee-item.selected .svc-price{color:var(--green);}
 
 /* ─── SUMMARY ─── */
-.summary-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+.summary-card{background:#fff;border-radius:var(--radius-card);overflow:hidden;box-shadow:var(--shadow-soft);}
 .sum-empty{padding:16px;font-size:13px;color:var(--muted);text-align:center;}
 .sum-row{display:flex;align-items:center;padding:10px 15px;border-bottom:1px solid var(--border);gap:8px;}
 .sum-row:last-child{border-bottom:none;}
@@ -222,12 +240,12 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .sum-total-val{font-size:22px;font-weight:800;color:var(--blue);}
 
 /* ─── APPROVAL ─── */
-.apv-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+.apv-card{background:#fff;border-radius:var(--radius-card);overflow:hidden;box-shadow:var(--shadow-soft);}
 .apv-row{display:flex;align-items:center;padding:12px 15px;gap:10px;border-bottom:1px solid var(--border);}
 .apv-row:last-child{border-bottom:none;}
 .apv-lbl{font-size:12px;font-weight:700;color:var(--mid);flex-shrink:0;width:70px;}
 .apv-pair{display:flex;gap:10px;flex:1;justify-content:center;}
-.apv{flex:1;padding:11px 8px;border-radius:12px;font-size:13px;font-weight:800;font-family:var(--sans);border:1.5px solid transparent;cursor:pointer;transition:.13s;text-align:center;}
+.apv{flex:1;padding:11px 8px;border-radius:var(--radius-inner);font-size:13px;font-weight:700;font-family:var(--sans);border:1.5px solid transparent;cursor:pointer;transition:.13s;text-align:center;}
 .apv.y{background:var(--green-s);color:var(--green);border-color:#BBF7D0;}
 .apv.n{background:var(--red-s);color:var(--red);border-color:#FECACA;}
 .apv.y.sel{background:var(--green);color:#fff;}
@@ -267,31 +285,38 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .bs-empty{text-align:center;padding:24px;color:var(--muted);font-size:13px;}
 .cta-wrap{padding:10px 16px 4px;}
 .cta{width:100%;background:var(--blue);color:#fff;border:none;border-radius:14px;height:52px;font-family:var(--sans);font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(26,92,200,.3);transition:transform .2s cubic-bezier(0.34,1.56,0.64,1),opacity .15s ease;}
-.cta:active{opacity:.85;transform:scale(.98);}
 
 /* ─────────────────────────────────────────── */
-/* ─── PAINEL McDONALD'S ─── */
+/* ─── PAINEL ─── */
 /* ─────────────────────────────────────────── */
-.panel-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:14px 16px 0;}
-.ps-card{background:#fff;border-radius:12px;padding:11px 10px;text-align:center;box-shadow:0 0 1px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.05);}
-.ps-num{font-size:26px;font-weight:800;line-height:1;margin-bottom:2px;}
-.ps-lbl{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+.panel-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px 16px 0;}
+.ps-card{background:#fff;border-radius:14px;padding:12px 10px;text-align:center;box-shadow:0 0 1px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.05);}
+.panel-stats .ps-card:nth-child(1){border-bottom:2.5px solid var(--blue);}
+.panel-stats .ps-card:nth-child(2){border-bottom:2.5px solid var(--orange);}
+.panel-stats .ps-card:nth-child(3){border-bottom:2.5px solid var(--green);}
+.ps-num{font-size:26px;font-weight:800;line-height:1;margin-bottom:3px;}
+.ps-lbl{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
 
-.panel-board{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:1fr;gap:8px;padding:8px 16px 0;align-items:start;}
+.panel-board{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:1fr;gap:8px;padding:6px 16px 0;align-items:start;}
 .pb-col{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 0 1px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.05);display:flex;flex-direction:column;min-height:44px;max-height:100%;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;}
 .pb-col::-webkit-scrollbar{display:none;}
-.pb-head{display:none;}
-.pb-name,.pb-dot,.pb-cnt{display:none;}
-.pb-body{padding:6px;display:flex;flex-direction:column;gap:6px;}
+.panel-board .pb-col:nth-child(1){border-top:2.5px solid var(--blue);}
+.panel-board .pb-col:nth-child(2){border-top:2.5px solid var(--orange);}
+.panel-board .pb-col:nth-child(3){border-top:2.5px solid var(--green);}
+.pb-head{display:flex;align-items:center;padding:6px 9px 5px;border-bottom:1px solid var(--border);}
+.pb-name{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;flex:1;}
+.panel-board .pb-col:nth-child(1) .pb-name{color:var(--blue);}
+.panel-board .pb-col:nth-child(2) .pb-name{color:var(--orange);}
+.panel-board .pb-col:nth-child(3) .pb-name{color:var(--green);}
+.pb-dot,.pb-cnt{display:none;}
+.pb-body{padding:7px;display:flex;flex-direction:column;gap:6px;}
 .pb-body::-webkit-scrollbar{display:none;}
-.pb-item-model{font-size:10px;font-weight:400;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pb-empty{padding:14px 6px;font-size:11px;font-weight:500;color:var(--muted);text-align:center;}
+.pb-item-model{font-size:10px;font-weight:500;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .pb-item-problem{font-size:10px;font-weight:500;color:var(--mid);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.pb-item{background:var(--g100);border-radius:8px;padding:5px 8px;cursor:pointer;transition:background .15s;display:flex;flex-direction:column;justify-content:flex-start;}
+.pb-item{background:var(--g100);border-radius:8px;padding:7px 9px;cursor:pointer;transition:background .15s;display:flex;flex-direction:column;justify-content:flex-start;border-left:3px solid transparent;}
 .pb-item:active{background:var(--border);}
-.pb-item-row1{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;gap:6px;}
-.pb-item-os{font-size:9px;font-weight:700;color:var(--muted);font-family:monospace;}
-.pb-item-timer{font-size:10px;font-weight:700;padding:2px 6px;border-radius:5px;display:inline-block;white-space:nowrap;flex-shrink:0;}
-.pb-item-name{font-size:12px;font-weight:800;line-height:1.2;margin-bottom:2px;color:var(--text);display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}
+.pb-item-row1{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;gap:6px;}
 .od-status-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;}
 .status-fila{background:var(--blue-s);color:var(--blue);}
 .status-conserto{background:var(--orange-s);color:var(--orange);}
@@ -299,8 +324,8 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .od-action-btn{width:100%;border:none;border-radius:12px;height:44px;font-family:var(--sans);font-size:14px;font-weight:800;cursor:pointer;margin-top:8px;transition:.13s;}
 .od-action-pegar{background:var(--blue);color:white;}
 .od-action-finalizar{background:var(--green);color:white;}
-.pb-item-os{font-size:9px;font-weight:700;color:var(--muted);margin-bottom:0;font-family:monospace;letter-spacing:.02em;}
-.pb-item-name{font-size:12px;font-weight:800;line-height:1.2;margin-bottom:2px;color:var(--text);display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}
+.pb-item-os{font-size:10px;font-weight:700;color:var(--muted);margin-bottom:0;font-family:var(--sans);letter-spacing:.02em;}
+.pb-item-name{font-size:12px;font-weight:700;line-height:1.2;margin-bottom:2px;color:var(--text);display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}
 .pb-item-timer{font-size:10px;font-weight:700;padding:2px 6px;border-radius:5px;display:inline-block;white-space:nowrap;flex-shrink:0;}
 .t-ok{background:var(--green-s);color:var(--green);}
 .t-warn{background:var(--orange-s);color:var(--orange);}
@@ -312,7 +337,16 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .panel-share .psb{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;font-family:var(--sans);cursor:pointer;}
 
 /* ─── ENTREGA ─── */
-.search-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 0 1px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.06);}
+.entrega-pronta-card{background:#fff;border-radius:var(--radius-card);padding:13px 14px 13px 16px;cursor:pointer;box-shadow:var(--shadow-card);border-left:4px solid var(--green);transition:background .12s;margin-bottom:10px;display:flex;align-items:center;gap:12px;width:100%;}
+.entrega-pronta-card:active{background:var(--green-s);}
+.ep-info{flex:1;min-width:0;}
+.ep-name{font-size:15px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.25;}
+.ep-model{font-size:12px;color:var(--mid);font-weight:500;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ep-meta{font-size:11px;color:var(--muted);font-weight:500;margin-top:3px;}
+.ep-value{flex-shrink:0;text-align:right;}
+.ep-val{font-size:17px;font-weight:800;color:var(--blue);line-height:1.2;}
+.ep-badge{font-size:10px;font-weight:700;color:var(--green);background:var(--green-s);padding:2px 8px;border-radius:8px;margin-top:5px;display:inline-block;}
+.search-card{background:#fff;border-radius:var(--radius-card);overflow:hidden;box-shadow:var(--shadow-card);}
 .search-row{display:flex;align-items:center;padding:12px 15px;gap:10px;}
 .search-ico{font-size:20px;}
 .search-input{flex:1;background:none;border:none;font-family:var(--sans);font-size:15px;font-weight:600;color:var(--text);outline:none;}
@@ -321,26 +355,25 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 
 .od-wrap{display:none;}.od-wrap.show{display:block;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .od-wrap-spacer{height:calc(56px + env(safe-area-inset-bottom,0px) + 8px);flex-shrink:0;}
-.od-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 0 1px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.06);}
-.od-hd{padding:13px 15px;background:var(--red-s);border-bottom:1px solid #FECACA;}
-.od-os{font-size:10px;font-weight:600;color:var(--muted);margin-bottom:3px;}
-.od-model{font-size:18px;font-weight:800;margin-bottom:4px;}
+.od-card{background:#fff;border-radius:var(--radius-card);overflow:hidden;box-shadow:var(--shadow-card);}
+.od-hd{padding:14px 16px;background:var(--red-s);border-bottom:1px solid #FECACA;}
+.od-os{font-size:10px;font-weight:600;color:var(--muted);margin-bottom:4px;letter-spacing:.02em;}
+.od-model{font-size:17px;font-weight:800;margin-bottom:4px;}
 .od-meta{display:flex;gap:7px;flex-wrap:wrap;}
 .od-client{font-size:11px;font-weight:700;background:#fff;color:var(--text);padding:2px 9px;border-radius:8px;border:1px solid var(--border);}
 .od-time{font-size:11px;color:var(--mid);font-weight:600;display:flex;align-items:center;gap:3px;}
 
 .od-section{padding:11px 15px;border-bottom:1px solid var(--border);}
-.od-section-title{font-size:11px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
 .od-chips{display:flex;gap:5px;flex-wrap:wrap;}
 .od-chip{font-size:11px;font-weight:700;padding:3px 9px;border-radius:8px;}
 .ck-ok{background:var(--green-s);color:var(--green);}
 .ck-fail{background:var(--red-s);color:var(--red);}
 .od-svc-row{display:flex;justify-content:space-between;padding:4px 0;}
-.od-svc-nm{font-size:13px;font-weight:400;color:var(--text);}
-.od-svc-pr{font-size:13px;font-weight:500;color:var(--mid);}
+.od-svc-nm{font-size:13px;font-weight:500;color:var(--text);}
+.od-svc-pr{font-size:13px;font-weight:600;color:var(--mid);}
 .od-total-row{display:flex;justify-content:space-between;padding:8px 0 0;}
-.od-total-nm{font-size:13px;font-weight:600;color:var(--text);}
-.od-total-pr{font-size:14px;font-weight:700;color:var(--blue);}
+.od-total-nm{font-size:13px;font-weight:700;color:var(--text);}
+.od-total-pr{font-size:14px;font-weight:800;color:var(--blue);}
 
 /* Técnico selector */
 .tech-selector{display:flex;gap:7px;flex-wrap:wrap;}
@@ -348,7 +381,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .tech-chip.sel{background:var(--blue-s);color:var(--blue);border-color:#BFDBFE;}
 
 /* Conferência */
-.conf-item{display:flex;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);gap:10px;}
+.conf-item{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);gap:10px;}
 .conf-item:last-child{border-bottom:none;}
 .conf-ico{font-size:17px;width:24px;text-align:center;flex-shrink:0;}
 .conf-lbl{flex:1;font-size:13px;font-weight:600;}
@@ -359,7 +392,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .ctb.fail{background:var(--red-s);color:var(--red);}
 
 /* WhatsApp editable */
-.wa-preview{background:#ECE5DD;border-radius:16px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.12);}
+.wa-preview{background:#ECE5DD;border-radius:var(--radius-card);overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.12);}
 .wa-hd{padding:8px 14px;display:flex;align-items:center;gap:10px;background:#075E54;}
 .wa-hd-avatar{width:32px;height:32px;border-radius:50%;background:#DFD9D4;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
 .wa-hd-info{flex:1;}
@@ -387,32 +420,32 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 /* ─── RESULTADOS ─── */
 .results-header{padding:14px 16px 0;}
 .results-summary{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:0;}
-.rs-card{background:#fff;border-radius:14px;padding:13px;box-shadow:0 1px 3px rgba(0,0,0,.07);}
-.rs-num{font-size:26px;font-weight:800;line-height:1;margin-bottom:3px;}
-.rs-lbl{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+.rs-card{background:#fff;border-radius:var(--radius-card);padding:14px;box-shadow:var(--shadow-soft);}
+.rs-num{font-size:26px;font-weight:800;line-height:1;margin-bottom:4px;}
+.rs-lbl{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
 
-.chart-wrap{background:#fff;border-radius:16px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.07);}
-.chart-title{font-size:13px;font-weight:700;margin-bottom:12px;}
+.chart-wrap{background:#fff;border-radius:var(--radius-card);padding:16px;box-shadow:var(--shadow-soft);}
+.chart-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;}
 .bar-chart{display:flex;flex-direction:column;gap:9px;}
 .bar-row{display:flex;align-items:center;gap:10px;}
-.bar-label{font-size:12px;font-weight:600;width:80px;flex-shrink:0;color:var(--mid);}
+.bar-label{font-size:12px;font-weight:600;width:84px;flex-shrink:0;color:var(--mid);}
 .bar-track{flex:1;height:20px;background:var(--g100);border-radius:6px;overflow:hidden;}
 .bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding-right:8px;justify-content:flex-end;transition:width .8s cubic-bezier(.25,.8,.25,1);width:0;}
 .bar-val{font-size:11px;font-weight:800;color:#fff;}
 .bar-row .bv{font-size:12px;font-weight:800;width:30px;text-align:right;flex-shrink:0;}
 
 /* ─── PERFIL / RANKING ─── */
-.profile-hero{background:linear-gradient(135deg,var(--red),var(--red-d));margin:14px 16px 0;border-radius:16px;padding:18px;color:#fff;box-shadow:0 4px 20px rgba(212,31,31,.3);position:relative;}
-.ph-top{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
-.ph-avatar{width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
-.ph-info .ph-name{font-size:18px;font-weight:800;}
-.ph-info .ph-role{font-size:11px;opacity:.75;font-weight:600;}
+.profile-hero{background:linear-gradient(135deg,var(--red),var(--red-d));margin:14px 16px 0;border-radius:var(--radius-card);padding:18px 20px;color:#fff;box-shadow:0 4px 20px rgba(212,31,31,.3);position:relative;}
+.ph-top{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.ph-avatar{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.ph-info .ph-name{font-size:17px;font-weight:800;}
+.ph-info .ph-role{font-size:12px;opacity:.75;font-weight:600;}
 .ph-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-.ph-stat .phsv{font-size:22px;font-weight:800;}
-.ph-stat .phsl{font-size:10px;opacity:.7;font-weight:600;}
+.ph-stat .phsv{font-size:20px;font-weight:800;}
+.ph-stat .phsl{font-size:11px;opacity:.7;font-weight:600;}
 
-.ranking-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08);}
-.rk-hd{padding:11px 15px;background:var(--g100);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.ranking-card{background:#fff;border-radius:var(--radius-card);overflow:hidden;box-shadow:var(--shadow-soft);}
+.rk-hd{padding:12px 16px;background:var(--g100);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
 .rk-title{font-size:12px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;}
 .rk-period{display:flex;gap:4px;}
 .rk-period button{padding:4px 10px;border-radius:8px;border:none;font-size:11px;font-weight:700;font-family:var(--sans);cursor:pointer;background:transparent;color:var(--muted);}
@@ -420,7 +453,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 
 .rk-row{display:flex;align-items:center;padding:12px 15px;border-bottom:1px solid var(--border);gap:12px;}
 .rk-row:last-child{border-bottom:none;}
-.rk-pos{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;}
+.rk-pos{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;}
 .pos-1{background:#FEF3C7;color:#B45309;}
 .pos-2{background:#F3F4F6;color:#374151;}
 .pos-3{background:#FEF3C7;color:#92400E;}
@@ -432,7 +465,6 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .rk-score{text-align:right;}
 .rk-os{font-size:16px;font-weight:800;color:var(--red);}
 .rk-sub{font-size:10px;color:var(--muted);font-weight:600;}
-.rk-medal{font-size:18px;}
 
 .rk-trophy{display:none;}
 .rk-trophy.show{display:flex;align-items:center;justify-content:center;padding:20px;font-size:48px;}
@@ -441,7 +473,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .penalty-badge{display:inline-flex;align-items:center;gap:4px;background:var(--red-s);border:1px solid #FECACA;border-radius:8px;padding:2px 8px;font-size:10px;font-weight:700;color:var(--red);}
 
 /* switch role */
-.role-switcher{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+.role-switcher{background:#fff;border-radius:var(--radius-card);overflow:hidden;box-shadow:var(--shadow-soft);}
 .role-opt{display:flex;align-items:center;padding:13px 15px;border-bottom:1px solid var(--border);gap:12px;cursor:pointer;transition:background .1s;}
 .role-opt:last-child{border-bottom:none;}
 .role-opt:active{background:var(--g100);}
@@ -452,13 +484,13 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .role-sel{color:var(--red);font-size:18px;font-weight:800;}
 
 /* ─── FINANCEIRO ─── */
-.fin-hero{background:var(--red);margin:14px 16px 0;border-radius:16px;padding:18px;color:#fff;box-shadow:0 4px 20px rgba(212,31,31,.28);}
-.fh-lbl{font-size:11px;opacity:.7;text-transform:uppercase;letter-spacing:.07em;font-weight:600;margin-bottom:3px;}
-.fh-val{font-size:36px;font-weight:800;letter-spacing:-1px;margin-bottom:12px;}
+.fin-hero{background:var(--red);margin:0;border-radius:var(--radius-card);padding:18px 20px;color:#fff;box-shadow:0 4px 20px rgba(212,31,31,.28);}
+.fh-lbl{font-size:12px;opacity:.7;text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:4px;}
+.fh-val{font-size:34px;font-weight:800;letter-spacing:-1px;margin-bottom:12px;}
 .fh-row{display:flex;justify-content:space-between;}
-.fm-lbl{font-size:10px;opacity:.65;font-weight:600;}
+.fm-lbl{font-size:11px;opacity:.65;font-weight:600;}
 .fm-val{font-size:16px;font-weight:800;}
-.pix-list{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+.pix-list{background:#fff;border-radius:var(--radius-card);overflow:hidden;box-shadow:var(--shadow-soft);}
 .pr{display:flex;align-items:center;padding:12px 14px;gap:11px;border-bottom:1px solid var(--border);}
 .pr:last-child{border-bottom:none;}
 .pr-ico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
@@ -534,10 +566,9 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 /* ─── COUNTER ANIMATION ─── */
 .count-up{transition:all .3s ease;}
 
-/* ─── IMPROVED CTA ─── */
-.cta{transition:transform .2s cubic-bezier(0.34,1.56,0.64,1),opacity .15s ease !important;}
-.cta:active{transform:scale(.96) !important;opacity:.88 !important;}
-.cta:active{transform:scale(.97) !important;opacity:.9 !important;}
+/* ─── CTA INTERACTION ─── */
+.cta{transition:transform .2s cubic-bezier(0.34,1.56,0.64,1),opacity .15s ease;}
+.cta:active{transform:scale(.97);opacity:.9;}
 
 /* ─── SUBTLE CARD HOVER ─── */
 .pb-item{transition:transform .12s,box-shadow .12s;}
@@ -570,7 +601,6 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 /* ─── ENTREGA FIXED LAYOUT ─── */
 .entrega-fixed-header{flex-shrink:0;}
 .entrega-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:12px;}
-.entrega-scroll .entrega-pronta-card{width:100%;margin:0 0 10px 0;}
 .entrega-scroll .entrega-section-title{padding:0 10% 8px;}
 
 /* ─── iOS-STYLE SCROLLBAR ─── */
@@ -602,7 +632,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
         <div class="hd-titles"><div class="ht">Uma Hora</div><div class="hs">Assistência Técnica</div></div>
       </div>
       <div class="hd-right">
-        <div class="role-chip" onclick="toggleRole()" id="roleChip">👤 Atendente</div>
+        <div class="role-chip" onclick="toggleRole()" id="roleChip">Atendente</div>
         <div class="live-chip"><div class="ldot"></div>LIVE</div>
       </div>
     </div>
@@ -617,7 +647,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
     <div class="screen on" id="screen-entrada">
 
       <div class="install" id="ib">
-        <div class="ii">📲</div>
+        <div class="ii"><i class="ph ph-device-mobile-camera ph-ico" style="font-size:20px;color:#fff;"></i></div>
         <div class="it"><div class="ia">Instalar no iPhone</div><div class="ib">Safari → ⬆ → "Adicionar à Tela de Início"</div></div>
         <button onclick="document.getElementById('ib').remove()">OK</button>
       </div>
@@ -628,7 +658,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
       <!-- ARCHIVED PILL -->
       <div class="archived-pill-wrap">
         <div class="archived-pill" onclick="openArchived()">
-          📋 Orçamentos arquivados <span class="archived-pill-count">3</span>
+          Orçamentos arquivados <span class="archived-pill-count">3</span>
         </div>
       </div>
 
@@ -642,15 +672,15 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
             <div class="photo-detected" id="photo-detected-label"><span class="chk">✓</span> Adicionar foto</div>
             <!-- VOICE OVERLAY (inside photo-zone so sibling selector hides acts) -->
             <div class="voice-overlay" id="voiceOverlay">
-              <div class="voice-pulse">🎙</div>
+              <div class="voice-pulse"><i class="ph ph-microphone ph-ico" style="font-size:48px;color:#fff;"></i></div>
               <div class="voice-label">OUVINDO...</div>
               <div class="voice-transcript" id="voiceTranscript">Fale: modelo, problema e serviços</div>
-              <button class="voice-stop" onclick="stopVoice()">⏹</button>
+              <button class="voice-stop" onclick="stopVoice()"><i class="ph ph-stop-circle ph-ico"></i></button>
             </div>
             <div class="photo-acts">
-              <button class="pbtn photo" onclick="event.stopPropagation();document.getElementById('pi').click()"><span class="cam-ico">📷</span><span>Foto</span></button>
+              <button class="pbtn photo" onclick="event.stopPropagation();document.getElementById('pi').click()"><span class="cam-ico"><i class="ph ph-camera ph-ico"></i></span><span>Foto</span></button>
               <div style="flex:1;"></div>
-              <button class="pbtn voice" onclick="event.stopPropagation();startVoice()">🎙 Falar</button>
+              <button class="pbtn voice" onclick="event.stopPropagation();startVoice()"><i class="ph ph-microphone ph-ico"></i> Falar</button>
             </div>
           </div>
           <input type="file" id="pi" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
@@ -661,19 +691,18 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
       <div class="sec">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
           <div class="sec-title" style="margin-bottom:0;">Dados do Atendimento</div>
-          <button onclick="toggleClientData()" id="clientToggleBtn" style="background:var(--blue-s);border:1px solid #BFDBFE;color:var(--blue);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;font-family:var(--sans);cursor:pointer;">Minimizar ▲</button>
+          <button onclick="toggleClientData()" id="clientToggleBtn" class="sec-toggle">Minimizar ▲</button>
         </div>
-        <div id="clientSummaryRow" class="card" style="display:none;padding:12px 15px;align-items:center;gap:10px;">
-          <div style="font-size:18px;flex-shrink:0;">📋</div>
+        <div id="clientSummaryRow" class="card" style="display:none;padding:11px 15px;align-items:center;">
           <div id="clientSummaryName" style="flex:1;font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
         </div>
         <div class="card" id="clientDataCard">
           <div id="clientDataBody">
-            <div class="fi"><div class="fii">👤</div><div class="fic"><div class="lbl">Nome do Cliente</div><input id="clientName" type="text" placeholder="Nome completo..." value="Carlos Mendes"></div></div>
-            <div class="fi"><div class="fii">💬</div><div class="fic"><div class="lbl">WhatsApp</div><input id="clientWA" type="tel" placeholder="+55 11 9 0000-0000" value="+55 11 9 8734-2291"></div></div>
-            <div class="fi" onclick="openModelSheet()" style="cursor:pointer;"><div class="fii">📱</div><div class="fic"><div class="lbl">Modelo</div><input id="modelInput" type="text" placeholder="Ex: iPhone 14 Pro" value="iPhone 14 Pro" oninput="buildServices()" onclick="event.stopPropagation();openModelSheet()" style="pointer-events:auto;cursor:pointer;caret-color:var(--blue);" readonly></div><div style="color:var(--blue);font-size:11px;font-weight:700;white-space:nowrap;flex-shrink:0;padding-left:4px;">▼ Selecionar</div></div>
-            <div class="fi"><div class="fii">🔑</div><div class="fic"><div class="lbl">Senha do iPhone</div><input id="senhaInput" type="text" placeholder="Ex: 123456 ou Sem senha"></div></div>
-            <div class="fi" style="align-items:flex-start;padding-top:12px;"><div class="fii" style="margin-top:1px;">🗣</div><div class="fic"><div class="lbl">Problema Relatado</div><textarea id="problemInput" placeholder="Descreva o problema..." rows="1" style="background:none;border:none;font-family:var(--sans);font-size:14px;font-weight:600;color:var(--text);width:100%;outline:none;resize:none;overflow:hidden;min-height:22px;line-height:1.5;" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'">Tela quebrada — canto inferior esq.</textarea></div></div>
+            <div class="fi"><div class="fii"><i class="ph ph-user ph-ico"></i></div><div class="fic"><div class="lbl">Nome do Cliente</div><input id="clientName" type="text" placeholder="Nome completo..." value="Carlos Mendes"></div></div>
+            <div class="fi"><div class="fii"><i class="ph ph-chat-circle ph-ico"></i></div><div class="fic"><div class="lbl">WhatsApp</div><input id="clientWA" type="tel" placeholder="+55 11 9 0000-0000" value="+55 11 9 8734-2291"></div></div>
+            <div class="fi" onclick="openModelSheet()" style="cursor:pointer;"><div class="fii"><i class="ph ph-device-mobile ph-ico"></i></div><div class="fic"><div class="lbl">Modelo</div><input id="modelInput" type="text" placeholder="Ex: iPhone 14 Pro" value="iPhone 14 Pro" oninput="buildServices()" onclick="event.stopPropagation();openModelSheet()" style="pointer-events:auto;cursor:pointer;caret-color:var(--blue);" readonly></div><div style="color:var(--muted);font-size:11px;font-weight:600;flex-shrink:0;padding-left:4px;">▼</div></div>
+            <div class="fi"><div class="fii"><i class="ph ph-key ph-ico"></i></div><div class="fic"><div class="lbl">Senha do iPhone</div><input id="senhaInput" type="text" placeholder="Ex: 123456 ou Sem senha"></div></div>
+            <div class="fi" style="align-items:flex-start;padding-top:12px;"><div class="fii" style="margin-top:1px;"><i class="ph ph-chat-dots ph-ico"></i></div><div class="fic"><div class="lbl">Problema Relatado</div><textarea id="problemInput" placeholder="Descreva o problema..." rows="1" style="background:none;border:none;font-family:var(--sans);font-size:14px;font-weight:600;color:var(--text);width:100%;outline:none;resize:none;overflow:hidden;min-height:22px;line-height:1.5;" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'">Tela quebrada — canto inferior esq.</textarea></div></div>
           </div>
         </div>
       </div>
@@ -682,19 +711,19 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
       <div class="sec">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
           <div class="sec-title" style="margin-bottom:0;">Diagnóstico na Entrada</div>
-          <button onclick="toggleDiagSection(this)" id="diagToggleBtn" style="background:var(--blue-s);border:1px solid #BFDBFE;color:var(--blue);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;font-family:var(--sans);cursor:pointer;">Expandir ▼</button>
+          <button onclick="toggleDiagSection(this)" id="diagToggleBtn" class="sec-toggle">Expandir ▼</button>
         </div>
         <div id="diagSummary" class="card" style="display:none;margin-bottom:8px;"></div>
         <div class="card" id="diagBody" style="display:none;">
-          <div class="di"><div class="dii">🔐</div><div class="din"><div class="dnm">Face ID</div><div class="dsb">Reconhecimento facial</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
-          <div class="di"><div class="dii">🖥</div><div class="din"><div class="dnm">Tela & Display</div><div class="dsb">Manchas, pixels, brilho</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
-          <div class="di"><div class="dii">👆</div><div class="din"><div class="dnm">Touch Screen</div><div class="dsb">Resposta em toda a tela</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
-          <div class="di"><div class="dii">🔊</div><div class="din"><div class="dnm">Alto-falante</div><div class="dsb">Caixa e falante de chamada</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
-          <div class="di"><div class="dii">📸</div><div class="din"><div class="dnm">Câmera Frontal</div><div class="dsb">FaceTime e selfie</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
-          <div class="di"><div class="dii">📷</div><div class="din"><div class="dnm">Câmera Traseira</div><div class="dsb">Fotos e vídeos</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
-          <div class="di"><div class="dii">⬆</div><div class="din"><div class="dnm">Botões Físicos</div><div class="dsb">Volume, sleep, silencioso</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+          <div class="di"><div class="dii"><i class="ph ph-scan ph-ico"></i></div><div class="din"><div class="dnm">Face ID</div><div class="dsb">Reconhecimento facial</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+          <div class="di"><div class="dii"><i class="ph ph-monitor ph-ico"></i></div><div class="din"><div class="dnm">Tela & Display</div><div class="dsb">Manchas, pixels, brilho</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+          <div class="di"><div class="dii"><i class="ph ph-hand-tap ph-ico"></i></div><div class="din"><div class="dnm">Touch Screen</div><div class="dsb">Resposta em toda a tela</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+          <div class="di"><div class="dii"><i class="ph ph-speaker-high ph-ico"></i></div><div class="din"><div class="dnm">Alto-falante</div><div class="dsb">Caixa e falante de chamada</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+          <div class="di"><div class="dii"><i class="ph ph-camera ph-ico"></i></div><div class="din"><div class="dnm">Câmera Frontal</div><div class="dsb">FaceTime e selfie</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+          <div class="di"><div class="dii"><i class="ph ph-camera-rotate ph-ico"></i></div><div class="din"><div class="dnm">Câmera Traseira</div><div class="dsb">Fotos e vídeos</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+          <div class="di"><div class="dii"><i class="ph ph-sliders-horizontal ph-ico"></i></div><div class="din"><div class="dnm">Botões Físicos</div><div class="dsb">Volume, sleep, silencioso</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
           <div class="di" id="batRow">
-            <div class="dii" id="batIco">🔋</div>
+            <div class="dii" id="batIco"><i class="ph ph-battery-full ph-ico"></i></div>
             <div class="din"><div class="dnm">Bateria</div><div class="dsb">Abaixo de 80% = ruim</div></div>
             <div style="display:flex;align-items:center;gap:7px;flex-shrink:0;">
               <input type="number" min="0" max="100" value="85" id="batNum" oninput="batSync('num')" style="width:42px;background:var(--g100);border:1.5px solid var(--border);border-radius:8px;padding:5px 4px;font-size:13px;font-weight:800;color:var(--text);text-align:center;font-family:var(--sans);outline:none;">
@@ -703,7 +732,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
             </div>
             <div class="ios-toggle" id="batToggle" style="pointer-events:none;opacity:.9;flex-shrink:0;"><div class="ios-track"><div class="ios-thumb"></div></div></div>
           </div>
-          <div class="di"><div class="dii">🔌</div><div class="din"><div class="dnm">Conector</div><div class="dsb">Carregamento e dados</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+          <div class="di"><div class="dii"><i class="ph ph-plug ph-ico"></i></div><div class="din"><div class="dnm">Conector</div><div class="dsb">Carregamento e dados</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
         </div>
       </div>
 
@@ -711,11 +740,11 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
       <div class="sec">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
           <div class="sec-title" style="margin-bottom:0;">Serviços & Orçamento</div>
-          <button onclick="toggleSvcSection(this)" id="svcToggleBtn" style="background:var(--blue-s);border:1px solid #BFDBFE;color:var(--blue);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;font-family:var(--sans);cursor:pointer;">Minimizar ▲</button>
+          <button onclick="toggleSvcSection(this)" id="svcToggleBtn" class="sec-toggle">Minimizar ▲</button>
         </div>
         <div id="svcBody">
         <div class="svc-banner" onclick="openModelSheet()" style="cursor:pointer;">
-          <div class="sbi">💡</div>
+          <div class="sbi"></div>
           <div style="flex:1;"><div class="sba" id="svcTitle">iPhone 14 Pro — Tabela de preços</div><div class="sbb">Preço fixo · Sem negociação · Garantia inclusa</div></div>
           <div style="color:rgba(255,255,255,.8);font-size:11px;font-weight:700;flex-shrink:0;">Trocar ▼</div>
         </div>
@@ -749,9 +778,9 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
           <div class="apv-row">
             <div class="apv-lbl">Prazo</div>
             <div class="pc-chips">
-              <div class="pc sel" onclick="selP(this)">⚡ 1h</div>
-              <div class="pc" onclick="selP(this)">⏱ 2h</div>
-              <div class="pc" onclick="selP(this)">📅 Amanhã</div>
+              <div class="pc sel" onclick="selP(this)">1h</div>
+              <div class="pc" onclick="selP(this)">2h</div>
+              <div class="pc" onclick="selP(this)">Amanhã</div>
             </div>
           </div>
         </div>
@@ -761,12 +790,12 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
       <div class="sec">
         <div class="sec-title">Nº OS (adesivo)</div>
         <div class="card">
-          <div class="fi"><div class="fii">🏷</div><div class="fic"><div class="lbl">Número do adesivo colado no aparelho</div><input id="osAdesivo" type="number" inputmode="numeric" placeholder="Ex: 2847" style="font-size:20px;font-weight:800;letter-spacing:1px;" onkeydown="if(event.key==='Enter'){event.preventDefault();openOS();}"></div></div>
+          <div class="fi"><div class="fii"><i class="ph ph-tag ph-ico"></i></div><div class="fic"><div class="lbl">Número do adesivo colado no aparelho</div><input id="osAdesivo" type="number" inputmode="numeric" placeholder="Ex: 2847" style="font-size:20px;font-weight:800;letter-spacing:1px;" onkeydown="if(event.key==='Enter'){event.preventDefault();openOS();}"></div></div>
         </div>
       </div>
 
       <div class="cta-wrap">
-        <button class="cta" id="ctaBtn" onclick="openOS()">📥 Abrir Ordem de Serviço</button>
+        <button class="cta" id="ctaBtn" onclick="openOS()"><i class="ph ph-clipboard-text ph-ico"></i> Abrir Ordem de Serviço</button>
       </div>
     </div>
 
@@ -794,7 +823,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 
       <div class="archived-pill-wrap" id="painelArchivedWrap" style="flex-shrink:0;padding:6px 16px calc(44px + env(safe-area-inset-bottom,0px) + 10px);">
         <div class="archived-pill no-border" onclick="openArchived()">
-          📋 Arquivados do dia <span class="archived-pill-count">3</span>
+          Arquivados do dia <span class="archived-pill-count">3</span>
         </div>
       </div>
 
@@ -809,14 +838,14 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
       <!-- ESTADO INICIAL: busca + lista de OS prontas -->
       <div id="entregaEmpty" class="entrega-empty" style="display:flex;flex-direction:column;height:100%;overflow:hidden;align-items:stretch;">
         <div class="entrega-fixed-header" style="text-align:center;padding:16px 16px 0;flex-shrink:0;">
-          <div style="font-size:48px;margin-bottom:10px;">📦</div>
-          <div style="font-size:15px;font-weight:700;color:var(--mid);margin-bottom:6px;">Buscar ou Entregar OS</div>
-          <div style="font-size:12px;color:var(--muted);margin-bottom:20px;">Digite o número ou selecione abaixo</div>
+          <div style="margin-bottom:12px;"><i class="ph ph-package ph-ico" style="font-size:42px;color:var(--muted);"></i></div>
+          <div style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:5px;">Buscar ou Entregar OS</div>
+          <div style="font-size:13px;font-weight:400;color:var(--muted);margin-bottom:20px;">Digite o número ou selecione abaixo</div>
           <input class="entrega-big-input" id="osSearch" type="text" inputmode="numeric" placeholder="0000" onkeydown="if(event.key==='Enter')doSearch()">
-          <button class="cta" style="margin:20px auto 0;max-width:220px;background:var(--red);box-shadow:0 4px 16px rgba(201,53,53,.3);" onclick="doSearch()">🔍 Buscar</button>
+          <button class="cta" style="margin:20px auto 0;max-width:220px;background:var(--red);box-shadow:0 4px 16px rgba(201,53,53,.3);" onclick="doSearch()"><i class="ph ph-magnifying-glass ph-ico"></i> Buscar</button>
         </div>
         <!-- Título fixo -->
-        <div id="prontasTitle" style="display:none;padding:14px 6px 6px 16px;flex-shrink:0;font-size:11px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.07em;">Prontas para entrega</div>
+        <div id="prontasTitle" style="display:none;padding:14px 16px 6px;flex-shrink:0;font-size:12px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;">Prontas para entrega</div>
         <!-- Lista de OS prontas com scroll próprio -->
         <div class="entrega-scroll" id="prontasList" style="padding:10px 12px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;padding-bottom:calc(56px + env(safe-area-inset-bottom,0px) + 30px);"></div>
       </div>
@@ -825,19 +854,19 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
       <div class="od-wrap" id="odWrap">
         <div class="od-card" style="margin:10px 16px 0;">
           <!-- Header OS -->
-          <div class="od-hd" style="padding:12px 15px 12px;">
+          <div class="od-hd">
             <div style="display:flex;align-items:stretch;gap:10px;">
               <div style="flex:1;">
                 <div class="od-model" id="od-client-name">Carlos Mendes</div>
                 <div id="od-model-chip" style="font-size:13px;font-weight:500;color:var(--mid);margin-top:5px;"></div>
                 <div id="od-senha-display" style="font-size:13px;font-weight:500;color:var(--mid);margin-top:3px;"></div>
                 <div id="od-problem-display" style="font-size:13px;color:var(--mid);margin-top:3px;line-height:1.4;"></div>
-                <span class="od-status-badge status-fila" id="od-status-badge" style="display:none;margin-top:5px;">⏳ Aguardando técnico</span>
+                <span class="od-status-badge status-fila" id="od-status-badge" style="display:none;margin-top:5px;">Aguardando técnico</span>
                 <div id="od-os-num" style="font-size:13px;font-weight:500;color:var(--mid);margin-top:3px;"><span id="od-os-num-text"></span></div>
               </div>
               <img id="od-photo-thumb" style="display:none;width:56px;height:56px;object-fit:cover;border-radius:10px;border:2px solid rgba(212,31,31,.2);flex-shrink:0;align-self:flex-start;" src="">
               <div style="display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end;flex-shrink:0;gap:8px;">
-                <button id="odEditBtn" onclick="editOSFromEntrega()" style="display:none;background:rgba(255,255,255,.85);border:1px solid #BFDBFE;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--blue);cursor:pointer;font-family:var(--sans);">✏️ Editar</button>
+                <button id="odEditBtn" onclick="editOSFromEntrega()" style="display:none;background:rgba(255,255,255,.85);border:1px solid #BFDBFE;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--blue);cursor:pointer;font-family:var(--sans);">Editar</button>
                 <div style="flex:1;"></div>
                 <button id="odBackBtn" onclick="backToKanbanOrList()" style="background:rgba(255,255,255,.85);border:1px solid #FECACA;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--red);cursor:pointer;font-family:var(--sans);white-space:nowrap;">← Voltar</button>
               </div>
@@ -852,7 +881,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
               <span class="od-chip ck-fail">Tela ✗</span>
               <span class="od-chip ck-ok">Touch ✓</span>
               <span class="od-chip ck-ok">Speaker ✓</span>
-              <span class="od-chip ck-ok">🔋 34%</span>
+              <span class="od-chip ck-ok">Bat. 34%</span>
             </div>
           </div>
 
@@ -877,16 +906,16 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
           <div class="od-section" id="conf-section">
             <div class="od-section-title">Conferência na saída</div>
             <div id="conf-diag-extra"></div>
-            <div class="conf-item" data-label="Face ID"><div class="conf-ico">🔐</div><div class="conf-lbl">Face ID</div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
-            <div class="conf-item" data-label="Tela & Display"><div class="conf-ico">🖥</div><div class="conf-lbl">Tela & Display</div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
-            <div class="conf-item" data-label="Touch Screen"><div class="conf-ico">👆</div><div class="conf-lbl">Touch Screen</div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
-            <div class="conf-item"><div class="conf-ico">🔋</div><div class="conf-lbl">Bateria pós-conserto</div><div class="ios-toggle" id="conf-bat-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+            <div class="conf-item" data-label="Face ID"><div class="conf-ico"><i class="ph ph-scan ph-ico"></i></div><div class="conf-lbl">Face ID</div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+            <div class="conf-item" data-label="Tela & Display"><div class="conf-ico"><i class="ph ph-monitor ph-ico"></i></div><div class="conf-lbl">Tela & Display</div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+            <div class="conf-item" data-label="Touch Screen"><div class="conf-ico"><i class="ph ph-hand-tap ph-ico"></i></div><div class="conf-lbl">Touch Screen</div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+            <div class="conf-item"><div class="conf-ico"><i class="ph ph-battery-full ph-ico"></i></div><div class="conf-lbl">Bateria pós-conserto</div><div class="ios-toggle" id="conf-bat-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
           </div>
 
           <!-- AÇÃO CONTEXTUAL -->
           <div class="od-section" id="od-action-section">
             <button class="od-action-btn od-action-pegar" id="od-action-btn" onclick="handleOSAction()">
-              🔧 Pegar este serviço
+              <i class="ph ph-wrench ph-ico"></i> Pegar este serviço
             </button>
           </div>
 
@@ -936,18 +965,18 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
         <div class="card" style="padding:14px 15px;">
           <div class="proof-grid">
             <div>
-              <div style="font-size:10px;font-weight:600;color:var(--muted);margin-bottom:6px;">📱 Aparelho pronto</div>
+              <div style="font-size:10px;font-weight:600;color:var(--muted);margin-bottom:6px;">Aparelho pronto</div>
               <div class="proof-zone" id="proofZone1" onclick="document.getElementById('proofInput1').click()">
                 <img id="proofThumb1" style="display:none;" src="">
-                <span id="proofIcon1" style="font-size:22px;">📷</span>
+                <span id="proofIcon1" style="font-size:22px;"><i class="ph ph-camera ph-ico" style="font-size:22px;color:var(--muted);"></i></span>
               </div>
               <input type="file" id="proofInput1" accept="image/*" capture="environment" style="display:none" onchange="handleProofPhoto(this,1)">
             </div>
             <div>
-              <div style="font-size:10px;font-weight:600;color:var(--muted);margin-bottom:6px;">💳 Comprovante PIX</div>
+              <div style="font-size:10px;font-weight:600;color:var(--muted);margin-bottom:6px;">Comprovante PIX</div>
               <div class="proof-zone" id="proofZone2" onclick="document.getElementById('proofInput2').click()">
                 <img id="proofThumb2" style="display:none;" src="">
-                <span id="proofIcon2" style="font-size:22px;">💳</span>
+                <span id="proofIcon2" style="font-size:22px;"><i class="ph ph-credit-card ph-ico" style="font-size:22px;color:var(--muted);"></i></span>
               </div>
               <input type="file" id="proofInput2" accept="image/*" capture="environment" style="display:none" onchange="handleProofPhoto(this,2)">
             </div>
@@ -959,7 +988,7 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
 
       <div class="cta-wrap">
         <button class="finish-btn" id="finBtn" onclick="handleFinBtn()" style="display:none;">
-          <span>📲</span> Finalizar e Enviar WhatsApp
+          <span><i class="ph ph-paper-plane-tilt ph-ico"></i></span> Finalizar e Enviar WhatsApp
         </button>
       </div>
 
@@ -998,8 +1027,8 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
         </div>
       </div>
 
-      <div class="sec" style="padding-top:18px;">
-        <div class="sec-title" style="font-size:13px;letter-spacing:.04em;margin-bottom:10px;">OS por Técnico — Hoje</div>
+      <div class="sec" style="padding-top:16px;">
+        <div class="sec-title">OS por Técnico — Hoje</div>
         <div class="chart-wrap">
           <div class="bar-chart" id="techOSChart">
             <div style="text-align:center;padding:12px;font-size:13px;color:var(--muted);">Nenhum dado hoje ainda</div>
@@ -1007,8 +1036,8 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
         </div>
       </div>
 
-      <div class="sec" style="padding-top:18px;">
-        <div class="sec-title" style="font-size:13px;letter-spacing:.04em;margin-bottom:10px;">Garantias por Atendente — Hoje</div>
+      <div class="sec" style="padding-top:16px;">
+        <div class="sec-title">Garantias por Atendente — Hoje</div>
         <div class="chart-wrap">
           <div class="bar-chart" id="garantiaChart">
             <div style="text-align:center;padding:12px;font-size:13px;color:var(--muted);">Nenhuma garantia vendida hoje</div>
@@ -1016,14 +1045,14 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
         </div>
       </div>
 
-      <div class="sec" id="pricesSection" style="padding-top:18px;">
+      <div class="sec" id="pricesSection" style="padding-top:16px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-          <span style="font-size:13px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.04em;">Tabela de Preços</span>
-          <button onclick="openPricesEditor()" style="background:var(--blue-s);border:1px solid #BFDBFE;color:var(--blue);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;font-family:var(--sans);cursor:pointer;">✏️ Editar</button>
+          <span class="sec-title" style="margin-bottom:0;">Tabela de Preços</span>
+          <button onclick="openPricesEditor()" style="background:var(--blue-s);border:1px solid #BFDBFE;color:var(--blue);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;font-family:var(--sans);cursor:pointer;">Editar</button>
         </div>
         <div class="chart-wrap">
           <div class="fi">
-            <div class="fii">💰</div>
+            <div class="fii"><i class="ph ph-money ph-ico"></i></div>
             <div class="fic">
               <div class="lbl">Preços personalizados por modelo</div>
               <div style="font-size:13px;font-weight:600;color:var(--text);">Toque em Editar para personalizar</div>
@@ -1032,16 +1061,16 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
         </div>
       </div>
 
-      <div class="sec" style="padding-top:18px;">
-        <div class="sec-title" style="font-size:13px;letter-spacing:.04em;margin-bottom:10px;">Meu Histórico</div>
+      <div class="sec" style="padding-top:16px;">
+        <div class="sec-title">Meu Histórico</div>
         <div class="chart-wrap" id="myHistorico">
           <div class="hist-row"><span class="hist-lbl">OS atendidas</span><span class="hist-val">—</span></div>
         </div>
       </div>
 
-      <div class="sec" style="padding-top:18px;">
+      <div class="sec" style="padding-top:16px;">
         <div onclick="togglePayments()" style="cursor:pointer;display:flex;align-items:center;gap:8px;user-select:none;margin-bottom:10px;">
-          <span style="font-size:13px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.04em;">Entregas de hoje</span>
+          <span class="sec-title" style="margin-bottom:0;">Entregas de hoje</span>
           <div id="payments-arrow" style="width:22px;height:22px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .2s;">
             <span style="font-size:8px;color:var(--mid);">▼</span>
           </div>
@@ -1061,9 +1090,9 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
       <div class="ios-scroll" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(56px + env(safe-area-inset-bottom,0px) + 24px);">
 
       <div class="profile-hero" onclick="openProfileEdit()" style="cursor:pointer;">
-        <div style="position:absolute;top:12px;right:14px;background:rgba(255,255,255,.2);border-radius:8px;padding:3px 8px;font-size:10px;font-weight:700;color:#fff;">✏️ Editar</div>
+        <div style="position:absolute;top:12px;right:14px;background:rgba(255,255,255,.2);border-radius:8px;padding:3px 8px;font-size:10px;font-weight:700;color:#fff;">Editar</div>
         <div class="ph-top">
-          <div class="ph-avatar">👤</div>
+          <div class="ph-avatar"><i class="ph ph-user-circle ph-ico" style="font-size:44px;color:var(--muted);"></i></div>
           <div class="ph-info">
             <div class="ph-name" id="profileName">Usuário</div>
             <div class="ph-role" id="profileRole">Toque para editar</div>
@@ -1079,7 +1108,7 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
       <!-- RANKING ATENDENTES -->
       <div class="sec">
         <div class="ranking-card">
-          <div class="rk-hd"><div class="rk-title">🧑‍💼 Ranking de Atendentes</div></div>
+          <div class="rk-hd"><div class="rk-title">Ranking de Atendentes</div></div>
           <div id="rankingAtendentes"><div class="bs-empty">Nenhum dado ainda</div></div>
         </div>
       </div>
@@ -1087,7 +1116,7 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
       <!-- RANKING TÉCNICOS -->
       <div class="sec">
         <div class="ranking-card">
-          <div class="rk-hd"><div class="rk-title">🔧 Ranking de Técnicos</div></div>
+          <div class="rk-hd"><div class="rk-title">Ranking de Técnicos</div></div>
           <div id="rankingTecnicos"><div class="bs-empty">Nenhum dado ainda</div></div>
         </div>
       </div>
@@ -1098,7 +1127,7 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
         <div class="sec-title">Trocar Perfil</div>
         <div class="role-switcher" style="margin-bottom:12px;">
           <div class="role-opt" onclick="switchProfile('Administrador','dono')">
-            <div class="role-icon" style="background:var(--red-s)">👑</div>
+            <div class="role-icon" style="background:var(--red-s)"><i class="ph ph-crown-simple ph-ico"></i></div>
             <div class="role-info"><div class="role-name">Administrador</div><div class="role-desc">Dono · Acesso completo · Resultados</div></div>
             <div class="role-sel" id="selDono">✓</div>
           </div>
@@ -1121,7 +1150,7 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
   <div class="top-sheet" id="profileEditSheet">
     <div class="ts-pad">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-top:8px;">
-        <div class="ts-title">✏️ Editar Perfil</div>
+        <div class="ts-title">Editar Perfil</div>
         <button class="bs-close" onclick="closeProfileEdit()">✕</button>
       </div>
       <div class="ts-field">
@@ -1131,12 +1160,12 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
       <div class="ts-field">
         <div class="ts-lbl">Função</div>
         <select class="ts-inp" id="editProfileRole">
-          <option value="dono">👑 Dono</option>
-          <option value="atendente">🧑‍💼 Atendente</option>
-          <option value="tecnico">🔧 Técnico</option>
+          <option value="dono">Dono</option>
+          <option value="atendente">Atendente</option>
+          <option value="tecnico">Técnico</option>
         </select>
       </div>
-      <button onclick="saveProfileEdit()" style="width:100%;background:var(--blue);color:#fff;border:none;border-radius:12px;height:46px;font-family:var(--sans);font-size:14px;font-weight:800;cursor:pointer;">✓ Salvar</button>
+      <button onclick="saveProfileEdit()" style="width:100%;background:var(--blue);color:#fff;border:none;border-radius:12px;height:46px;font-family:var(--sans);font-size:14px;font-weight:800;cursor:pointer;">Salvar</button>
     </div>
   </div>
 
@@ -1150,17 +1179,17 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
     </div>
     <div class="bs-list">
       <div class="bs-item" onclick="loadArchived('Rafael Lima','iPhone 13','Bateria')">
-        <div class="bs-item-ico">📋</div>
+        <div class="bs-item-ico"><i class="ph ph-clipboard-text ph-ico" style="font-size:17px;color:var(--blue);"></i></div>
         <div class="bs-item-info"><div class="bs-item-name">Rafael Lima</div><div class="bs-item-detail">iPhone 13 · Bateria · Recusado · 14:22</div></div>
         <div class="bs-item-val">R$ 220</div>
       </div>
       <div class="bs-item" onclick="loadArchived('João Costa','iPhone 12','Tela compatível')">
-        <div class="bs-item-ico">📋</div>
+        <div class="bs-item-ico"><i class="ph ph-clipboard-text ph-ico" style="font-size:17px;color:var(--blue);"></i></div>
         <div class="bs-item-info"><div class="bs-item-name">João Costa</div><div class="bs-item-detail">iPhone 12 · Tela · Recusado · 15:08</div></div>
         <div class="bs-item-val">R$ 280</div>
       </div>
       <div class="bs-item" onclick="loadArchived('Maria Silva','iPhone 14','Câmera traseira')">
-        <div class="bs-item-ico">📋</div>
+        <div class="bs-item-ico"><i class="ph ph-clipboard-text ph-ico" style="font-size:17px;color:var(--blue);"></i></div>
         <div class="bs-item-info"><div class="bs-item-name">Maria Silva</div><div class="bs-item-detail">iPhone 14 · Câmera · Recusado · 16:45</div></div>
         <div class="bs-item-val">R$ 320</div>
       </div>
@@ -1172,7 +1201,7 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
   <div class="bottom-sheet" id="modelSheet" style="display:none;max-height:80vh;">
     <div class="bs-handle"></div>
     <div class="bs-header">
-      <div class="bs-title">📱 Selecionar Modelo</div>
+      <div class="bs-title">Selecionar Modelo</div>
       <button class="bs-close" onclick="closeModelSheet()">✕</button>
     </div>
     <div style="padding:0 16px 8px;">
@@ -1185,7 +1214,7 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
   <div class="modal-overlay" id="pricesOverlay" onclick="closePricesEditor()"></div>
   <div class="modal-overlay" id="confirmConsertoOverlay">
     <div class="alert-card">
-      <div class="alert-icon">🔧</div>
+      <div class="alert-icon"><i class="ph ph-wrench ph-ico" style="font-size:36px;"></i></div>
       <div class="alert-title">Manutenção finalizada?</div>
       <div class="alert-msg">Confirme antes de notificar o cliente.</div>
       <div style="display:flex;gap:8px;margin-top:4px;">
@@ -1196,7 +1225,7 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
   </div>
   <div class="modal-overlay" id="photoAlertOverlay">
     <div class="alert-card">
-      <div class="alert-icon">📷</div>
+      <div class="alert-icon"><i class="ph ph-camera ph-ico" style="font-size:36px;"></i></div>
       <div class="alert-title">Fotos obrigatórias</div>
       <div class="alert-msg" id="photoAlertMsg">Tire as fotos necessárias antes de confirmar a entrega.</div>
       <button class="alert-btn" onclick="document.getElementById('photoAlertOverlay').classList.remove('show')">Entendi</button>
@@ -1205,7 +1234,7 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
   <div class="bottom-sheet" id="pricesSheet" style="display:none;">
     <div class="bs-handle"></div>
     <div class="bs-header">
-      <div class="bs-title">✏️ Preços por Modelo</div>
+      <div class="bs-title">Preços por Modelo</div>
       <button class="bs-close" onclick="closePricesEditor()">✕</button>
     </div>
     <div style="padding:0 16px 8px;">
@@ -1219,18 +1248,18 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
     </div>
     <div class="bs-list" id="pricesEditorItems" style="max-height:55vh;overflow-y:auto;padding:0 12px 4px;"></div>
     <div style="padding:10px 16px 8px;">
-      <button onclick="closePricesEditor()" style="width:100%;background:var(--green);color:#fff;border:none;border-radius:12px;height:46px;font-family:var(--sans);font-size:14px;font-weight:800;cursor:pointer;">✓ Salvo automaticamente</button>
+      <button onclick="closePricesEditor()" style="width:100%;background:var(--green);color:#fff;border:none;border-radius:12px;height:46px;font-family:var(--sans);font-size:14px;font-weight:800;cursor:pointer;">Salvo automaticamente</button>
     </div>
   </div>
 
   <!-- BOTTOM NAV -->
   <div class="bnav" id="bnav">
     <div class="bnav-icons">
-      <button class="nb on" onclick="goTo('entrada',this)" id="nb-entrada"><span class="ni"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span>Entrada</button>
-      <button class="nb" onclick="goTo('painel',this)" id="nb-painel"><span class="ni"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="5" height="18" rx="1.5"/><rect x="9.5" y="3" width="5" height="12" rx="1.5"/><rect x="17" y="3" width="5" height="15" rx="1.5"/></svg></span>Painel</button>
-      <button class="nb" onclick="goTo('entrega',this)" id="nb-entrega"><span class="ni"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M12 22V12M12 12l-3 3M12 12l3 3"/></svg></span>Entrega</button>
-      <button class="nb" onclick="goTo('resultados',this)" id="nb-resultados"><span class="ni"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="14" width="4" height="8" rx="1"/><rect x="9" y="9" width="4" height="13" rx="1"/><rect x="16" y="4" width="4" height="18" rx="1"/></svg></span>Resultados</button>
-      <button class="nb" onclick="goTo('perfil',this)" id="nb-perfil"><span class="ni"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="9" r="3"/><path d="M6.5 20c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/></svg></span>Perfil</button>
+      <button class="nb on" onclick="goTo('entrada',this)" id="nb-entrada"><span class="ni"><i class="ph-bold ph-note-pencil ph-ico"></i></span>Entrada</button>
+      <button class="nb" onclick="goTo('painel',this)" id="nb-painel"><span class="ni"><i class="ph-bold ph-kanban ph-ico"></i></span>Painel</button>
+      <button class="nb" onclick="goTo('entrega',this)" id="nb-entrega"><span class="ni"><i class="ph-bold ph-package ph-ico"></i></span>Entrega</button>
+      <button class="nb" onclick="goTo('resultados',this)" id="nb-resultados"><span class="ni"><i class="ph-bold ph-chart-bar ph-ico"></i></span>Resultados</button>
+      <button class="nb" onclick="goTo('perfil',this)" id="nb-perfil"><span class="ni"><i class="ph-bold ph-user-circle ph-ico"></i></span>Perfil</button>
     </div>
     <div class="bnav-safe"></div>
   </div>
@@ -1259,13 +1288,13 @@ function loadStorage() {
     if (!osList) {
       const now = Date.now();
       osList = [
-        {id:'#2847',num:2847,clientName:'Carlos Mendes',clientWA:'+5511987342291',model:'iPhone 14 Pro',problem:'Tela quebrada — canto inf. esq.',photo:null,diagnosis:[{label:'Face ID',ok:true},{label:'Tela & Display',ok:false},{label:'Touch Screen',ok:true},{label:'Alto-falante',ok:true},{label:'Câmera Frontal',ok:true},{label:'Câmera Traseira',ok:true},{label:'Botões Físicos',ok:true},{label:'Conector',ok:true}],battery:34,services:[{nm:'Troca de Tela OLED Original',price:480,group:'tela'},{nm:'Higienização Completa',price:50},{nm:'Garantia 3 meses',price:120,guarantee:true,group:'garantia'}],total:650,prazo:'⚡ 1h',status:'fila',tecnico:null,createdAt:now-12*60000,updatedAt:now-12*60000},
-        {id:'#2846',num:2846,clientName:'Ana Santos',clientWA:'',model:'iPhone 13',problem:'Bateria fraca',photo:null,diagnosis:[],battery:72,services:[{nm:'Troca de Bateria Original',price:220}],total:220,prazo:'⚡ 1h',status:'fila',tecnico:null,createdAt:now-8*60000,updatedAt:now-8*60000},
-        {id:'#2845',num:2845,clientName:'Rafael Lima',clientWA:'',model:'iPhone 15 Pro',problem:'Tela manchada',photo:null,diagnosis:[],battery:89,services:[{nm:'Troca de Tela OLED Original',price:580}],total:580,prazo:'⚡ 1h',status:'fila',tecnico:null,createdAt:now-25*60000,updatedAt:now-25*60000},
+        {id:'#2847',num:2847,clientName:'Carlos Mendes',clientWA:'+5511987342291',model:'iPhone 14 Pro',problem:'Tela quebrada — canto inf. esq.',photo:null,diagnosis:[{label:'Face ID',ok:true},{label:'Tela & Display',ok:false},{label:'Touch Screen',ok:true},{label:'Alto-falante',ok:true},{label:'Câmera Frontal',ok:true},{label:'Câmera Traseira',ok:true},{label:'Botões Físicos',ok:true},{label:'Conector',ok:true}],battery:34,services:[{nm:'Troca de Tela OLED Original',price:480,group:'tela'},{nm:'Higienização Completa',price:50},{nm:'Garantia 3 meses',price:120,guarantee:true,group:'garantia'}],total:650,prazo:'1h',status:'fila',tecnico:null,createdAt:now-12*60000,updatedAt:now-12*60000},
+        {id:'#2846',num:2846,clientName:'Ana Santos',clientWA:'',model:'iPhone 13',problem:'Bateria fraca',photo:null,diagnosis:[],battery:72,services:[{nm:'Troca de Bateria Original',price:220}],total:220,prazo:'1h',status:'fila',tecnico:null,createdAt:now-8*60000,updatedAt:now-8*60000},
+        {id:'#2845',num:2845,clientName:'Rafael Lima',clientWA:'',model:'iPhone 15 Pro',problem:'Tela manchada',photo:null,diagnosis:[],battery:89,services:[{nm:'Troca de Tela OLED Original',price:580}],total:580,prazo:'1h',status:'fila',tecnico:null,createdAt:now-25*60000,updatedAt:now-25*60000},
         {id:'#2839',num:2839,clientName:'Fernanda Costa',clientWA:'',model:'iPhone 12 Pro Max',problem:'Tela + câmera',photo:null,diagnosis:[],battery:91,services:[{nm:'Troca de Tela OLED Original',price:380},{nm:'Câmera Traseira',price:320}],total:700,prazo:'⏱ 2h',status:'conserto',tecnico:'Wei Zhang',createdAt:now-90*60000,updatedAt:now-72*60000},
-        {id:'#2836',num:2836,clientName:'Pedro Alves',clientWA:'',model:'iPhone 14',problem:'Conector',photo:null,diagnosis:[],battery:85,services:[{nm:'Conector USB-C / Lightning',price:190}],total:190,prazo:'⚡ 1h',status:'conserto',tecnico:'Li Chen',createdAt:now-70*60000,updatedAt:now-52*60000},
-        {id:'#2831',num:2831,clientName:'João Vitor',clientWA:'',model:'iPhone 13 Mini',problem:'Tela',photo:null,diagnosis:[],battery:78,services:[{nm:'Troca de Tela Compatível',price:220}],total:220,prazo:'⚡ 1h',status:'pronto',tecnico:'Juan Park',createdAt:now-100*60000,updatedAt:now-48*60000},
-        {id:'#2829',num:2829,clientName:'Patrícia Nunes',clientWA:'',model:'iPhone 15 Pro',problem:'Alto-falante',photo:null,diagnosis:[],battery:93,services:[{nm:'Alto-falante',price:150}],total:150,prazo:'⚡ 1h',status:'pronto',tecnico:'Wei Zhang',createdAt:now-85*60000,updatedAt:now-35*60000},
+        {id:'#2836',num:2836,clientName:'Pedro Alves',clientWA:'',model:'iPhone 14',problem:'Conector',photo:null,diagnosis:[],battery:85,services:[{nm:'Conector USB-C / Lightning',price:190}],total:190,prazo:'1h',status:'conserto',tecnico:'Li Chen',createdAt:now-70*60000,updatedAt:now-52*60000},
+        {id:'#2831',num:2831,clientName:'João Vitor',clientWA:'',model:'iPhone 13 Mini',problem:'Tela',photo:null,diagnosis:[],battery:78,services:[{nm:'Troca de Tela Compatível',price:220}],total:220,prazo:'1h',status:'pronto',tecnico:'Juan Park',createdAt:now-100*60000,updatedAt:now-48*60000},
+        {id:'#2829',num:2829,clientName:'Patrícia Nunes',clientWA:'',model:'iPhone 15 Pro',problem:'Alto-falante',photo:null,diagnosis:[],battery:93,services:[{nm:'Alto-falante',price:150}],total:150,prazo:'1h',status:'pronto',tecnico:'Wei Zhang',createdAt:now-85*60000,updatedAt:now-35*60000},
       ];
       osCounter = 2848;
     }
@@ -1293,15 +1322,15 @@ const MODEL_LIST = [
 
 // ─── SERVICES DATA ───
 const SVCS = [
-  {cat:'🖥 Tela',items:[
+  {cat:'Tela',items:[
     {nm:'Troca de Tela OLED Original',desc:'Garantia de fábrica inclusa',price:480,group:'tela'},
     {nm:'Troca de Tela Compatível',desc:'Garantia 30 dias',price:280,group:'tela'},
   ]},
-  {cat:'🔋 Bateria',items:[
+  {cat:'Bateria',items:[
     {nm:'Troca de Bateria Original',desc:'Apple certified · 90 dias',price:220,group:'bateria'},
     {nm:'Troca de Bateria Compatível',desc:'Garantia 30 dias',price:140,group:'bateria'},
   ]},
-  {cat:'🔧 Componentes',items:[
+  {cat:'Componentes',items:[
     {nm:'Conector USB-C / Lightning',desc:'Carregamento e dados',price:190},
     {nm:'Alto-falante',desc:'Reparo de áudio',price:150},
     {nm:'Câmera Traseira',desc:'Módulo completo',price:320},
@@ -1310,7 +1339,7 @@ const SVCS = [
     {nm:'Botões Físicos',desc:'Volume · Sleep · Silencioso',price:120},
     {nm:'Tampa Traseira',desc:'Vidro posterior',price:180},
   ]},
-  {cat:'✨ Extras',items:[
+  {cat:'Extras',items:[
     {nm:'Higienização Completa',desc:'Limpeza interna · Recomendado',price:50},
     {nm:'Garantia 7 dias',desc:'Cobre defeitos gerais · Gratuita',price:0,guarantee:true,group:'garantia'},
     {nm:'Garantia 1 mês',desc:'Cobertura total pós-conserto',price:60,guarantee:true,group:'garantia'},
@@ -1428,14 +1457,14 @@ function applyRole() {
   document.getElementById('profileName').textContent=nm;
   document.getElementById('profileRole').textContent=roleLabels[role]||role;
   if(role==='dono'){
-    chip.textContent='👑 Dono';nbRes.classList.remove('locked');nbEnt.classList.remove('locked');
+    chip.innerHTML='<i class="ph ph-crown-simple ph-ico"></i> Dono';nbRes.classList.remove('locked');nbEnt.classList.remove('locked');
     const donSel2=document.getElementById('selDono');if(donSel2)donSel2.style.opacity='1';
     if(pricesSec)pricesSec.style.display='block';if(switchSec)switchSec.style.display='block';
   } else if(role==='atendente'){
-    chip.textContent='🧑‍💼 Atendente';nbRes.classList.add('locked');nbEnt.classList.remove('locked');
+    chip.innerHTML='<i class="ph ph-identification-badge ph-ico"></i> Atendente';nbRes.classList.add('locked');nbEnt.classList.remove('locked');
     if(pricesSec)pricesSec.style.display='none';
   } else {
-    chip.textContent='🔧 Técnico';nbRes.classList.add('locked');nbEnt.classList.add('locked');
+    chip.innerHTML='<i class="ph ph-wrench ph-ico"></i> Técnico';nbRes.classList.add('locked');nbEnt.classList.add('locked');
     if(pricesSec)pricesSec.style.display='none';
     goTo('painel',document.getElementById('nb-painel'));
   }
@@ -1453,7 +1482,7 @@ function updateDiagSummary() {
     if(row.id === 'batRow') return; // bateria tratada separado
     const tog = row.querySelector('.ios-toggle');
     if(!tog || !tog.classList.contains('fail')) return;
-    const ico = row.querySelector('.dii')?.textContent || '';
+    const ico = row.querySelector('.dii')?.innerHTML || '';
     const nm  = row.querySelector('.dnm')?.textContent || '';
     const sub = row.querySelector('.dsb')?.textContent || '';
     html += `<div class="di" style="pointer-events:none;border-bottom:1px solid var(--border);">
@@ -1467,7 +1496,7 @@ function updateDiagSummary() {
   if(batTog && batTog.classList.contains('fail')) {
     const batVal = document.getElementById('batNum')?.value || '?';
     html += `<div class="di" style="pointer-events:none;">
-      <div class="dii">🔋</div>
+      <div class="dii"><i class="ph ph-battery-full ph-ico"></i></div>
       <div class="din"><div class="dnm">Bateria</div><div class="dsb">${batVal}% — abaixo de 80%</div></div>
       <div class="ios-toggle fail" style="pointer-events:none;"><div class="ios-track"><div class="ios-thumb"></div></div></div>
     </div>`;
@@ -1517,7 +1546,7 @@ function buildServices() {
       const isSel=selectedSvcs.find(s=>s.nm===item.nm);
       const d=document.createElement('div');
       d.className='svc-item'+(isSel?' selected':'')+(item.guarantee?' guarantee-item':'');
-      d.innerHTML=`<div class="svc-ico">${cat.cat.split(' ')[0]}</div><div class="svc-info"><div class="svc-nm">${item.nm}</div><div class="svc-desc">${item.desc}</div></div><div class="svc-price">${price===0?'Grátis':'R$ '+price}</div><div class="svc-chk">${isSel?'✓':''}</div>`;
+      d.innerHTML=`<div class="svc-ico"></div><div class="svc-info"><div class="svc-nm">${item.nm}</div><div class="svc-desc">${item.desc}</div></div><div class="svc-price">${price===0?'Grátis':'R$ '+price}</div><div class="svc-chk">${isSel?'✓':''}</div>`;
       d.onclick=()=>toggleSvc({...item,price},d);
       catBody.appendChild(d);
     });
@@ -1527,7 +1556,7 @@ function buildServices() {
   const modelKey=getModelKey(model);
   const customLines=modelKey&&modelPrices[modelKey]&&modelPrices[modelKey].__lines;
   if(customLines&&customLines.length>0){
-    const catKey='⚙️ Personalizados';const isOpen=openCats[catKey]||false;
+    const catKey='Personalizados';const isOpen=openCats[catKey]||false;
     const catHd=document.createElement('div');catHd.className='svc-cat';catHd.style.cssText='display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;';
     catHd.innerHTML=`<span>${catKey}</span><span class="svc-arr" style="font-size:11px;color:var(--muted);transition:transform .2s;display:inline-block;">${isOpen?'▲':'▼'}</span>`;
     const catBody=document.createElement('div');catBody.className='svc-cat-body';catBody.dataset.cat=catKey;catBody.style.display=isOpen?'block':'none';
@@ -1536,7 +1565,7 @@ function buildServices() {
     customLines.forEach(ln=>{
       const isSel=selectedSvcs.find(s=>s.nm===ln.nm);
       const d=document.createElement('div');d.className='svc-item'+(isSel?' selected':'');
-      d.innerHTML=`<div class="svc-ico">⚙️</div><div class="svc-info"><div class="svc-nm">${ln.nm}</div><div class="svc-desc">${ln.desc||'Serviço personalizado'}</div></div><div class="svc-price">${ln.price===0?'Grátis':'R$ '+ln.price}</div><div class="svc-chk">${isSel?'✓':''}</div>`;
+      d.innerHTML=`<div class="svc-ico"><i class="ph ph-gear ph-ico" style="font-size:18px;color:var(--muted);"></i></div><div class="svc-info"><div class="svc-nm">${ln.nm}</div><div class="svc-desc">${ln.desc||'Serviço personalizado'}</div></div><div class="svc-price">${ln.price===0?'Grátis':'R$ '+ln.price}</div><div class="svc-chk">${isSel?'✓':''}</div>`;
       d.onclick=()=>toggleSvc({...ln},d);
       catBody.appendChild(d);
     });
@@ -1655,11 +1684,11 @@ function selA(btn) {
   if(btn.classList.contains('n')) {
     cta.style.background = 'var(--red)';
     cta.style.boxShadow = '0 4px 16px rgba(212,31,31,.3)';
-    cta.innerHTML = '📋 Arquivar Orçamento';
+    cta.innerHTML = '<i class="ph ph-archive-box ph-ico"></i> Arquivar Orçamento';
   } else {
     cta.style.background = 'var(--blue)';
     cta.style.boxShadow = '0 4px 16px rgba(26,92,200,.3)';
-    cta.innerHTML = '📥 Abrir Ordem de Serviço';
+    cta.innerHTML = '<i class="ph ph-clipboard-text ph-ico"></i> Abrir Ordem de Serviço';
   }
 }
 function selP(c) { c.closest('.pc-chips').querySelectorAll('.pc').forEach(x => x.classList.remove('sel')); c.classList.add('sel'); }
@@ -1683,11 +1712,11 @@ function openArchived() {
   bsList.innerHTML=archived.length?archived.map(os=>`
     <div style="display:flex;align-items:center;gap:0;border-bottom:1px solid var(--border);">
       <div class="bs-item" style="flex:1;border-bottom:none;" onclick="loadArchived(${os.num})">
-        <div class="bs-item-ico">📋</div>
+        <div class="bs-item-ico"><i class="ph ph-clipboard-text ph-ico" style="font-size:17px;color:var(--blue);"></i></div>
         <div class="bs-item-info"><div class="bs-item-name">${os.clientName||'—'}</div><div class="bs-item-detail">${os.model||'—'} · ${os.problem||'Sem problema'} · ${new Date(os.createdAt).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</div></div>
         <div class="bs-item-val">R$ ${(os.total||0).toLocaleString('pt-BR')}</div>
       </div>
-      <button onclick="deleteArchived(${os.num})" style="flex-shrink:0;background:#FEE2E2;border:none;border-left:1px solid #FECACA;color:var(--red);padding:0 14px;height:100%;min-height:56px;font-size:18px;cursor:pointer;font-family:var(--sans);">🗑</button>
+      <button onclick="deleteArchived(${os.num})" style="flex-shrink:0;background:#FEE2E2;border:none;border-left:1px solid #FECACA;color:var(--red);padding:0 14px;height:100%;min-height:56px;font-size:18px;cursor:pointer;font-family:var(--sans);"><i class="ph ph-trash ph-ico"></i></button>
     </div>`).join(''):'<div class="bs-empty">Nenhum orçamento arquivado</div>';
   document.getElementById('archivedOverlay').classList.add('show');
   document.getElementById('archivedSheet').style.display='block';
@@ -1749,7 +1778,7 @@ function loadArchived(num) {
   // ── Botão CTA no modo "Arquivar" ──
   const ctaBtn=document.getElementById('ctaBtn');
   ctaBtn.style.background='var(--red)';ctaBtn.style.boxShadow='0 4px 16px rgba(212,31,31,.3)';
-  ctaBtn.innerHTML='📋 Arquivar Orçamento';
+  ctaBtn.innerHTML='<i class="ph ph-archive-box ph-ico"></i> Arquivar Orçamento';
   document.querySelector('.apv.y')?.classList.remove('sel');
   document.querySelector('.apv.n')?.classList.add('sel');
 
@@ -1783,25 +1812,88 @@ function handlePhoto(input) {
   reader.readAsDataURL(input.files[0]);
 }
 
+// ─── WHATSAPP HELPERS ───
+function _wordsToDigits(s) {
+  // Multi-palavra primeiro (DDDs compostos como "vinte e um" = 21)
+  const multi=[
+    ['vinte e um','21'],['vinte e dois','22'],['vinte e quatro','24'],['vinte e sete','27'],['vinte e oito','28'],
+    ['trinta e um','31'],['trinta e dois','32'],['trinta e tres','33'],['trinta e quatro','34'],['trinta e cinco','35'],['trinta e seis','36'],['trinta e sete','37'],['trinta e oito','38'],
+    ['quarenta e um','41'],['quarenta e dois','42'],['quarenta e tres','43'],['quarenta e quatro','44'],['quarenta e cinco','45'],['quarenta e seis','46'],['quarenta e sete','47'],
+    ['cinquenta e um','51'],['cinquenta e tres','53'],['cinquenta e quatro','54'],
+    ['sessenta e um','61'],['sessenta e dois','62'],['sessenta e tres','63'],['sessenta e cinco','65'],['sessenta e seis','66'],['sessenta e sete','67'],['sessenta e oito','68'],['sessenta e nove','69'],
+    ['setenta e um','71'],['setenta e cinco','75'],['setenta e sete','77'],['setenta e nove','79'],
+    ['oitenta e um','81'],['oitenta e tres','83'],['oitenta e quatro','84'],['oitenta e cinco','85'],['oitenta e seis','86'],['oitenta e oito','88'],['oitenta e nove','89'],
+    ['noventa e um','91'],['noventa e dois','92'],['noventa e tres','93'],['noventa e quatro','94'],['noventa e cinco','95'],['noventa e seis','96'],['noventa e oito','98'],['noventa e nove','99'],
+  ];
+  for(const[w,d]of multi) s=s.replace(new RegExp('\\b'+w+'\\b','g'),d);
+  // Palavras simples (0-9 + dezenas + meia)
+  const single={
+    'zero':'0','um':'1','uma':'1','dois':'2','duas':'2','tres':'3',
+    'quatro':'4','cinco':'5','seis':'6','meia':'6','sete':'7','oito':'8','nove':'9',
+    'dez':'10','onze':'11','doze':'12','treze':'13','catorze':'14','quatorze':'14',
+    'quinze':'15','dezesseis':'16','dezessete':'17','dezoito':'18','dezenove':'19',
+    'vinte':'20','trinta':'30','quarenta':'40','cinquenta':'50',
+    'sessenta':'60','setenta':'70','oitenta':'80','noventa':'90',
+  };
+  for(const[w,d]of Object.entries(single)) s=s.replace(new RegExp('\\b'+w+'\\b','g'),d);
+  return s;
+}
+
+function normalizeWhatsApp(raw) {
+  const digits=raw.replace(/\D/g,'');
+  const len=digits.length;
+  if(len<8||len>13) return null;
+  // 12-13 dígitos começando com 55: já tem código de país
+  if((len===12||len===13)&&digits.startsWith('55')) return '+'+digits;
+  // 10-11 dígitos: tem DDD, sem país → adicionar +55
+  if(len===10||len===11) return '+55'+digits;
+  // 8-9 dígitos: sem DDD, sem país → assumir DDD 11 (São Paulo)
+  if(len===8||len===9) return '+5511'+digits;
+  return null;
+}
+
+function extractPhoneFromSpeech(norm) {
+  const converted=_wordsToDigits(norm);
+  const kws=['whatsapp','zap','telefone','celular','contato','numero'];
+  for(const kw of kws){
+    const m=converted.match(new RegExp(kw+'[^\\d]*([\\d][\\d\\s\\-\\.()]{5,30}[\\d])'));
+    if(m){const d=m[1].replace(/\D/g,'');if(d.length>=8&&d.length<=13)return d;}
+  }
+  return null;
+}
+
 // ─── VOICE ───
 let recognition = null;
+let _lastVoiceText = '';
+let _silenceTimer = null;
+const VOICE_SILENCE_MS = 1000; // encerra 1s após última fala detectada
+
 function startVoice() {
   const overlay = document.getElementById('voiceOverlay');
   const transcript = document.getElementById('voiceTranscript');
+  _lastVoiceText = '';
+  clearTimeout(_silenceTimer);
   overlay.classList.add('show');
   if('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     recognition = new SR();
     recognition.lang = 'pt-BR';
-    recognition.continuous = false;
+    recognition.continuous = true;
     recognition.interimResults = true;
     recognition.onresult = (e) => {
       const text = Array.from(e.results).map(r => r[0].transcript).join('');
+      _lastVoiceText = text;
       transcript.textContent = '"' + text + '"';
-      if(e.results[e.results.length-1].isFinal) processVoice(text);
+      // reinicia o timer a cada trecho de fala detectado
+      clearTimeout(_silenceTimer);
+      _silenceTimer = setTimeout(() => { if(recognition) recognition.stop(); }, VOICE_SILENCE_MS);
     };
     recognition.onerror = () => { transcript.textContent = 'Não entendi. Tente novamente.'; };
-    recognition.onend = () => { setTimeout(() => overlay.classList.remove('show'), 800); };
+    recognition.onend = () => {
+      clearTimeout(_silenceTimer);
+      if(_lastVoiceText.trim()) processVoice(_lastVoiceText.trim());
+      setTimeout(() => overlay.classList.remove('show'), 800);
+    };
     recognition.start();
   } else {
     transcript.textContent = 'Simulando: "iPhone 14 Pro, tela quebrada, bateria 34%"';
@@ -1809,9 +1901,29 @@ function startVoice() {
   }
 }
 
-function stopVoice() { if(recognition) recognition.stop(); document.getElementById('voiceOverlay').classList.remove('show'); }
+function stopVoice() { clearTimeout(_silenceTimer); if(recognition) recognition.stop(); }
 
-function processVoice(text) {
+function _normalizeVoiceTranscript(t) {
+  // Corrige variações fonéticas comuns do contexto de assistência técnica
+  const fixes = [
+    [/face\s*[aá][ií]\s*d[eê]/gi, 'Face ID'],
+    [/face\s*[aá][ií]\s*di/gi,    'Face ID'],
+    [/face\s*a[ií]d/gi,           'Face ID'],
+    [/face\s*[ií]d[eê]/gi,        'Face ID'],
+    [/usb\s*c[eê]/gi,             'USB-C'],
+    [/usb\s*s[eê]/gi,             'USB-C'],
+    [/\btach\s*screen\b/gi,       'touch screen'],
+    [/\btach\b/gi,                'touch'],
+    [/\bairpod\b/gi,              'AirPod'],
+    [/\blaiter\b/gi,              'lightning'],
+    [/\blait[eê]ning\b/gi,        'lightning'],
+  ];
+  for(const[rx,rep]of fixes) t=t.replace(rx,rep);
+  return t;
+}
+
+function processVoice(rawText) {
+  const text = _normalizeVoiceTranscript(rawText);
   const lower = text.toLowerCase();
 
   // ── MODELO ──
@@ -1847,13 +1959,9 @@ function processVoice(text) {
     if(nm.length>1) document.getElementById('clientName').value=nm;
   }
 
-  // ── TELEFONE: dígitos imediatamente após keyword ──
-  const telRx=/(?:whatsapp|telefone|celular|zap|numero)[^\d]*(\d[\d\s]{8,14}\d)/;
-  const telM=norm.match(telRx);
-  if(telM){
-    const digits=telM[1].replace(/\s/g,'');
-    if(digits.length>=8&&digits.length<=13) document.getElementById('clientWA').value=digits;
-  }
+  // ── WHATSAPP: extração + normalização ──
+  const phoneRaw=extractPhoneFromSpeech(norm);
+  if(phoneRaw){const normalized=normalizeWhatsApp(phoneRaw);if(normalized)document.getElementById('clientWA').value=normalized;}
 
   // ── SENHA: sequência curta após keyword ──
   const senhaRx=/(?:senha|codigo)\s+(?:e\s+)?([a-z0-9]{3,10})/;
@@ -1909,7 +2017,7 @@ function openOS() {
   const problem=document.getElementById('problemInput').value.trim();
   const senha=document.getElementById('senhaInput').value.trim();
   const prazoEl=document.querySelector('.pc.sel');
-  const prazo=prazoEl?prazoEl.textContent:'⚡ 1h';
+  const prazo=prazoEl?prazoEl.textContent:'1h';
   const battery=parseInt(document.getElementById('batNum').value)||0;
   const total=selectedSvcs.reduce((s,x)=>s+x.price,0);
   const diag=collectDiag();
@@ -1994,7 +2102,7 @@ function openOS() {
   const arcNum=-(Date.now());
   const os={id:'Orç.',num:arcNum,osAdesivo:'',clientName:name,clientWA:wa,model,problem,senha,photo:currentPhotoData,diagnosis:diag,battery,services:[...selectedSvcs],total,prazo,status:'arquivado',tecnico:null,atendente:(role!=='tecnico'?(currentUserName||'—'):null),createdAt:Date.now(),updatedAt:Date.now()};
   osList.push(os);persistOS();renderArchivedCount();
-  showToast('📋 Orçamento arquivado!','warning',3000);
+  showToast('Orçamento arquivado!','warning',3000);
   setTimeout(()=>{resetForm();},1200);
 }
 
@@ -2011,7 +2119,7 @@ function resetForm() {
   document.querySelectorAll('#diagBody .ios-toggle').forEach(t=>t.classList.remove('fail'));
   updateDiagSummary();
   const ctaBtn=document.getElementById('ctaBtn');
-  ctaBtn.style.background='var(--blue)';ctaBtn.style.boxShadow='0 4px 16px rgba(26,92,200,.3)';ctaBtn.innerHTML='📥 Abrir Ordem de Serviço';
+  ctaBtn.style.background='var(--blue)';ctaBtn.style.boxShadow='0 4px 16px rgba(26,92,200,.3)';ctaBtn.innerHTML='<i class="ph ph-clipboard-text ph-ico"></i> Abrir Ordem de Serviço';
   document.querySelector('.apv.y').classList.add('sel');document.querySelector('.apv.n').classList.remove('sel');
   currentArchivedNum=null;
   editingExistingNum=null;
@@ -2034,7 +2142,7 @@ function renderPainel() {
 
 function renderOSColumn(colId,list,status) {
   const col=document.getElementById(colId);if(!col)return;
-  if(!list.length){col.innerHTML='<div style="padding:12px 8px;font-size:11px;color:var(--muted);text-align:center;">Vazio</div>';return;}
+  if(!list.length){col.innerHTML='<div class="pb-empty">Vazio</div>';return;}
   col.innerHTML=list.map(os=>{
     const ts=status==='fila'?os.createdAt:os.updatedAt;
     // Pronto: freeze timer — show duration from creation to completion
@@ -2047,11 +2155,11 @@ function renderOSColumn(colId,list,status) {
       time=formatTime(ts);tc=timerClass(ts);
     }
     const timerTxt=status==='pronto'?'✓ '+time:(tc==='t-over'?'⚠ '+time:time);
-    const bStyle=status==='pronto'?'border-left:3px solid var(--green);':'';
+    const bColor=status==='pronto'?'var(--green)':status==='conserto'?'var(--orange)':'var(--blue)';
     const parts=os.clientName.split(' ');const sn=parts[0]+(parts.length>1?' '+parts[parts.length-1][0]+'.':'');
     const model=os.model||'Modelo não informado';
     const problem=os.problem?os.problem.split(/[,.!?]/)[0].trim():'';
-    return `<div class="pb-item" style="${bStyle}" onclick="openOS_from_panel(${os.num})"><div class="pb-item-row1"><div class="pb-item-os">${os.id}</div><div class="pb-item-timer ${tc}">${timerTxt}</div></div><div class="pb-item-name">${sn}</div><div class="pb-item-model">${model}</div>${problem?`<div class="pb-item-problem">${problem}</div>`:''}</div>`;
+    return `<div class="pb-item" style="border-left-color:${bColor};" onclick="openOS_from_panel(${os.num})"><div class="pb-item-row1"><div class="pb-item-os">${os.id}</div><div class="pb-item-timer ${tc}">${timerTxt}</div></div><div class="pb-item-name">${sn}</div><div class="pb-item-model">${model}</div>${problem?`<div class="pb-item-problem">${problem}</div>`:''}</div>`;
   }).join('');
 }
 function renderArchivedCount() {
@@ -2091,7 +2199,7 @@ function loadOSToEntrega(os) {
     let html='';
     if(os.diagnosis&&os.diagnosis.length){os.diagnosis.forEach(d=>{html+=`<span class="od-chip ck-${d.ok?'ok':'fail'}">${d.label} ${d.ok?'✓':'✗'}</span>`;});}
     else{html='<span class="od-chip" style="background:var(--g100);color:var(--muted);">Sem diagnóstico</span>';}
-    html+=`<span class="od-chip ck-${(os.battery||0)<80?'fail':'ok'}">🔋 ${os.battery||'?'}%</span>`;
+    html+=`<span class="od-chip ck-${(os.battery||0)<80?'fail':'ok'}">Bat. ${os.battery||'?'}%</span>`;
     chips.innerHTML=html;
   }
   const svcsDiv=document.getElementById('od-svcs');
@@ -2111,7 +2219,7 @@ function loadOSToEntrega(os) {
       el.style.display=failLabels.has(el.dataset.label)?'none':'';
     });
     if(fails.length){
-      diagExtra.innerHTML=fails.map(d=>`<div class="conf-item"><div class="conf-ico">⚠️</div><div class="conf-lbl">${d.label}</div><div class="ios-toggle fail" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>`).join('');
+      diagExtra.innerHTML=fails.map(d=>`<div class="conf-item"><div class="conf-ico"><i class="ph ph-warning ph-ico"></i></div><div class="conf-lbl">${d.label}</div><div class="ios-toggle fail" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>`).join('');
     } else {
       diagExtra.innerHTML='';
     }
@@ -2158,13 +2266,13 @@ function updateEntregaStatus(status) {
   if(finBtn)finBtn.style.display='none';
 
   if(status==='fila'){
-    badge.className='od-status-badge status-fila';badge.textContent='⏳ Aguardando técnico';
+    badge.className='od-status-badge status-fila';badge.textContent='Aguardando técnico';
     if(conf)conf.style.display='none';
     if(role==='atendente'){
       btn.className='od-action-btn';btn.style.background='var(--mid)';
-      btn.textContent='⏳ Aguardando técnico';btn.disabled=true;
+      btn.textContent='Aguardando técnico';btn.disabled=true;
     } else {
-      btn.className='od-action-btn od-action-pegar';btn.textContent='🔧 Pegar este serviço';
+      btn.className='od-action-btn od-action-pegar';btn.innerHTML='<i class="ph ph-wrench ph-ico"></i> Pegar este serviço';
       const techEl=document.getElementById('od-tech-name');
       if(techEl){
         const fixedTecs=teamMembers.filter(m=>m.role==='tecnico').map(m=>m.name);
@@ -2175,35 +2283,35 @@ function updateEntregaStatus(status) {
     }
 
   } else if(status==='conserto'){
-    badge.className='od-status-badge status-conserto';badge.textContent='🔧 Em conserto';
+    badge.className='od-status-badge status-conserto';badge.textContent='Em conserto';
     if(conf)conf.style.display='block';
     if(role==='atendente'){
       btn.className='od-action-btn';btn.style.background='var(--mid)';
-      btn.textContent='🔧 Em andamento pelo técnico';btn.disabled=true;
+      btn.textContent='Em andamento pelo técnico';btn.disabled=true;
     } else {
       btn.style.display='none';
       const actionSection=document.getElementById('od-action-section');if(actionSection)actionSection.style.display='none';
       if(waSection)waSection.style.display='block';
-      if(finBtn){finBtn.style.display='flex';finBtn.innerHTML='<span>📲</span> Concluir e Notificar Cliente';finBtn.style.background='#075E54';finBtn.style.boxShadow='0 4px 16px rgba(7,94,84,.3)';}
+      if(finBtn){finBtn.style.display='flex';finBtn.innerHTML='<span><i class="ph ph-paper-plane-tilt ph-ico"></i></span> Concluir e Notificar Cliente';finBtn.style.background='#075E54';finBtn.style.boxShadow='0 4px 16px rgba(7,94,84,.3)';}
     }
 
   } else if(status==='pronto'){
-    badge.className='od-status-badge status-pronto';badge.textContent='✅ Pronto · aguardando entrega';
+    badge.className='od-status-badge status-pronto';badge.textContent='Pronto · aguardando entrega';
     if(conf)conf.style.display='block';
     if(role==='tecnico'){
       btn.className='od-action-btn';btn.style.background='var(--mid)';
-      btn.textContent='✅ Pronto · aguardando atendente';btn.disabled=true;
+      btn.innerHTML='<i class="ph ph-check-circle ph-ico"></i> Pronto · aguardando atendente';btn.disabled=true;
     } else {
       btn.style.display='none';
       const actionSection=document.getElementById('od-action-section');if(actionSection)actionSection.style.display='none';
       if(proofSection)proofSection.style.display='block';
-      if(finBtn){finBtn.style.display='flex';finBtn.innerHTML='<span>📦</span> Confirmar Entrega ao Cliente';finBtn.style.background='var(--green)';finBtn.style.boxShadow='0 4px 16px rgba(22,163,74,.3)';}
+      if(finBtn){finBtn.style.display='flex';finBtn.innerHTML='<span><i class="ph ph-package ph-ico"></i></span> Confirmar Entrega ao Cliente';finBtn.style.background='var(--green)';finBtn.style.boxShadow='0 4px 16px rgba(22,163,74,.3)';}
     }
 
   } else if(status==='entregue'){
-    badge.className='od-status-badge status-pronto';badge.textContent='✅ Entregue';
+    badge.className='od-status-badge status-pronto';badge.textContent='Entregue';
     btn.className='od-action-btn';btn.style.background='var(--mid)';
-    btn.textContent='✓ OS Concluída';btn.disabled=true;
+    btn.innerHTML='<i class="ph ph-check ph-ico"></i> OS Concluída';btn.disabled=true;
     if(conf)conf.style.display='none';
     const editBtn=document.getElementById('odEditBtn');if(editBtn)editBtn.style.display='none';
   }
@@ -2221,7 +2329,7 @@ function handleOSAction() {
     const chipFirst=selChip?selChip.textContent:null;
     const tecFull=chipFirst?(teamMembers.find(m=>m.role==='tecnico'&&m.name.split(' ')[0]===chipFirst)||{name:chipFirst}).name:(currentUserName||null);
     os.status='conserto';os.tecnico=tecFull;os.consertoAt=Date.now();os.updatedAt=Date.now();persistOS();
-    btn.textContent='✅ Serviço pego!';btn.style.background='var(--green)';btn.disabled=true;
+    btn.innerHTML='<i class="ph ph-check-circle ph-ico"></i> Serviço pego!';btn.style.background='var(--green)';btn.disabled=true;
     renderPainel();
     setTimeout(()=>goTo('painel',document.getElementById('nb-painel')),1200);
 
@@ -2233,7 +2341,7 @@ function handleOSAction() {
       const waEl=document.getElementById('waMsg');
       window.open('https://wa.me/'+wa+'?text='+encodeURIComponent(waEl?waEl.value:''),'_blank');
     }
-    btn.textContent='✅ Cliente notificado!';btn.style.background='var(--green)';btn.disabled=true;
+    btn.innerHTML='<i class="ph ph-check-circle ph-ico"></i> Cliente notificado!';btn.style.background='var(--green)';btn.disabled=true;
     renderPainel();
     setTimeout(()=>goTo('painel',document.getElementById('nb-painel')),1500);
 
@@ -2279,7 +2387,7 @@ function confirmFinishConserto() {
     window.open('https://wa.me/'+wa+'?text='+encodeURIComponent(waEl?waEl.value:''),'_blank');
   }
   const btn=document.getElementById('finBtn');
-  if(btn){btn.innerHTML='✅ Pronto! Cliente notificado.';btn.style.background='var(--green)';}
+  if(btn){btn.innerHTML='<i class="ph ph-check-circle ph-ico"></i> Pronto! Cliente notificado.';btn.style.background='var(--green)';}
   renderPainel();
   setTimeout(()=>goTo('painel',document.getElementById('nb-painel')),1500);
 }
@@ -2327,7 +2435,7 @@ function finishOS() {
   const ok1=z1&&z1.classList.contains('proof-ok');
   const ok2=z2&&z2.classList.contains('proof-ok');
   if(!ok1||!ok2){
-    const missing=[];if(!ok1)missing.push('📱 Foto do aparelho');if(!ok2)missing.push('💳 Comprovante PIX');
+    const missing=[];if(!ok1)missing.push('Foto do aparelho');if(!ok2)missing.push('Comprovante PIX');
     document.getElementById('photoAlertMsg').innerHTML='Adicione as fotos antes de confirmar:<br><br><strong>'+missing.join('<br>')+'</strong>';
     document.getElementById('photoAlertOverlay').classList.add('show');
     return;
@@ -2335,7 +2443,7 @@ function finishOS() {
   const btn=document.getElementById('finBtn');
   const os=currentOSId?osList.find(o=>o.num===currentOSId):null;
   if(os){os.status='entregue';os.updatedAt=Date.now();persistOS();}
-  if(btn){btn.innerHTML='✅ Entregue!';btn.style.background='var(--green)';}
+  if(btn){btn.innerHTML='<i class="ph ph-check-circle ph-ico"></i> Entregue!';btn.style.background='var(--green)';}
   renderPainel();
   setTimeout(()=>{
     document.getElementById('odWrap').classList.remove('show');
@@ -2405,7 +2513,7 @@ function renderPricesEditor(model) {
   const key=getModelKey(model)||model;
   const lines=(modelPrices[key]&&modelPrices[key].__lines)||[];
   const secHd=document.createElement('div');
-  secHd.className='svc-cat';secHd.style.cssText='pointer-events:none;margin-top:4px;';secHd.textContent='⚙️ Personalizados deste modelo';cont.appendChild(secHd);
+  secHd.className='svc-cat';secHd.style.cssText='pointer-events:none;margin-top:4px;';secHd.textContent='Personalizados deste modelo';cont.appendChild(secHd);
   if(lines.length===0){
     const empty=document.createElement('div');empty.style.cssText='font-size:12px;color:var(--muted);padding:8px 4px 4px;';empty.textContent='Nenhum serviço personalizado ainda.';cont.appendChild(empty);
   }
@@ -2435,7 +2543,7 @@ function buildCustomLineCard(key,ln,i,total){
     </div>
     <div style="display:flex;align-items:center;padding:0 10px 10px 46px;gap:8px;">
       <input type="text" value="${esc(ln.desc||'')}" placeholder="Descrição (ex: Vidro + OLED · 90 dias)" style="flex:1;background:var(--g100);border:1.5px solid var(--border);border-radius:8px;padding:7px 8px;font-size:12px;font-weight:500;font-family:var(--sans);outline:none;color:var(--muted);" onchange="updateCustomLine('${esc(key)}',${i},'desc',this.value)">
-      <button onclick="deleteCustomLine('${esc(key)}',${i})" style="flex-shrink:0;background:#FEE2E2;border:1px solid #FECACA;color:var(--red);border-radius:8px;padding:7px 10px;font-size:12px;font-weight:700;font-family:var(--sans);cursor:pointer;white-space:nowrap;">🗑 Excluir</button>
+      <button onclick="deleteCustomLine('${esc(key)}',${i})" style="flex-shrink:0;background:#FEE2E2;border:1px solid #FECACA;color:var(--red);border-radius:8px;padding:7px 10px;font-size:12px;font-weight:700;font-family:var(--sans);cursor:pointer;white-space:nowrap;"><i class="ph ph-trash ph-ico"></i> Excluir</button>
     </div>`;
   // Attach drag events to handle
   const handle=card.querySelector('.drag-handle');
@@ -2540,7 +2648,7 @@ function renderResultados() {
   const pList=document.getElementById('paymentsList');
   if(pList){
     pList.innerHTML=entregues.length?entregues.slice(-10).reverse().map(o=>`
-      <div class="pr"><div class="pr-ico ico-c">✅</div><div class="pr-info"><div class="pr-os">${o.id}</div><div class="pr-name">${o.clientName}</div><div class="pr-det">${o.services&&o.services[0]?o.services[0].nm:'—'}${o.tecnico?' · '+o.tecnico:''}</div></div><div class="pr-right"><div class="pr-val" style="color:var(--blue)">R$ ${(o.total||0).toLocaleString('pt-BR')}</div><div class="pr-badge pb-c">Entregue</div></div></div>`).join('')
+      <div class="pr"><div class="pr-ico ico-c"><i class="ph ph-check-circle ph-ico" style="font-size:18px;color:var(--green);"></i></div><div class="pr-info"><div class="pr-os">${o.id}</div><div class="pr-name">${o.clientName}</div><div class="pr-det">${o.services&&o.services[0]?o.services[0].nm:'—'}${o.tecnico?' · '+o.tecnico:''}</div></div><div class="pr-right"><div class="pr-val" style="color:var(--blue)">R$ ${(o.total||0).toLocaleString('pt-BR')}</div><div class="pr-badge pb-c">Entregue</div></div></div>`).join('')
     :'<div class="bs-empty">Nenhuma entrega hoje ainda</div>';
   }
   // Tech OS chart
@@ -2648,15 +2756,12 @@ function renderEquipe() {
     }
   });
   const tecList=Object.entries(tecMap).sort((a,b)=>b[1].finalizadas-a[1].finalizadas);
-  const medals=['🥇','🥈','🥉'];
   const el=document.getElementById('equipe-tecnicos');
   if(el)el.innerHTML=tecList.length?tecList.map(([nm,d],i)=>`
     <div class="rk-row">
       <div class="rk-pos ${i<3?'pos-'+(i+1):'pos-n'}">${i+1}</div>
-      <div class="rk-avatar">👨‍🔧</div>
       <div class="rk-info"><div class="rk-name">${nm}</div><div class="rk-detail">${d.finalizadas} OS finalizadas</div></div>
       <div class="rk-score"><div class="rk-os">${d.finalizadas}</div><div class="rk-sub">finalizadas</div></div>
-      ${i<3?`<div class="rk-medal">${medals[i]}</div>`:''}
     </div>`).join(''):'<div class="bs-empty">Nenhum dado ainda</div>';
 }
 
@@ -2684,7 +2789,7 @@ const teamMembers = [
 ];
 
 function renderTeamLists() {
-  const roleIcons={atendente:{bg:'var(--blue-s)',ic:'🧑‍💼',desc:'Entrada · Painel · Entrega'},tecnico:{bg:'var(--green-s)',ic:'🔧',desc:'Painel · Conserto · Entrega'}};
+  const roleIcons={atendente:{bg:'var(--blue-s)',ic:'<i class="ph ph-identification-badge ph-ico"></i>',desc:'Entrada · Painel · Entrega'},tecnico:{bg:'var(--green-s)',ic:'<i class="ph ph-wrench ph-ico"></i>',desc:'Painel · Conserto · Entrega'}};
   ['atendente','tecnico'].forEach(r=>{
     const el=document.getElementById('list'+(r==='atendente'?'Atendentes':'Tecnicos'));
     if(!el)return;
@@ -2693,7 +2798,6 @@ function renderTeamLists() {
       const cfg=roleIcons[r];
       const active=(currentUserName===m.name&&role===r);
       return `<div class="role-opt" onclick="switchProfile('${m.name}','${r}')">
-        <div class="role-icon" style="background:${cfg.bg}">${cfg.ic}</div>
         <div class="role-info"><div class="role-name">${m.name}</div><div class="role-desc">${cfg.desc}</div></div>
         <div style="color:var(--red);font-size:16px;font-weight:800;opacity:${active?1:0}">✓</div>
       </div>`;
@@ -2780,7 +2884,7 @@ function showToast(message, type='info', duration=2800) {
   const container = document.getElementById('toastContainer');
   const toast = document.createElement('div');
   toast.className = 'toast ' + type;
-  const icons = {success:'✅',error:'❌',warning:'⚠️',info:'💡'};
+  const icons = {success:'<i class="ph ph-check-circle ph-ico"></i>',error:'<i class="ph ph-x-circle ph-ico"></i>',warning:'<i class="ph ph-warning ph-ico"></i>',info:'<i class="ph ph-lightbulb ph-ico"></i>'};
   toast.innerHTML = '<span class="toast-ico">' + (icons[type]||icons.info) + '</span>' + message;
   container.appendChild(toast);
   if(navigator.vibrate) navigator.vibrate(type==='error'?[50,30,50]:30);
@@ -2920,7 +3024,7 @@ function editOSFromEntrega() {
   // Keep approval as-is
   const ctaBtn = document.getElementById('ctaBtn');
   ctaBtn.style.background = 'var(--blue)'; ctaBtn.style.boxShadow = '0 4px 16px rgba(59,123,219,.3)';
-  ctaBtn.innerHTML = '💾 Salvar Alterações';
+  ctaBtn.innerHTML = '<i class="ph ph-floppy-disk ph-ico"></i> Salvar Alterações';
   document.querySelector('.apv.y')?.classList.add('sel');
   document.querySelector('.apv.n')?.classList.remove('sel');
   // Expand client data
@@ -2966,14 +3070,11 @@ function renderRankingAtendentes() {
   // include all atendentes even with 0 guarantees, ranked by count
   const all=teamMembers.filter(m=>m.role==='atendente').map(m=>({name:m.name,count:garMap[m.name]||0}));
   const sorted=all.sort((a,b)=>b.count-a.count).slice(0,3);
-  const medals=['🥇','🥈','🥉'];
   el.innerHTML=sorted.some(r=>r.count>0)?sorted.map((r,i)=>`
     <div class="rk-row">
       <div class="rk-pos pos-${i+1}">${i+1}</div>
-      <div class="rk-avatar">🧑‍💼</div>
       <div class="rk-info"><div class="rk-name">${r.name}</div><div class="rk-detail">${r.count} garantia${r.count!==1?'s':''} vendida${r.count!==1?'s':''}</div></div>
       <div class="rk-score"><div class="rk-os">${r.count}</div><div class="rk-sub">garantias</div></div>
-      <div class="rk-medal">${medals[i]}</div>
     </div>`).join(''):'<div class="bs-empty">Nenhuma garantia vendida ainda</div>';
 }
 
@@ -2995,14 +3096,11 @@ function renderRankingTecnicos() {
   });
   const all=teamMembers.filter(m=>m.role==='tecnico').map(m=>({name:m.name,count:tecMap[m.name]||0}));
   const sorted=all.sort((a,b)=>b.count-a.count).slice(0,3);
-  const medals=['🥇','🥈','🥉'];
   el.innerHTML=sorted.some(r=>r.count>0)?sorted.map((r,i)=>`
     <div class="rk-row">
       <div class="rk-pos pos-${i+1}">${i+1}</div>
-      <div class="rk-avatar">🔧</div>
       <div class="rk-info"><div class="rk-name">${r.name}</div><div class="rk-detail">${r.count} OS atendida${r.count!==1?'s':''}</div></div>
       <div class="rk-score"><div class="rk-os">${r.count}</div><div class="rk-sub">OS</div></div>
-      <div class="rk-medal">${medals[i]}</div>
     </div>`).join(''):'<div class="bs-empty">Nenhuma OS finalizada ainda</div>';
 }
 
@@ -3020,18 +3118,14 @@ function renderRanking() {
     }
   });
   const tecList=Object.entries(tecMap).sort((a,b)=>b[1].count-a[1].count);
-  const medals=['🥇','🥈','🥉'];
-  const avatars=['👨‍🔧','👩‍🔧','👨‍🔧','👩‍🔧'];
   body.innerHTML=tecList.length?tecList.map(([nm,d],i)=>{
     const avg=d.count>0?Math.round(d.totalTime/Math.max(1,d.count-(d.count-tecList.filter(([,x])=>x.totalTime>0).length))/60000):0;
     const avgDisplay=d.totalTime>0?Math.round(d.totalTime/d.count/60000)+'min':'—';
     const retrabHtml=d.retrab>0?` <span class="penalty-badge">⚠ ${d.retrab} retrab.</span>`:'';
     return `<div class="rk-row">
       <div class="rk-pos ${i<3?'pos-'+(i+1):'pos-n'}">${i+1}</div>
-      <div class="rk-avatar">${avatars[i%avatars.length]}</div>
-      <div class="rk-info"><div class="rk-name">${nm}${retrabHtml}</div><div class="rk-detail">⏱ ${avgDisplay} médio</div></div>
+      <div class="rk-info"><div class="rk-name">${nm}${retrabHtml}</div><div class="rk-detail">${avgDisplay} médio</div></div>
       <div class="rk-score"><div class="rk-os">${d.count}</div><div class="rk-sub">OS</div></div>
-      ${i<3?`<div class="rk-medal">${medals[i]}</div>`:''}
     </div>`;
   }).join(''):'<div class="bs-empty">Nenhum dado de técnicos ainda</div>';
 }
@@ -3043,13 +3137,17 @@ function renderProntasList() {
   const prontas=osList.filter(o=>o.status==='pronto').sort((a,b)=>b.updatedAt-a.updatedAt);
   if(!prontas.length){el.innerHTML='';if(titleEl)titleEl.style.display='none';return;}
   if(titleEl)titleEl.style.display='block';
-  el.innerHTML=prontas.map(os=>`<div class="entrega-pronta-card" onclick="loadOSToEntrega(osList.find(o=>o.num===${os.num}))" style="background:#fff;border-radius:14px;padding:8px 10px 8px 12px;cursor:pointer;box-shadow:0 0 1px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.05);border-left:3px solid var(--green);transition:background .1s;margin-bottom:8px;display:flex;align-items:center;gap:10px;">
-      <div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;">
-        <div style="font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;">${os.clientName}</div>
-        <div style="font-size:11px;color:var(--mid);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;margin-top:2px;">${os.model||'—'}</div>
-        <div style="font-size:11px;color:var(--mid);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;margin-top:2px;">${os.id} · ${formatTime(os.updatedAt)}</div>
+  el.innerHTML=prontas.map(os=>`
+    <div class="entrega-pronta-card" onclick="loadOSToEntrega(osList.find(o=>o.num===${os.num}))">
+      <div class="ep-info">
+        <div class="ep-name">${os.clientName}</div>
+        <div class="ep-model">${os.model||'—'}</div>
+        <div class="ep-meta">${os.id} · ${formatTime(os.updatedAt)}</div>
       </div>
-      <div style="flex-shrink:0;font-size:14px;font-weight:800;color:var(--blue);white-space:nowrap;">R$ ${(os.total||0).toLocaleString('pt-BR')}</div>
+      <div class="ep-value">
+        <div class="ep-val">R$&nbsp;${(os.total||0).toLocaleString('pt-BR')}</div>
+        <span class="ep-badge">Pronto</span>
+      </div>
     </div>`).join('');
 }
 
