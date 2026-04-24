@@ -1,0 +1,3267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover,interactive-widget=resizes-content">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="1Hora">
+<meta name="theme-color" content="#D41F1F">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>1Hora — Assistência Técnica · MVP</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+/* ─── PHOSPHOR ICONS ─── */
+.ph-ico{display:inline-flex;align-items:center;justify-content:center;line-height:1;flex-shrink:0;}
+.nb .ph-ico{font-size:22px;display:flex;margin:0 auto 1px;}
+.fii .ph-ico{font-size:18px;color:var(--muted);}
+.conf-ico .ph-ico{font-size:20px;}
+
+:root{
+  /* ─ Colors ─ */
+  --red:#D41F1F;--red-d:#A81818;--red-s:#FEF2F2;
+  --blue:#1A5CC8;--blue-s:#EFF6FF;
+  --green:#16A34A;--green-s:#F0FDF4;
+  --orange:#D97706;--orange-s:#FFFBEB;
+  --purple:#7C3AED;--purple-s:#F5F3FF;
+  --gold:#B45309;--gold-s:#FEF3C7;
+  --bg:#F2F2F7;--white:#fff;
+  --border:#E5E5EA;--g100:#F5F5F5;
+  --mid:#6B7280;--muted:#9CA3AF;--text:#0A0A0A;
+  /* ─ Typography ─ */
+  --sans:'Plus Jakarta Sans',sans-serif;
+  /* ─ Radius ─ */
+  --radius-card:16px;
+  --radius-inner:12px;
+  --radius-chip:8px;
+  /* ─ Shadows ─ */
+  --shadow-card:0 0 1px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
+  --shadow-soft:0 1px 3px rgba(0,0,0,.08);
+  /* ─ Safe Area ─ */
+  --sat:env(safe-area-inset-top,0px);
+  --sab:env(safe-area-inset-bottom,0px);
+}
+html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);overflow:hidden;overscroll-behavior-y:auto;}
+
+/* ─── APP SHELL ─── */
+.app{max-width:430px;margin:0 auto;height:100dvh;display:flex;flex-direction:column;background:var(--bg);position:relative;}
+
+/* ─── STATUS BAR AREA ─── */
+.status-bar{height:var(--sat);background:var(--red);flex-shrink:0;}
+
+/* ─── TOP HEADER ─── */
+.hd{background:var(--red);backdrop-filter:none;-webkit-backdrop-filter:none;flex-shrink:0;padding:10px 16px 12px;position:sticky;top:0;z-index:150;}
+.hd-inner{display:flex;align-items:center;justify-content:space-between;}
+.hd-logo{display:flex;align-items:center;gap:9px;}
+.logo-circle{width:34px;height:34px;background:white;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;}
+.logo-circle .ln{font-size:13px;font-weight:800;color:var(--red);line-height:1;}
+.logo-circle .ls{font-size:7px;font-weight:800;color:var(--blue);margin-top:-1px;}
+.hd-titles .ht{font-size:15px;font-weight:800;color:#fff;letter-spacing:-.2px;}
+.hd-titles .hs{font-size:10px;color:rgba(255,255,255,.6);font-weight:500;}
+.hd-right{display:flex;align-items:center;gap:7px;}
+.hd-archived{display:flex;align-items:center;gap:5px;color:rgba(255,255,255,.85);cursor:pointer;padding:4px 6px;border-radius:8px;transition:background .15s;-webkit-tap-highlight-color:transparent;animation:cnt-pulse 2s ease-in-out infinite;}
+.hd-archived:active{background:rgba(255,255,255,.12);}
+.hd-archived .ha-ico{font-size:18px;display:flex;align-items:center;}
+.hd-archived .ha-lbl{font-size:11px;font-weight:700;letter-spacing:.02em;}
+.hd-archived .ha-cnt{font-size:12px;font-weight:800;color:#fff;}
+@keyframes cnt-pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.role-chip{background:none;border:none;border-radius:0;padding:0 4px;height:auto;display:flex;align-items:center;font-size:11px;font-weight:800;color:#fff;cursor:pointer;}
+
+/* ─── CONTENT ─── */
+.content{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.screen{display:none !important;}.screen.on{display:block !important;padding-bottom:calc(44px + env(safe-area-inset-bottom,0px) + 8px);}
+#screen-painel.on{display:flex !important;flex-direction:column;height:100%;overflow:hidden;gap:4px;padding-bottom:0;}
+#screen-entrega.on{display:flex !important;flex-direction:column;height:100% !important;overflow:hidden !important;padding-bottom:0 !important;}
+#screen-resultados.on,#screen-perfil.on{display:flex !important;flex-direction:column;height:100%;overflow:hidden;padding-bottom:0;}
+
+/* ─── BOTTOM NAV ─── */
+.bnav{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:430px;
+  background:var(--white);
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+  border-top:1px solid rgba(0,0,0,.06);
+  display:flex;
+  flex-direction:column;
+  z-index:200;
+  overflow:visible;
+}
+.bnav-icons{display:flex;height:44px;overflow:visible;position:relative;z-index:2;}
+.bnav-safe{background:transparent;position:relative;z-index:1;}
+.nb{flex:1;padding:0;border:none;background:none;color:var(--muted);font-family:var(--sans);font-size:10px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:5px;gap:3px;transition:.15s;position:relative;overflow:visible;}
+.nb .ni{line-height:1;transition:.15s;display:flex;align-items:center;justify-content:center;height:24px;}
+.nb.on{color:var(--red);}
+.nb.on .ni{transform:scale(1.05);}
+.nb.locked{opacity:.3;pointer-events:none;}
+.nb-dot{position:absolute;top:2px;right:calc(50% - 16px);width:6px;height:6px;background:var(--red);border-radius:50%;border:2px solid white;}
+
+/* ─── iOS TOGGLE — green/red only ─── */
+.ios-toggle{
+  position:relative;width:52px;height:28px;
+  flex-shrink:0;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.ios-track{
+  width:52px;height:28px;border-radius:14px;
+  background:var(--green);
+  transition:background .3s cubic-bezier(0.34,1.56,0.64,1);
+  display:flex;align-items:center;
+  padding:3px;
+}
+.ios-toggle.fail .ios-track{background:var(--red);}
+.ios-thumb{
+  width:22px;height:22px;border-radius:50%;
+  background:white;
+  box-shadow:0 2px 5px rgba(0,0,0,.3);
+  margin-left:auto;
+  transition:margin .3s cubic-bezier(0.34,1.56,0.64,1);
+  flex-shrink:0;
+}
+.ios-toggle.fail .ios-thumb{margin-left:0;margin-right:auto;}
+.ios-badge{display:none;}
+.sec{padding:12px 16px 0;}
+.sec-title,.od-section-title{font-size:12px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:9px;}
+.sec-toggle{background:none;border:none;color:var(--muted);font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;padding:0;letter-spacing:.01em;}
+.card{background:var(--white);border-radius:var(--radius-card);overflow:hidden;box-shadow:var(--shadow-card);}
+
+/* ─── INSTALL BANNER ─── */
+.install{margin:14px 16px 0;background:var(--blue);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;color:#fff;}
+.install .ii{font-size:20px;}
+.install .it .ia{font-size:13px;font-weight:700;}
+.install .it .ib{font-size:11px;opacity:.75;line-height:1.3;}
+.install button{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;font-family:var(--sans);cursor:pointer;flex-shrink:0;}
+
+/* ─── PHOTO ─── */
+.photo-zone{position:relative;height:145px;background:var(--g100);overflow:hidden;border-bottom:1px solid var(--border);}
+.photo-zone img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.photo-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6),transparent 55%);}
+.photo-detected{position:absolute;top:9px;left:10px;background:rgba(0,0,0,.65);backdrop-filter:blur(8px);border-radius:10px;padding:5px 10px;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;gap:5px;}
+.photo-detected .chk{color:#4ade80;}
+.photo-acts{position:absolute;bottom:0;right:0;top:0;left:0;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end;padding:9px 10px;pointer-events:none;}
+.pbtn{backdrop-filter:blur(8px);border:none;border-radius:20px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);pointer-events:auto;display:flex;align-items:center;gap:5px;}
+.pbtn.photo{background:var(--blue);color:#fff;font-size:14px;padding:0;gap:5px;width:86px;height:36px;justify-content:center;}
+.pbtn.photo .cam-ico{font-size:16.8px;line-height:1;display:inline-flex;align-items:center;}
+.pbtn.voice{background:var(--red);color:#fff;font-size:14px;padding:0;width:86px;height:36px;justify-content:center;}
+.voice-overlay.show ~ .photo-acts{display:none;}
+
+/* ─── VOICE OVERLAY ─── */
+.voice-overlay{display:none;position:absolute;inset:0;background:rgba(212,31,31,.97);z-index:50;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
+.voice-overlay.show{display:flex;}
+.voice-pulse{width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.15);border:3px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font-size:32px;animation:vpulse 1.5s ease-in-out infinite;box-shadow:0 0 0 0 rgba(255,255,255,.3);}
+@keyframes vpulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,255,255,.3)}50%{transform:scale(1.15);box-shadow:0 0 0 20px rgba(255,255,255,.0)}}
+.voice-label{font-size:14px;font-weight:700;color:#fff;letter-spacing:.02em;}
+.voice-transcript{font-size:12px;color:rgba(255,255,255,.8);text-align:center;max-width:260px;line-height:1.5;min-height:36px;}
+.voice-stop{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.5);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;animation:vpulse-stop 1.2s ease-in-out infinite;margin-top:4px;}
+@keyframes vpulse-stop{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.3);transform:scale(1);}50%{box-shadow:0 0 0 12px rgba(255,255,255,.0);transform:scale(1.08);}}
+
+/* ─── FIELDS ─── */
+.fi{display:flex;align-items:center;padding:11px 15px;border-bottom:1px solid var(--border);gap:11px;}
+.fi:last-child{border-bottom:none;}
+.fi .fii{font-size:18px;width:24px;text-align:center;flex-shrink:0;}
+.fi .fic{flex:1;}
+.fi .lbl{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:2px;}
+.fi input,.fi select{background:none;border:none;font-family:var(--sans);font-size:14px;font-weight:600;color:var(--text);width:100%;outline:none;-webkit-appearance:none;transform:translateZ(0);}
+.fi input::placeholder{color:var(--muted);font-weight:400;font-size:13px;}
+
+/* ─── COLLAPSIBLE DIAG GROUPS ─── */
+.diag-group{border-bottom:1px solid var(--border);}
+.diag-group:last-child{border-bottom:none;}
+.diag-group-hd{display:flex;align-items:center;padding:11px 15px;gap:10px;cursor:pointer;background:#fff;transition:background .12s;user-select:none;}
+.diag-group-hd:active{background:var(--g100);}
+.diag-group-ico{font-size:18px;width:26px;text-align:center;flex-shrink:0;}
+.diag-group-label{flex:1;font-size:13px;font-weight:700;color:var(--text);}
+.diag-group-status{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--green-s);color:var(--green);}
+.diag-group-status.has-fail{background:var(--red-s);color:var(--red);}
+.diag-group-arrow{width:20px;height:20px;border-radius:50%;background:var(--g100);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);transition:transform .2s;flex-shrink:0;}
+.diag-group-arrow.open{transform:rotate(90deg);background:var(--blue-s);color:var(--blue);}
+.diag-group-body{display:none;border-top:1px solid var(--border);}
+.diag-group-body.open{display:block;}
+.diag-hd{padding:9px 15px;font-size:12px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;background:var(--g100);border-bottom:1px solid var(--border);}
+.di{display:flex;align-items:center;padding:10px 15px;border-bottom:1px solid var(--border);gap:10px;}
+.di:last-child{border-bottom:none;}
+.di .dii{font-size:18px;width:26px;text-align:center;flex-shrink:0;}
+.di .din{flex:1;}
+.di .dnm{font-size:13px;font-weight:700;}
+.di .dsb{font-size:11px;color:var(--muted);}
+.tg{display:flex;border-radius:8px;overflow:hidden;border:1.5px solid var(--border);}
+.tb{padding:5px 10px;font-size:12px;font-weight:700;border:none;background:#fff;cursor:pointer;font-family:var(--sans);color:var(--muted);transition:.12s;}
+.tb:first-child{border-right:1.5px solid var(--border);}
+.tb.ok{background:var(--green-s);color:var(--green);}
+.tb.fail{background:var(--red-s);color:var(--red);}
+.bat-slider::-webkit-slider-runnable-track{height:8px;border-radius:4px;background:var(--border);}
+.bat-slider::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:white;border:2px solid var(--border);box-shadow:0 2px 6px rgba(0,0,0,.2);margin-top:-7px;cursor:pointer;}
+.bat-slider::-moz-range-track{height:8px;border-radius:4px;background:var(--border);}
+.bat-slider::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:white;border:2px solid var(--border);box-shadow:0 2px 6px rgba(0,0,0,.2);cursor:pointer;}
+.bat-row{display:flex;align-items:center;gap:4px;}
+.bat-inp{width:46px;background:var(--g100);border:1.5px solid var(--border);border-radius:8px;padding:4px 6px;font-size:13px;font-weight:700;text-align:center;font-family:var(--sans);outline:none;color:var(--text);}
+.bat-bar{width:50px;height:6px;background:var(--g100);border-radius:3px;overflow:hidden;border:1px solid var(--border);}
+.bat-fill{height:100%;border-radius:3px;transition:width .3s,background .3s;}
+
+/* ─── SERVICES ─── */
+.svc-banner{background:#fff;border-radius:0;padding:13px 15px;margin-bottom:0;color:var(--text);display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s;}
+.svc-banner:active{background:var(--g100);}
+.svc-banner .sbi{display:none;}
+.svc-banner .sba{font-size:14px;font-weight:700;color:var(--text);text-transform:none;letter-spacing:normal;}
+.svc-banner .sbb{display:none;}
+.svc-list{background:#fff;border-radius:0 0 var(--radius-card) var(--radius-card);overflow:hidden;box-shadow:none;}
+.svc-cat{padding:13px 15px;font-size:12px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;background:#fff;border-bottom:1px solid var(--border);}
+.svc-item{display:flex;align-items:center;padding:11px 15px;border-bottom:1px solid var(--border);gap:10px;cursor:pointer;transition:background .1s;}
+
+.svc-item:active{background:var(--g100);}
+.svc-item.selected{background:var(--blue-s);}
+.svc-ico{font-size:18px;width:26px;text-align:center;flex-shrink:0;}
+.svc-info{flex:1;}
+.svc-nm{font-size:13px;font-weight:700;}
+.svc-desc{font-size:11px;color:var(--muted);}
+.svc-price{font-size:14px;font-weight:700;color:var(--blue);flex-shrink:0;}
+.svc-chk{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;color:transparent;flex-shrink:0;transition:.12s;}
+.svc-item.selected .svc-chk{background:var(--blue);border-color:var(--blue);color:#fff;}
+
+/* GUARANTEE items special style */
+.svc-item.guarantee-item .svc-nm{color:var(--green);}
+.svc-item.guarantee-item.selected{background:var(--green-s);}
+.svc-item.guarantee-item.selected .svc-chk{background:var(--green);border-color:var(--green);color:#fff;}
+.svc-item.guarantee-item.selected .svc-price{color:var(--green);}
+
+/* ─── SUMMARY ─── */
+.summary-card{background:#fff;border-radius:var(--radius-card);overflow:hidden;box-shadow:var(--shadow-soft);}
+.sum-empty{padding:16px;font-size:13px;color:var(--muted);text-align:center;}
+.sum-row{display:flex;align-items:center;padding:10px 15px;border-bottom:1px solid var(--border);gap:8px;}
+.sum-row:last-child{border-bottom:none;}
+.sum-name{flex:1;font-size:13px;font-weight:600;}
+.sum-price{font-size:13px;font-weight:800;color:var(--blue);}
+.sum-remove{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:0 2px;line-height:1;opacity:.5;}
+.sum-total{display:flex;justify-content:space-between;align-items:center;padding:12px 15px;background:var(--blue-s);border-top:2px solid #BFDBFE;}
+.sum-total-lbl{font-size:13px;font-weight:700;color:var(--blue);}
+.sum-total-val{font-size:22px;font-weight:800;color:var(--blue);}
+
+/* ─── APPROVAL ─── */
+.apv-card{background:#fff;border-radius:var(--radius-card);overflow:hidden;box-shadow:var(--shadow-soft);}
+.apv-row{display:flex;align-items:center;padding:12px 15px;gap:10px;border-bottom:1px solid var(--border);}
+.apv-row:last-child{border-bottom:none;}
+.apv-lbl{font-size:12px;font-weight:700;color:var(--mid);flex-shrink:0;width:70px;}
+.apv-pair{display:flex;gap:10px;flex:1;justify-content:center;}
+.apv{flex:1;padding:11px 8px;border-radius:var(--radius-inner);font-size:13px;font-weight:700;font-family:var(--sans);border:1.5px solid var(--border);cursor:pointer;transition:.15s;text-align:center;background:var(--g100);color:var(--muted);}
+.apv.y.sel{background:var(--blue-s);color:var(--blue);border-color:#BFDBFE;}
+.apv.n.sel{background:var(--red-s);color:var(--red);border-color:#FECACA;}
+.pc-chips{display:flex;gap:6px;flex-wrap:wrap;}
+.pc{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;background:var(--g100);color:var(--mid);border:1.5px solid var(--border);cursor:pointer;transition:.13s;}
+.pc.sel{background:var(--blue-s);color:var(--blue);border-color:#BFDBFE;}
+
+/* ─── ARCHIVED PILL ─── */
+.archived-pill{display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid #BFDBFE;border-radius:20px;padding:5px 14px;font-size:11px;font-weight:700;color:var(--blue);cursor:pointer;transition:.13s;}
+.archived-pill.no-border{border:none;background:#fff;}
+.archived-pill:active{opacity:.6;}
+.archived-pill-count{color:inherit;border-radius:0;padding:0;font-size:inherit;font-weight:inherit;background:none;}
+.archived-pill-wrap{padding:10px 16px 0;display:flex;justify-content:center;}
+
+/* ─── BOTTOM SHEET MODAL ─── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:300;backdrop-filter:blur(2px);}
+.modal-overlay.show{display:flex;align-items:center;justify-content:center;}
+.alert-card{background:#fff;border-radius:20px;padding:24px 20px 16px;width:calc(100% - 64px);max-width:320px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.2);}
+.alert-icon{font-size:36px;margin-bottom:10px;}
+.alert-title{font-size:15px;font-weight:800;color:var(--text);margin-bottom:6px;}
+.alert-msg{font-size:13px;color:var(--mid);line-height:1.5;margin-bottom:18px;}
+.alert-btn{width:100%;background:var(--blue);color:#fff;border:none;border-radius:12px;height:44px;font-family:var(--sans);font-size:14px;font-weight:800;cursor:pointer;}
+.bottom-sheet{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:white;border-radius:24px 24px 0 0;z-index:301;padding-bottom:var(--sab);transition:transform .3s;box-shadow:0 -8px 40px rgba(0,0,0,.2);}
+.bs-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 0;}
+.bs-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;}
+.bs-title{font-size:15px;font-weight:800;}
+.bs-close{background:var(--g100);border:none;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;color:var(--mid);}
+.bs-list{max-height:320px;overflow-y:auto;padding:0 12px 12px;}
+.bs-item{display:flex;align-items:center;padding:11px 12px;border-radius:12px;gap:11px;cursor:pointer;transition:background .1s;margin-bottom:4px;}
+.bs-item:active{background:var(--g100);}
+.bs-item-ico{width:38px;height:38px;border-radius:11px;background:var(--blue-s);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.bs-item-info{flex:1;}
+.bs-item-name{font-size:13px;font-weight:700;}
+.bs-item-detail{font-size:11px;color:var(--muted);}
+.bs-item-val{font-size:14px;font-weight:800;color:var(--blue);}
+.bs-empty{text-align:center;padding:24px;color:var(--muted);font-size:13px;}
+.cta-wrap{padding:10px 16px 4px;}
+.cta{width:100%;background:var(--blue);color:#fff;border:none;border-radius:14px;height:52px;font-family:var(--sans);font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(26,92,200,.3);transition:transform .2s cubic-bezier(0.34,1.56,0.64,1),opacity .15s ease;}
+
+/* ─────────────────────────────────────────── */
+/* ─── PAINEL ─── */
+/* ─────────────────────────────────────────── */
+.panel-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:10px 12px 0;}
+.ps-card{background:rgba(255,255,255,.7);border-radius:10px;padding:9px 8px;text-align:center;box-shadow:none;border:1px solid rgba(0,0,0,.06);}
+.panel-stats .ps-card:nth-child(1){border-bottom:2.5px solid var(--blue);}
+.panel-stats .ps-card:nth-child(2){border-bottom:2.5px solid var(--orange);}
+.panel-stats .ps-card:nth-child(3){border-bottom:2.5px solid var(--green);}
+.ps-num{font-size:22px;font-weight:800;line-height:1;margin-bottom:2px;}
+.ps-lbl{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+
+.panel-board{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:1fr;gap:8px;padding:6px 16px 0;align-items:start;}
+.pb-col{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 0 1px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.05);display:flex;flex-direction:column;min-height:44px;max-height:100%;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;}o;scrollbar-width:none;-ms-overflow-style:none;}
+.pb-col::-webkit-scrollbar{display:none;}
+.panel-board .pb-col:nth-child(1){border-top:2.5px solid var(--blue);}
+.panel-board .pb-col:nth-child(2){border-top:2.5px solid var(--orange);}
+.panel-board .pb-col:nth-child(3){border-top:2.5px solid var(--green);}
+.pb-head{display:flex;align-items:center;padding:6px 9px 5px;border-bottom:1px solid var(--border);}
+.pb-name{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;flex:1;}
+.panel-board .pb-col:nth-child(1) .pb-name{color:var(--blue);}
+.panel-board .pb-col:nth-child(2) .pb-name{color:var(--orange);}
+.panel-board .pb-col:nth-child(3) .pb-name{color:var(--green);}
+.pb-dot,.pb-cnt{display:none;}
+.pb-body{padding:7px;display:flex;flex-direction:column;gap:6px;}
+.pb-body::-webkit-scrollbar{display:none;}
+.pb-empty{padding:14px 6px;font-size:11px;font-weight:500;color:var(--muted);text-align:center;}
+.pb-item-model{font-size:10px;font-weight:500;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pb-item-problem{font-size:10px;font-weight:500;color:var(--mid);margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.pb-item{background:var(--g100);border-radius:8px;padding:7px 9px;cursor:pointer;transition:background .15s;display:flex;flex-direction:column;justify-content:flex-start;border-left:3px solid transparent;}
+.pb-item:active{background:var(--border);}
+.pb-item-row1{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;gap:6px;}
+.od-status-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.status-fila{background:var(--blue-s);color:var(--blue);}
+.status-conserto{background:var(--orange-s);color:var(--orange);}
+.status-pronto{background:var(--green-s);color:var(--green);}
+.od-action-btn{width:100%;border:none;border-radius:12px;height:44px;font-family:var(--sans);font-size:14px;font-weight:800;cursor:pointer;margin-top:8px;transition:.13s;}
+.od-action-pegar{background:var(--blue);color:white;}
+.od-action-finalizar{background:var(--green);color:white;}
+.pb-item-os{font-size:10px;font-weight:700;color:var(--muted);margin-bottom:0;font-family:var(--sans);letter-spacing:.02em;}
+.pb-item-name{font-size:14px;font-weight:700;line-height:1.2;margin-bottom:2px;color:var(--text);display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}
+.pb-item-timer{font-size:10px;font-weight:700;padding:2px 0;border-radius:5px;display:inline-block;white-space:nowrap;flex-shrink:0;background:transparent !important;}
+.t-ok{color:var(--green);}
+.t-warn{color:var(--orange);}
+.t-over{color:var(--red);animation:blink .9s infinite;}
+
+.panel-share{margin:10px 16px 0;background:var(--blue-s);border:1px solid #BFDBFE;border-radius:12px;padding:11px 14px;display:flex;align-items:center;gap:10px;}
+.panel-share .psi{font-size:20px;}
+.panel-share .pst{flex:1;font-size:12px;font-weight:600;color:var(--blue);}
+.panel-share .psb{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;font-family:var(--sans);cursor:pointer;}
+
+/* ─── ENTREGA ─── */
+.entrega-pronta-card{background:#fff;border-radius:var(--radius-card);padding:13px 14px 13px 16px;cursor:pointer;box-shadow:var(--shadow-card);border-left:4px solid var(--green);transition:background .12s;margin-bottom:10px;display:flex;align-items:center;gap:12px;width:100%;}
+.entrega-pronta-card:active{background:var(--green-s);}
+.ep-info{flex:1;min-width:0;}
+.ep-name{font-size:15px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.25;}
+.ep-model{font-size:12px;color:var(--mid);font-weight:500;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ep-meta{font-size:11px;color:var(--muted);font-weight:500;margin-top:3px;}
+.ep-value{flex-shrink:0;text-align:right;}
+.ep-val{font-size:17px;font-weight:800;color:var(--blue);line-height:1.2;}
+.ep-badge{font-size:10px;font-weight:700;color:var(--green);background:var(--green-s);padding:2px 8px;border-radius:8px;margin-top:5px;display:inline-block;}
+.search-card{background:#fff;border-radius:var(--radius-card);overflow:hidden;box-shadow:var(--shadow-card);}
+.search-row{display:flex;align-items:center;padding:12px 15px;gap:10px;}
+.search-ico{font-size:20px;}
+.search-input{flex:1;background:none;border:none;font-family:var(--sans);font-size:15px;font-weight:600;color:var(--text);outline:none;}
+.search-input::placeholder{color:var(--muted);font-weight:400;font-size:13px;}
+.search-btn{background:var(--red);color:#fff;border:none;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;font-family:var(--sans);cursor:pointer;}
+
+.od-wrap{display:none;}.od-wrap.show{display:block;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.od-wrap-spacer{height:calc(56px + env(safe-area-inset-bottom,0px) + 8px);flex-shrink:0;}
+.od-card{background:#fff;border-radius:var(--radius-card);overflow:hidden;box-shadow:var(--shadow-card);}
+.od-hd{padding:14px 16px;background:var(--blue-s);border-bottom:1px solid #BFDBFE;}
+.od-os{font-size:10px;font-weight:600;color:var(--muted);margin-bottom:4px;letter-spacing:.02em;}
+.od-model{font-size:17px;font-weight:800;margin-bottom:4px;}
+.od-meta{display:flex;gap:7px;flex-wrap:wrap;}
+.od-client{font-size:11px;font-weight:700;background:#fff;color:var(--text);padding:2px 9px;border-radius:8px;border:1px solid var(--border);}
+.od-time{font-size:11px;color:var(--mid);font-weight:600;display:flex;align-items:center;gap:3px;}
+
+.od-section{padding:11px 15px;border-bottom:1px solid var(--border);}
+.od-chips{display:flex;gap:5px;flex-wrap:wrap;}
+.od-chip{font-size:11px;font-weight:700;padding:3px 9px;border-radius:8px;}
+.ck-ok{background:var(--green-s);color:var(--green);}
+.ck-fail{background:var(--red-s);color:var(--red);}
+/* ─── OD Diagnóstico na entrada ─── */
+.od-diag-empty{font-size:13px;font-weight:600;color:var(--green);display:flex;align-items:center;gap:6px;padding:4px 0;}
+.od-diag-empty.no-data{color:var(--muted);}
+.od-diag-fail-item{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--red);padding:5px 0;}
+.od-diag-section-hd{font-size:10px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;padding:10px 0 6px;margin-bottom:0;}
+.od-diag-expanded-fail-item{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--red);padding:5px 0;}
+.od-diag-ok-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:2px;}
+.od-diag-ok-item{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--mid);padding:5px 0;}
+.od-svc-row{display:flex;justify-content:space-between;padding:4px 0;}
+.od-svc-nm{font-size:13px;font-weight:500;color:var(--text);}
+.od-svc-pr{font-size:13px;font-weight:600;color:var(--mid);}
+.od-total-row{display:flex;justify-content:space-between;padding:8px 0 0;}
+.od-total-nm{font-size:13px;font-weight:700;color:var(--text);}
+.od-total-pr{font-size:14px;font-weight:800;color:var(--blue);}
+
+/* Técnico selector */
+.tech-selector{display:flex;gap:7px;flex-wrap:wrap;}
+.tech-chip{padding:6px 13px;border-radius:10px;font-size:12px;font-weight:700;background:var(--g100);color:var(--mid);border:1.5px solid var(--border);cursor:pointer;transition:.13s;}
+.tech-chip.sel{background:var(--blue-s);color:var(--blue);border-color:#BFDBFE;}
+
+/* Conferência */
+.conf-item{display:flex;align-items:center;padding:8px 0;gap:10px;}
+.conf-ico{font-size:17px;width:24px;text-align:center;flex-shrink:0;}
+.conf-lbl{flex:1;font-size:13px;font-weight:600;}
+.conf-tg{display:flex;border-radius:8px;overflow:hidden;border:1.5px solid var(--border);}
+.ctb{padding:5px 10px;font-size:11px;font-weight:700;border:none;background:#fff;cursor:pointer;font-family:var(--sans);color:var(--muted);}
+.ctb:first-child{border-right:1.5px solid var(--border);}
+.ctb.ok{background:var(--green-s);color:var(--green);}
+.ctb.fail{background:var(--red-s);color:var(--red);}
+
+/* WhatsApp editable */
+.wa-preview{background:#ECE5DD;border-radius:var(--radius-card);overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.12);}
+.wa-hd{padding:8px 14px;display:flex;align-items:center;gap:10px;background:#075E54;}
+.wa-hd-avatar{width:32px;height:32px;border-radius:50%;background:#DFD9D4;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+.wa-hd-info{flex:1;}
+.wa-hd-name{font-size:13px;font-weight:700;color:#fff;line-height:1.2;}
+.wa-hd-status{font-size:10px;color:rgba(255,255,255,.7);}
+.wa-hd-edit{background:transparent;border:none;padding:4px 0;font-size:10px;font-weight:700;cursor:pointer;font-family:var(--sans);}
+.wa-hd .wa-hd-edit{color:rgba(255,255,255,.8);}
+.wa-footer .wa-hd-edit{color:rgba(0,0,0,.4);}
+.wa-body{padding:10px 10px 6px;min-height:80px;}
+.wa-bubble{background:#DCF8C6;border-radius:12px 0 12px 12px;padding:8px 10px 6px;margin-left:auto;max-width:88%;position:relative;box-shadow:0 1px 2px rgba(0,0,0,.12);}
+.wa-textarea{width:100%;background:transparent;border:none;padding:0;font-family:var(--sans);font-size:13px;font-weight:400;color:#111;outline:none;resize:none;min-height:200px;line-height:1.55;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.wa-textarea::-webkit-scrollbar{width:3px;}
+.wa-textarea::-webkit-scrollbar-track{background:transparent;}
+.wa-textarea::-webkit-scrollbar-thumb{background:rgba(0,0,0,.18);border-radius:3px;}
+.wa-bubble-tail{position:absolute;top:0;right:-7px;width:0;height:0;border-left:7px solid #DCF8C6;border-bottom:7px solid transparent;}
+.wa-bubble-footer{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:2px;}
+.wa-time{font-size:10px;color:rgba(0,0,0,.4);}
+.wa-tick{font-size:11px;color:#53BDEB;}
+.wa-footer{padding:10px 12px;background:#ECE5DD;display:flex;align-items:center;justify-content:space-between;}
+.wa-char{font-size:10px;color:rgba(0,0,0,.4);}
+
+.finish-btn{width:100%;background:var(--blue);color:#fff;border:none;border-radius:14px;height:52px;font-family:var(--sans);font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(26,92,200,.3);transition:.13s;}
+.finish-btn:active{opacity:.85;transform:scale(.98);}
+
+/* ─── RESULTADOS ─── */
+.results-header{padding:14px 16px 0;}
+.results-summary{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:0;}
+.rs-card{background:#fff;border-radius:var(--radius-card);padding:14px;box-shadow:var(--shadow-soft);}
+.rs-num{font-size:26px;font-weight:800;line-height:1;margin-bottom:4px;}
+.rs-lbl{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+
+.chart-wrap{background:#fff;border-radius:var(--radius-card);padding:16px;box-shadow:var(--shadow-soft);}
+.chart-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;}
+.bar-chart{display:flex;flex-direction:column;gap:9px;}
+.bar-row{display:flex;align-items:center;gap:10px;}
+.bar-label{font-size:12px;font-weight:600;width:84px;flex-shrink:0;color:var(--mid);}
+.bar-track{flex:1;height:20px;background:var(--g100);border-radius:6px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding-right:8px;justify-content:flex-end;transition:width .8s cubic-bezier(.25,.8,.25,1);width:0;}
+.bar-val{font-size:11px;font-weight:800;color:#fff;}
+.bar-row .bv{font-size:12px;font-weight:800;width:30px;text-align:right;flex-shrink:0;}
+
+/* ─── PERFIL / RANKING ─── */
+.profile-hero{background:linear-gradient(135deg,var(--red),var(--red-d));margin:14px 16px 0;border-radius:var(--radius-card);padding:18px 20px;color:#fff;box-shadow:0 4px 20px rgba(212,31,31,.3);position:relative;}
+.ph-top{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.ph-avatar{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.ph-info .ph-name{font-size:17px;font-weight:800;}
+.ph-info .ph-role{font-size:12px;opacity:.75;font-weight:600;}
+.ph-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.ph-stat .phsv{font-size:20px;font-weight:800;}
+.ph-stat .phsl{font-size:11px;opacity:.7;font-weight:600;}
+
+.ranking-card{background:#fff;border-radius:var(--radius-card);overflow:hidden;box-shadow:var(--shadow-soft);}
+.rk-hd{padding:12px 16px;background:var(--g100);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.rk-title{font-size:12px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;}
+.rk-period{display:flex;gap:4px;}
+.rk-period button{padding:4px 10px;border-radius:8px;border:none;font-size:11px;font-weight:700;font-family:var(--sans);cursor:pointer;background:transparent;color:var(--muted);}
+.rk-period button.on{background:var(--red);color:#fff;}
+
+.rk-row{display:flex;align-items:center;padding:12px 15px;border-bottom:1px solid var(--border);gap:12px;}
+.rk-row:last-child{border-bottom:none;}
+.rk-pos{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;}
+.pos-1{background:#FEF3C7;color:#B45309;}
+.pos-2{background:#F3F4F6;color:#374151;}
+.pos-3{background:#FEF3C7;color:#92400E;}
+.pos-n{background:var(--g100);color:var(--muted);}
+.rk-avatar{width:34px;height:34px;border-radius:50%;background:var(--g100);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.rk-info{flex:1;}
+.rk-name{font-size:13px;font-weight:700;}
+.rk-detail{font-size:11px;color:var(--muted);}
+.rk-score{text-align:right;}
+.rk-os{font-size:16px;font-weight:800;color:var(--red);}
+.rk-sub{font-size:10px;color:var(--muted);font-weight:600;}
+
+.rk-trophy{display:none;}
+.rk-trophy.show{display:flex;align-items:center;justify-content:center;padding:20px;font-size:48px;}
+
+/* penalty badge */
+.penalty-badge{display:inline-flex;align-items:center;gap:4px;background:var(--red-s);border:1px solid #FECACA;border-radius:8px;padding:2px 8px;font-size:10px;font-weight:700;color:var(--red);}
+
+/* switch role */
+.role-switcher{background:#fff;border-radius:var(--radius-card);overflow:hidden;box-shadow:var(--shadow-soft);}
+.role-opt{display:flex;align-items:center;padding:13px 15px;border-bottom:1px solid var(--border);gap:12px;cursor:pointer;transition:background .1s;}
+.role-opt:last-child{border-bottom:none;}
+.role-opt:active{background:var(--g100);}
+.role-icon{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.role-info{flex:1;}
+.role-name{font-size:14px;font-weight:700;}
+.role-desc{font-size:11px;color:var(--muted);}
+.role-sel{color:var(--red);font-size:18px;font-weight:800;}
+
+/* ─── FINANCEIRO ─── */
+.fin-hero{background:var(--red);margin:0;border-radius:var(--radius-card);padding:18px 20px;color:#fff;box-shadow:0 4px 20px rgba(212,31,31,.28);}
+.fh-lbl{font-size:12px;opacity:.7;text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:4px;}
+.fh-val{font-size:34px;font-weight:800;letter-spacing:-1px;margin-bottom:12px;}
+.fh-row{display:flex;justify-content:space-between;}
+.fm-lbl{font-size:11px;opacity:.65;font-weight:600;}
+.fm-val{font-size:16px;font-weight:800;}
+.pix-list{background:#fff;border-radius:var(--radius-card);overflow:hidden;box-shadow:var(--shadow-soft);}
+.pr{display:flex;align-items:center;padding:12px 14px;gap:11px;border-bottom:1px solid var(--border);}
+.pr:last-child{border-bottom:none;}
+.pr-ico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.ico-c{background:var(--green-s);}
+.ico-p{background:var(--orange-s);}
+.pr-info{flex:1;min-width:0;}
+.pr-os{font-size:10px;font-weight:600;color:var(--muted);}
+.pr-name{font-size:13px;font-weight:700;}
+.pr-det{font-size:11px;color:var(--mid);}
+.pr-right{text-align:right;}
+.pr-val{font-size:14px;font-weight:800;margin-bottom:3px;}
+.pr-badge{font-size:9px;font-weight:800;padding:2px 7px;border-radius:8px;text-transform:uppercase;}
+.pb-c{background:var(--green-s);color:var(--green);}
+.pb-p{background:var(--orange-s);color:var(--orange);}
+
+/* ─── ENTREGA EMPTY STATE ─── */
+.entrega-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:65vh;padding:32px;text-align:center;}
+.entrega-big-input{font-size:36px;font-weight:800;text-align:center;border:none;border-bottom:3px solid var(--border);background:transparent;outline:none;font-family:var(--sans);color:var(--text);width:100%;max-width:220px;letter-spacing:4px;padding-bottom:8px;transition:border-color .2s;}
+.entrega-big-input::placeholder{color:var(--border);font-size:22px;font-weight:400;letter-spacing:1px;}
+.entrega-big-input:focus{border-bottom-color:var(--red);}
+
+/* ─── PROOF SECTION ─── */
+.proof-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;}
+.proof-zone{height:90px;background:var(--g100);border-radius:12px;border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;position:relative;transition:.15s;}
+.proof-zone:active{opacity:.7;}
+.proof-zone img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.proof-ok{border-color:var(--green);background:var(--green-s);}
+
+/* ─── PROFILE TOP-SHEET MODAL ─── */
+.top-sheet{position:fixed;top:0;left:50%;transform:translateX(-50%) translateY(-120%);width:100%;max-width:430px;background:white;border-radius:0 0 24px 24px;z-index:400;padding-top:calc(var(--sat) + 8px);transition:transform .32s cubic-bezier(.4,0,.2,1);box-shadow:0 8px 40px rgba(0,0,0,.25);}
+.top-sheet.show{transform:translateX(-50%) translateY(0);}
+.ts-pad{padding:4px 20px 24px;}
+.ts-title{font-size:15px;font-weight:800;margin-bottom:16px;}
+.ts-field{margin-bottom:14px;}
+.ts-lbl{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:5px;}
+.ts-inp{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-size:14px;font-weight:600;font-family:var(--sans);outline:none;color:var(--text);background:#fff;-webkit-appearance:none;}
+.ts-inp:focus{border-color:var(--blue);}
+
+/* ─── HISTORY CARD ─── */
+.hist-row{display:flex;align-items:center;justify-content:space-between;padding:12px 15px;border-bottom:1px solid var(--border);}
+.hist-row:last-child{border-bottom:none;}
+.hist-lbl{font-size:13px;font-weight:600;color:var(--mid);}
+.hist-val{font-size:16px;font-weight:800;color:var(--text);}
+
+/* ─── TOAST NOTIFICATIONS ─── */
+.toast-container{position:fixed;top:48%;left:50%;transform:translate(-50%,-50%);width:100%;max-width:360px;z-index:9999;display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 16px;pointer-events:none;}
+.toast{background:rgba(10,10,10,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);color:#fff;padding:13px 20px;border-radius:14px;font-size:13px;font-weight:600;line-height:1;font-family:var(--sans);display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,.25);animation:toast-in .35s cubic-bezier(.4,0,.2,1) forwards;pointer-events:auto;max-width:100%;}
+.toast.toast-out{animation:toast-out .25s ease forwards;}
+.toast.success{background:rgba(22,163,74,.95);}
+.toast.opened{background:rgba(26,92,200,.96);}
+.toast.archived{background:rgba(212,31,31,.96);}
+.toast.error{background:rgba(212,31,31,.95);}
+.toast.warning{background:rgba(217,119,6,.95);}
+.toast-ico{font-size:17px;line-height:1;flex-shrink:0;display:flex;align-items:center;}
+@keyframes toast-in{from{opacity:0;transform:translateY(-20px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes toast-out{to{opacity:0;transform:translateY(-10px) scale(.95)}}
+
+/* ─── VALIDATION ─── */
+.fi.invalid{background:var(--red-s);border-left:3px solid var(--red);}
+.fi.invalid input,.fi.invalid select,.fi.invalid textarea{color:var(--red);}
+.fi.invalid .lbl{color:var(--red);}
+.shake{animation:shake .4s ease;}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+
+/* ─── TRANSITIONS — gerenciado pelo JS goTo() para consistência ─── */
+
+/* ─── SWIPE KANBAN ─── */
+@media(max-width:430px){
+  .panel-board{scroll-snap-type:none;overflow-x:visible;-webkit-overflow-scrolling:auto;scroll-behavior:auto;}
+  .pb-col{scroll-snap-align:none;min-width:0;}
+}
+
+/* ─── COUNTER ANIMATION ─── */
+.count-up{transition:all .3s ease;}
+
+/* ─── CTA INTERACTION ─── */
+.cta{transition:transform .2s cubic-bezier(0.34,1.56,0.64,1),opacity .15s ease;}
+.cta:active{transform:scale(.97);opacity:.9;}
+@keyframes cta-ready{0%,100%{box-shadow:0 4px 16px rgba(0,0,0,.2)}60%{box-shadow:0 8px 28px rgba(0,0,0,.3)}}
+.cta.ready{animation:cta-ready 2.8s ease-in-out infinite;}
+
+/* ─── SUBTLE CARD HOVER ─── */
+.pb-item{transition:transform .12s,box-shadow .12s;}
+.pb-item:active{transform:scale(.98);box-shadow:0 2px 8px rgba(0,0,0,.12);}
+
+/* ─── EMPTY STATE ANIMATION ─── */
+.entrega-empty{animation:fade-up .4s ease;}
+@keyframes fade-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── BOTTOM NAV LABELS ─── */
+.nb .nl{font-size:9px;font-weight:600;line-height:1;margin-top:-2px;}
+
+/* ─── ERROR INDICATOR (replaces dots) ─── */
+.fi.has-error{border-left:3px solid var(--red);background:var(--red-s);}
+.fi.has-error .lbl{color:var(--red);}
+.fi.has-error .fii{color:var(--red);}
+
+/* ─── COLLAPSIBLE CLIENT DATA ─── */
+.client-collapse-hd{display:flex;align-items:center;padding:11px 15px;gap:10px;cursor:pointer;background:#fff;border-radius:16px 16px 0 0;user-select:none;transition:background .12s;}
+.client-collapse-hd:active{background:var(--g100);}
+.client-collapse-hd.collapsed{border-radius:16px;}
+.client-collapse-summary{flex:1;font-size:13px;font-weight:700;color:var(--text);}
+.client-collapse-summary span{font-size:11px;color:var(--muted);font-weight:500;margin-left:6px;}
+.client-collapse-arrow{width:24px;height:24px;border-radius:50%;background:var(--g100);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);transition:transform .2s;flex-shrink:0;}
+.client-collapse-arrow.open{transform:rotate(180deg);}
+
+/* ─── KANBAN FIXED PANEL ─── */
+.panel-live-fixed{position:fixed;bottom:calc(49px + env(safe-area-inset-bottom,0px) + 16px);left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:100;padding:0 16px;}
+
+/* ─── ENTREGA FIXED LAYOUT ─── */
+.entrega-fixed-header{flex-shrink:0;}
+.entrega-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:12px;}
+.entrega-scroll .entrega-section-title{padding:0 10% 8px;}
+
+/* ─── iOS-STYLE SCROLLBAR ─── */
+.content::-webkit-scrollbar,
+#prontasList::-webkit-scrollbar,
+.od-wrap::-webkit-scrollbar,
+.ios-scroll::-webkit-scrollbar{width:3px;}
+.content::-webkit-scrollbar-track,
+#prontasList::-webkit-scrollbar-track,
+.od-wrap::-webkit-scrollbar-track,
+.ios-scroll::-webkit-scrollbar-track{background:transparent;}
+.content::-webkit-scrollbar-thumb,
+#prontasList::-webkit-scrollbar-thumb,
+.od-wrap::-webkit-scrollbar-thumb,
+.ios-scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,.18);border-radius:3px;}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="toast-container" id="toastContainer"></div>
+  <div class="status-bar"></div>
+
+  <!-- HEADER -->
+  <div class="hd">
+    <div class="hd-inner">
+      <div class="hd-logo">
+        <div class="logo-circle"><span class="ln">1</span><span class="ls">HORA</span></div>
+        <div class="hd-titles"><div class="ht">Uma Hora</div><div class="hs">Assistência Técnica</div></div>
+      </div>
+        <div class="hd-right">
+          <div class="role-chip" onclick="toggleRole()" id="roleChip">Atendente</div>
+          <div class="hd-archived" onclick="openArchived()">
+            <span class="ha-ico"><i class="ph ph-archive ph-ico" style="font-size:18px;"></i></span>
+            <span class="ha-lbl">Arquivados</span>
+            <span class="ha-cnt archived-pill-count">0</span>
+          </div>
+        </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content" id="content">
+
+    <!-- ══════════════════════════════════════
+         TELA 1 — ENTRADA
+    ══════════════════════════════════════ -->
+    <div class="screen on" id="screen-entrada">
+
+      <div class="install" id="ib">
+        <div class="ii"><i class="ph ph-device-mobile-camera ph-ico" style="font-size:20px;color:#fff;"></i></div>
+        <div class="it"><div class="ia">Instalar no iPhone</div><div class="ib">Safari → ⬆ → "Adicionar à Tela de Início"</div></div>
+        <button onclick="document.getElementById('ib').remove()">OK</button>
+      </div>
+
+
+
+
+      <!-- FOTO + VOZ -->
+      <div class="sec">
+        <div class="sec-title">Foto do Aparelho</div>
+        <div class="card" style="position:relative;">
+          <div class="photo-zone" id="photoZone" onclick="document.getElementById('pi').click()">
+            <img src="https://images.unsplash.com/photo-1591337676887-a217a6970a8a?w=600&q=80" id="prev">
+            <div class="photo-ov"></div>
+            <div class="photo-detected" id="photo-detected-label"><span class="chk">✓</span> Adicionar foto</div>
+            <!-- VOICE OVERLAY (inside photo-zone so sibling selector hides acts) -->
+            <div class="voice-overlay" id="voiceOverlay">
+              <div class="voice-pulse"><i class="ph ph-microphone ph-ico" style="font-size:48px;color:#fff;"></i></div>
+              <div class="voice-label">OUVINDO...</div>
+              <div class="voice-transcript" id="voiceTranscript">Fale: modelo, problema e serviços</div>
+              <button class="voice-stop" onclick="stopVoice()"><i class="ph ph-stop-circle ph-ico"></i></button>
+            </div>
+            <div class="photo-acts">
+              <button class="pbtn photo" onclick="event.stopPropagation();document.getElementById('pi').click()"><span class="cam-ico"><i class="ph ph-camera ph-ico"></i></span><span>Foto</span></button>
+              <div style="flex:1;"></div>
+              <button class="pbtn voice" onclick="event.stopPropagation();startVoice()"><i class="ph ph-microphone ph-ico"></i> Falar</button>
+            </div>
+          </div>
+          <input type="file" id="pi" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
+        </div>
+      </div>
+
+      <!-- DADOS -->
+      <div class="sec">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <div class="sec-title" style="margin-bottom:0;">Dados do Atendimento</div>
+          <button onclick="toggleClientData()" id="clientToggleBtn" class="sec-toggle">Minimizar ▲</button>
+        </div>
+        <div id="clientSummaryRow" class="card" style="display:none;padding:11px 15px;align-items:center;">
+          <div id="clientSummaryName" style="flex:1;font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
+        </div>
+        <div class="card" id="clientDataCard">
+          <div id="clientDataBody">
+            <div class="fi"><div class="fii"><i class="ph ph-user ph-ico"></i></div><div class="fic"><div class="lbl">Nome do Cliente</div><input id="clientName" type="text" placeholder="Nome completo..." value="Carlos Mendes"></div></div>
+            <div class="fi"><div class="fii"><i class="ph ph-chat-circle ph-ico"></i></div><div class="fic"><div class="lbl">WhatsApp</div><input id="clientWA" type="tel" placeholder="+55 11 9 0000-0000" value="+55 11 9 8734-2291"></div></div>
+            <div class="fi" onclick="openModelSheet()" style="cursor:pointer;"><div class="fii"><i class="ph ph-device-mobile ph-ico"></i></div><div class="fic"><div class="lbl">Modelo</div><input id="modelInput" type="text" placeholder="Ex: iPhone 14 Pro" value="iPhone 14 Pro" oninput="buildServices()" onclick="event.stopPropagation();openModelSheet()" style="pointer-events:auto;cursor:pointer;caret-color:var(--blue);" readonly></div><div style="color:var(--muted);font-size:11px;font-weight:600;flex-shrink:0;padding-left:4px;">▼</div></div>
+            <div class="fi"><div class="fii"><i class="ph ph-key ph-ico"></i></div><div class="fic"><div class="lbl">Senha do iPhone</div><input id="senhaInput" type="text" placeholder="Ex: 123456 ou Sem senha"></div></div>
+            <div class="fi" style="align-items:flex-start;padding-top:12px;"><div class="fii" style="margin-top:1px;"><i class="ph ph-chat-dots ph-ico"></i></div><div class="fic"><div class="lbl">Problema Relatado</div><textarea id="problemInput" placeholder="Descreva o problema..." rows="1" style="background:none;border:none;font-family:var(--sans);font-size:14px;font-weight:600;color:var(--text);width:100%;outline:none;resize:none;overflow:hidden;min-height:22px;line-height:1.5;" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'">Tela quebrada — canto inferior esq.</textarea></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIAGNÓSTICO -->
+      <div class="sec">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <div class="sec-title" style="margin-bottom:0;">Diagnóstico na Entrada</div>
+          <button onclick="toggleDiagSection(this)" id="diagToggleBtn" class="sec-toggle">Expandir ▼</button>
+        </div>
+        <div id="diagSummary" class="card" style="display:none;margin-bottom:8px;"></div>
+        <div class="card" id="diagBody" style="display:none;">
+          <div class="di"><div class="dii"><i class="ph ph-scan ph-ico"></i></div><div class="din"><div class="dnm">Face ID</div><div class="dsb">Reconhecimento facial</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+          <div class="di"><div class="dii"><i class="ph ph-monitor ph-ico"></i></div><div class="din"><div class="dnm">Tela & Display</div><div class="dsb">Manchas, pixels, brilho</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+          <div class="di"><div class="dii"><i class="ph ph-hand-tap ph-ico"></i></div><div class="din"><div class="dnm">Touch Screen</div><div class="dsb">Resposta em toda a tela</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+          <div class="di"><div class="dii"><i class="ph ph-speaker-high ph-ico"></i></div><div class="din"><div class="dnm">Alto-falante</div><div class="dsb">Caixa e falante de chamada</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+          <div class="di"><div class="dii"><i class="ph ph-camera ph-ico"></i></div><div class="din"><div class="dnm">Câmera Frontal</div><div class="dsb">FaceTime e selfie</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+          <div class="di"><div class="dii"><i class="ph ph-camera-rotate ph-ico"></i></div><div class="din"><div class="dnm">Câmera Traseira</div><div class="dsb">Fotos e vídeos</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+          <div class="di"><div class="dii"><i class="ph ph-sliders-horizontal ph-ico"></i></div><div class="din"><div class="dnm">Botões Físicos</div><div class="dsb">Volume, sleep, silencioso</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+          <div class="di" id="batRow">
+            <div class="dii" id="batIco"><i class="ph ph-battery-full ph-ico"></i></div>
+            <div class="din"><div class="dnm">Bateria</div><div class="dsb">Abaixo de 80% = ruim</div></div>
+            <div style="display:flex;align-items:center;gap:7px;flex-shrink:0;">
+              <input type="number" min="0" max="100" value="85" id="batNum" oninput="batSync('num')" style="width:42px;background:var(--g100);border:1.5px solid var(--border);border-radius:8px;padding:5px 4px;font-size:13px;font-weight:800;color:var(--text);text-align:center;font-family:var(--sans);outline:none;">
+              <input type="range" min="0" max="100" value="85" id="batV" oninput="batSync('range')" style="width:80px;height:20px;accent-color:var(--red);cursor:pointer;-webkit-appearance:none;appearance:none;background:transparent;" class="bat-slider">
+              <span id="batLabel" style="font-size:13px;font-weight:800;min-width:32px;text-align:right;">85%</span>
+            </div>
+            <div class="ios-toggle" id="batToggle" style="pointer-events:none;opacity:.9;flex-shrink:0;"><div class="ios-track"><div class="ios-thumb"></div></div></div>
+          </div>
+          <div class="di"><div class="dii"><i class="ph ph-plug ph-ico"></i></div><div class="din"><div class="dnm">Conector</div><div class="dsb">Carregamento e dados</div></div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+        </div>
+      </div>
+
+      <!-- SERVIÇOS -->
+      <div class="sec">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <div class="sec-title" style="margin-bottom:0;">Serviços & Orçamento</div>
+          <button onclick="toggleSvcSection(this)" id="svcToggleBtn" class="sec-toggle">Minimizar ▲</button>
+        </div>
+        <div id="svcBody">
+        <div class="card" style="overflow:hidden;margin-bottom:0;">
+        <div class="svc-banner" onclick="openModelSheet()">
+          <div style="flex:1;"><div class="sba" id="svcTitle">iPhone 14 Pro</div></div>
+          <div style="color:var(--muted);font-size:11px;font-weight:700;flex-shrink:0;">Trocar ▼</div>
+        </div>
+        <div class="svc-list" id="svcList"></div>
+        </div><!-- /card -->
+        </div><!-- /svcBody -->
+      </div>
+
+      <!-- RESUMO -->
+      <div class="sec">
+        <div class="sec-title">Resumo do Orçamento</div>
+        <div class="summary-card">
+          <div class="sum-empty" id="sumEmpty">Selecione os serviços acima</div>
+          <div id="sumList"></div>
+          <div class="sum-total" id="sumTotal" style="display:none">
+            <div class="sum-total-lbl">Total</div>
+            <div class="sum-total-val" id="sumVal">R$ 0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- APROVAÇÃO -->
+      <div class="sec">
+        <div class="sec-title">Aprovação</div>
+        <div class="apv-card">
+          <div class="apv-row" style="padding:14px 15px;">
+            <div class="apv-pair">
+              <button class="apv y sel" id="apvYes" onclick="selA(this)">✓ Aprovado</button>
+              <button class="apv n" id="apvNo" onclick="selA(this)">✗ Recusado</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nº OS ADESIVO -->
+      <div class="sec">
+        <div class="sec-title">Nº OS (adesivo)</div>
+        <div class="card">
+          <div class="fi"><div class="fii"><i class="ph ph-tag ph-ico"></i></div><div class="fic"><div class="lbl">Número do adesivo colado no aparelho</div><input id="osAdesivo" type="number" inputmode="numeric" placeholder="Ex: 2847" style="font-size:20px;font-weight:800;letter-spacing:1px;" onkeydown="if(event.key==='Enter'){event.preventDefault();openOS();}"></div></div>
+        </div>
+      </div>
+
+      <div class="cta-wrap">
+        <button class="cta" id="ctaBtn" onclick="openOS()"><i class="ph ph-clipboard-text ph-ico"></i> Abrir Ordem de Serviço</button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         TELA 2 — PAINEL McDONALD'S
+    ══════════════════════════════════════ -->
+    <div class="screen" id="screen-painel" style="display:none;flex-direction:column;">
+
+      <div class="panel-stats" style="padding-bottom:0;">
+        <div class="ps-card"><div class="ps-num" id="stat-fila" style="color:var(--blue)">0</div><div class="ps-lbl">Em fila</div></div>
+        <div class="ps-card"><div class="ps-num" id="stat-conserto" style="color:var(--orange)">0</div><div class="ps-lbl">Consertando</div></div>
+        <div class="ps-card"><div class="ps-num" id="stat-pronto" style="color:var(--green)">0</div><div class="ps-lbl">Prontos</div></div>
+      </div>
+
+      <div class="panel-board" style="flex:1;min-height:0;padding-top:4px;padding-bottom:0;">
+        <!-- AGUARDANDO -->
+        <div class="pb-col"><div class="pb-body" id="colFila"></div></div>
+
+        <!-- CONSERTANDO -->
+        <div class="pb-col"><div class="pb-body" id="colConserto"></div></div>
+
+        <!-- PRONTO -->
+        <div class="pb-col"><div class="pb-body" id="colPronto"></div></div>
+      </div>
+
+
+    </div>
+
+
+    <!-- ══════════════════════════════════════
+         TELA 3 — ENTREGA
+    ══════════════════════════════════════ -->
+    <div class="screen" id="screen-entrega">
+
+      <!-- ESTADO INICIAL: busca + lista de OS prontas -->
+      <div id="entregaEmpty" class="entrega-empty" style="display:flex;flex-direction:column;height:795px;overflow:hidden;align-items:stretch;">
+        <div class="entrega-fixed-header" style="text-align:center;padding:16px 16px 0;flex-shrink:0;">
+          <div style="margin-bottom:12px;"><i class="ph ph-package ph-ico" style="font-size:42px;color:var(--muted);justify-content:center;align-items:center;"></i></div>
+          <div style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:5px;">Buscar ou Entregar OS</div>
+          <div style="font-size:13px;font-weight:400;color:var(--muted);margin-bottom:20px;">Digite o número ou selecione abaixo</div>
+          <input class="entrega-big-input" id="osSearch" type="text" inputmode="numeric" placeholder="0000" onkeydown="if(event.key==='Enter')doSearch()">
+          <button class="cta" style="margin:20px auto 0;max-width:220px;background:var(--blue);box-shadow:0 4px 16px rgba(26,92,200,.3);" onclick="doSearch()"><i class="ph ph-magnifying-glass ph-ico"></i> Buscar</button>
+        </div>
+        <!-- Título fixo -->
+        <div id="prontasTitle" style="display:none;padding:14px 16px 6px;flex-shrink:0;font-size:12px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;height:40px;">Prontas para entrega</div>
+        <!-- Lista de OS prontas com scroll próprio -->
+        <div class="entrega-scroll" id="prontasList" style="padding:5px 12px 86px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;height:430px;font-weight:700;color:rgb(32,27,192);letter-spacing:0px;width:366px;opacity:1;margin:0px;"></div>
+      </div>
+
+      <!-- DADOS DA OS (oculto até busca) -->
+      <div class="od-wrap" id="odWrap">
+        <div class="od-card" style="margin:10px 16px 0;">
+          <!-- Header OS -->
+          <div class="od-hd">
+            <div style="display:flex;align-items:stretch;gap:10px;">
+              <div style="flex:1;">
+                <div class="od-model" id="od-client-name">Carlos Mendes</div>
+                <div id="od-model-chip" style="font-size:13px;font-weight:500;color:var(--mid);margin-top:5px;"></div>
+                <div id="od-senha-display" style="font-size:13px;font-weight:500;color:var(--mid);margin-top:3px;"></div>
+                <div id="od-problem-display" style="font-size:13px;color:var(--mid);margin-top:3px;line-height:1.4;"></div>
+                <span class="od-status-badge status-fila" id="od-status-badge" style="display:none;margin-top:5px;">Aguardando técnico</span>
+                <div id="od-os-num" style="font-size:13px;font-weight:500;color:var(--mid);margin-top:3px;"><span id="od-os-num-text"></span></div>
+                <div id="od-meta-line" style="font-size:11px;font-weight:500;color:var(--muted);margin-top:6px;"></div>
+              </div>
+              <img id="od-photo-thumb" style="display:none;width:56px;height:56px;object-fit:cover;border-radius:10px;border:2px solid rgba(212,31,31,.2);flex-shrink:0;align-self:flex-start;">
+              <div style="display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end;flex-shrink:0;gap:8px;">
+                <button id="odEditBtn" onclick="editOSFromEntrega()" style="display:none;background:var(--blue-s);border:1px solid #BFDBFE;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--blue);cursor:pointer;font-family:var(--sans);white-space:nowrap;">✎ Editar</button>
+                <div style="flex:1;"></div>
+                <button id="odBackBtn" onclick="backToKanbanOrList()" style="background:var(--blue-s);border:1px solid #BFDBFE;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--blue);cursor:pointer;font-family:var(--sans);white-space:nowrap;">← Voltar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Diagnóstico entrada -->
+          <div class="od-section">
+            <div class="od-section-title" onclick="toggleODDiag(this)" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;margin-bottom:0;">Diagnóstico de entrada <span class="diag-arrow" style="font-size:9px;color:var(--muted);">▼</span></div>
+            <div id="od-chips" style="padding-top:6px;"></div>
+          </div>
+
+          <!-- Serviços -->
+          <div class="od-section">
+            <div class="od-section-title">Serviços a realizar</div>
+            <div id="od-svcs">
+              <div class="od-svc-row"><div class="od-svc-nm">Troca de Tela OLED Original</div><div class="od-svc-pr">R$ 480</div></div>
+              <div class="od-svc-row"><div class="od-svc-nm">Higienização</div><div class="od-svc-pr">R$ 50</div></div>
+              <div class="od-svc-row"><div class="od-svc-nm">Garantia Estendida 90 dias</div><div class="od-svc-pr">R$ 80</div></div>
+              <div class="od-total-row"><div class="od-total-nm">Total</div><div class="od-total-pr">R$ 610</div></div>
+            </div>
+          </div>
+
+          <div id="od-tech-name" style="display:none;"></div>
+
+          <!-- Conferência saída -->
+          <div class="od-section" id="conf-section">
+            <div class="od-section-title">Conferência na saída</div>
+            <div id="conf-diag-extra"></div>
+            <div class="conf-item" data-label="Face ID"><div class="conf-ico"><i class="ph ph-scan ph-ico"></i></div><div class="conf-lbl">Face ID</div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+            <div class="conf-item" data-label="Tela & Display"><div class="conf-ico"><i class="ph ph-monitor ph-ico"></i></div><div class="conf-lbl">Tela & Display</div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+            <div class="conf-item" data-label="Touch Screen"><div class="conf-ico"><i class="ph ph-hand-tap ph-ico"></i></div><div class="conf-lbl">Touch Screen</div><div class="ios-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+            <div class="conf-item"><div class="conf-ico"><i class="ph ph-battery-full ph-ico"></i></div><div class="conf-lbl">Bateria pós-conserto</div><div class="ios-toggle" id="conf-bat-toggle" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>
+          </div>
+
+          <!-- AÇÃO CONTEXTUAL -->
+          <div class="od-section" id="od-action-section">
+            <button class="od-action-btn od-action-pegar" id="od-action-btn" onclick="handleOSAction()">
+              <i class="ph ph-wrench ph-ico"></i> Pegar este serviço
+            </button>
+          </div>
+
+        </div>
+
+      <!-- WhatsApp — visível apenas status CONSERTO -->
+      <div id="waSection" style="display:none;padding:10px 16px 0;">
+        <div class="wa-preview">
+          <div class="wa-hd">
+            <div class="wa-hd-avatar"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" fill="#DFD9D4"/><circle cx="16" cy="13" r="5" fill="white"/><ellipse cx="16" cy="26" rx="9" ry="6" fill="white"/></svg></div>
+            <div class="wa-hd-info">
+              <div class="wa-hd-name" id="wa-hd-name">Carlos Mendes</div>
+              <div class="wa-hd-status">online</div>
+            </div>
+            <button class="wa-hd-edit" onclick="resetWA()">↺ Padrão</button>
+          </div>
+          <div class="wa-body">
+            <div class="wa-bubble">
+              <div class="wa-bubble-tail"></div>
+              <textarea class="wa-textarea" id="waMsg" oninput="waCount()">Olá! 👋
+
+Seu aparelho está pronto para retirada! ✅
+
+🔧 Serviços realizados
+💰 Total: R$ —
+⏱ Tempo: —
+
+🛡 Garantia inclusa.
+
+Uma Hora Assistência Técnica 🔵🔴</textarea>
+              <div class="wa-bubble-footer">
+                <span class="wa-time">agora</span>
+                <span class="wa-tick">✓✓</span>
+              </div>
+            </div>
+          </div>
+          <div class="wa-footer">
+            <button class="wa-hd-edit" onclick="resetWA()">↺ Padrão</button>
+            <span class="wa-char" id="waChar">0 / 500</span>
+          </div>
+        </div>
+      </div><!-- /waSection -->
+
+      <!-- Registro de Entrega — visível apenas status PRONTO -->
+      <div id="proofSection" style="display:none;padding:22px 16px 0;">
+        <div class="sec-title" style="padding:0 0 8px;">Registro de Entrega</div>
+        <div class="card" style="padding:14px 15px;">
+          <div class="proof-grid">
+            <div>
+              <div style="font-size:10px;font-weight:600;color:var(--muted);margin-bottom:6px;">Aparelho pronto</div>
+              <div class="proof-zone" id="proofZone1" onclick="document.getElementById('proofInput1').click()">
+                <img id="proofThumb1" style="display:none;">
+                <span id="proofIcon1" style="font-size:22px;"><i class="ph ph-camera ph-ico" style="font-size:22px;color:var(--muted);"></i></span>
+              </div>
+              <input type="file" id="proofInput1" accept="image/*" capture="environment" style="display:none" onchange="handleProofPhoto(this,1)">
+            </div>
+            <div>
+              <div style="font-size:10px;font-weight:600;color:var(--muted);margin-bottom:6px;">Comprovante PIX</div>
+              <div class="proof-zone" id="proofZone2" onclick="document.getElementById('proofInput2').click()">
+                <img id="proofThumb2" style="display:none;">
+                <span id="proofIcon2" style="font-size:22px;"><i class="ph ph-credit-card ph-ico" style="font-size:22px;color:var(--muted);"></i></span>
+              </div>
+              <input type="file" id="proofInput2" accept="image/*" capture="environment" style="display:none" onchange="handleProofPhoto(this,2)">
+            </div>
+          </div>
+        </div>
+      </div>
+      </div><!-- /proofSection -->
+
+
+      <div class="cta-wrap">
+        <button class="finish-btn" id="finBtn" onclick="handleFinBtn()" style="display:none;">
+          <span><i class="ph ph-paper-plane-tilt ph-ico"></i></span> Finalizar e Enviar WhatsApp
+        </button>
+      </div>
+
+      <div class="od-wrap-spacer"></div>
+    </div><!-- /odWrap -->
+
+    </div>
+
+    <!-- ══════════════════════════════════════
+         TELA 4 — RESULTADOS (DONO)
+    ══════════════════════════════════════ -->
+    <div class="screen" id="screen-resultados">
+      <div class="ios-scroll" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(56px + env(safe-area-inset-bottom,0px) + 24px);">
+
+      <div class="sec">
+        <div class="results-summary" style="grid-template-columns:repeat(2,1fr);">
+          <div class="rs-card" style="text-align:center;grid-column:span 2;"><div class="rs-num" id="res-faturado" style="color:var(--red)">R$0</div><div class="rs-lbl">Faturado hoje</div></div>
+          <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-os" style="color:var(--blue)">0</div><div class="rs-lbl">OS entregues</div></div>
+          <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-extra" style="color:var(--blue)">R$0</div><div class="rs-lbl">Garantia</div></div>
+          <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-ticket" style="color:var(--blue)">—</div><div class="rs-lbl">Ticket Médio</div></div>
+          <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-taxa" style="color:var(--blue)">0%</div><div class="rs-lbl">Taxa de Aprovação</div></div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="fin-hero" style="margin:0 0 0;">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2px;">
+            <div class="fh-lbl">Faturamento do mês</div>
+            <div id="res-mes-label" style="font-size:10px;opacity:.55;font-weight:700;letter-spacing:.06em;text-transform:uppercase;"></div>
+          </div>
+          <div class="fh-val" id="res-faturado2">R$ 0</div>
+          <div class="fh-row">
+            <div><div class="fm-lbl">Entregues no mês</div><div class="fm-val" id="res-os2">0</div></div>
+            <div style="text-align:right"><div class="fm-lbl">Ticket médio</div><div class="fm-val" id="res-ticket2">—</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec" style="padding-top:16px;">
+        <div class="sec-title">OS por Técnico — Hoje</div>
+        <div class="chart-wrap">
+          <div class="bar-chart" id="techOSChart">
+            <div style="text-align:center;padding:12px;font-size:13px;color:var(--muted);">Nenhum dado hoje ainda</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec" style="padding-top:16px;">
+        <div class="sec-title">Garantias por Atendente — Hoje</div>
+        <div class="chart-wrap">
+          <div class="bar-chart" id="garantiaChart">
+            <div style="text-align:center;padding:12px;font-size:13px;color:var(--muted);">Nenhuma garantia vendida hoje</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec" id="pricesSection" style="padding-top:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <span class="sec-title" style="margin-bottom:0;">Tabela de Preços</span>
+          <button onclick="openPricesEditor()" style="background:var(--blue-s);border:1px solid #BFDBFE;color:var(--blue);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;font-family:var(--sans);cursor:pointer;">Editar</button>
+        </div>
+        <div class="chart-wrap">
+          <div class="fi">
+            <div class="fii"><i class="ph ph-money ph-ico"></i></div>
+            <div class="fic">
+              <div class="lbl">Preços personalizados por modelo</div>
+              <div style="font-size:13px;font-weight:600;color:var(--text);">Toque em Editar para personalizar</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec" style="padding-top:16px;">
+        <div class="sec-title">Meu Histórico</div>
+        <div class="chart-wrap" id="myHistorico">
+          <div class="hist-row"><span class="hist-lbl">OS atendidas</span><span class="hist-val">—</span></div>
+        </div>
+      </div>
+
+      <div class="sec" style="padding-top:16px;">
+        <div onclick="togglePayments()" style="cursor:pointer;display:flex;align-items:center;gap:8px;user-select:none;margin-bottom:10px;">
+          <span class="sec-title" style="margin-bottom:0;">Entregas de hoje</span>
+          <div id="payments-arrow" style="width:22px;height:22px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .2s;">
+            <span style="font-size:8px;color:var(--mid);">▼</span>
+          </div>
+        </div>
+        <div id="paymentsList" style="display:none;">
+          <div class="bs-empty">Nenhuma entrega hoje ainda</div>
+        </div>
+      </div>
+
+      </div><!-- /resultados scroll -->
+    </div>
+
+    <!-- ══════════════════════════════════════
+         TELA 5 — PERFIL / RANKING
+    ══════════════════════════════════════ -->
+    <div class="screen" id="screen-perfil">
+      <div class="ios-scroll" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(56px + env(safe-area-inset-bottom,0px) + 24px);">
+
+      <div class="profile-hero" onclick="openProfileEdit()" style="cursor:pointer;">
+        <div style="position:absolute;top:12px;right:14px;background:rgba(255,255,255,.2);border-radius:8px;padding:3px 8px;font-size:10px;font-weight:700;color:#fff;">Editar</div>
+        <div class="ph-top">
+          <div class="ph-avatar"><i class="ph ph-user-circle ph-ico" style="font-size:44px;color:var(--muted);"></i></div>
+          <div class="ph-info">
+            <div class="ph-name" id="profileName">Usuário</div>
+            <div class="ph-role" id="profileRole">Toque para editar</div>
+          </div>
+        </div>
+        <div class="ph-stats">
+          <div class="ph-stat"><div class="phsv" id="ph-os">0</div><div class="phsl">OS hoje</div></div>
+          <div class="ph-stat"><div class="phsv" id="ph-tempo">—</div><div class="phsl">Tempo médio</div></div>
+          <div class="ph-stat"><div class="phsv" id="ph-retrab">0</div><div class="phsl">Retrabalhos</div></div>
+        </div>
+      </div>
+
+      <!-- RANKING ATENDENTES -->
+      <div class="sec">
+        <div class="ranking-card">
+          <div class="rk-hd"><div class="rk-title">Ranking de Atendentes</div></div>
+          <div id="rankingAtendentes"><div class="bs-empty">Nenhum dado ainda</div></div>
+        </div>
+      </div>
+
+      <!-- RANKING TÉCNICOS -->
+      <div class="sec">
+        <div class="ranking-card">
+          <div class="rk-hd"><div class="rk-title">Ranking de Técnicos</div></div>
+          <div id="rankingTecnicos"><div class="bs-empty">Nenhum dado ainda</div></div>
+        </div>
+      </div>
+
+
+      <!-- TROCAR PERFIL (só dono vê) -->
+      <div class="sec" id="switchProfileSection">
+        <div class="sec-title">Trocar Perfil</div>
+        <div class="role-switcher" style="margin-bottom:12px;">
+          <div class="role-opt" onclick="switchProfile('Administrador','dono')">
+            <div class="role-icon" style="background:var(--red-s)"><i class="ph ph-crown-simple ph-ico"></i></div>
+            <div class="role-info"><div class="role-name">Administrador</div><div class="role-desc">Dono · Acesso completo · Resultados</div></div>
+            <div class="role-sel" id="selDono">✓</div>
+          </div>
+        </div>
+
+        <div class="sec-title" style="margin-top:4px;">Atendentes</div>
+        <div class="role-switcher" id="listAtendentes" style="margin-bottom:12px;"></div>
+
+        <div class="sec-title" style="margin-top:4px;">Técnicos</div>
+        <div class="role-switcher" id="listTecnicos"></div>
+      </div>
+
+      </div><!-- /perfil scroll -->
+    </div>
+
+  </div><!-- /content -->
+
+  <!-- PROFILE EDIT MODAL (slide from top) -->
+  <div class="modal-overlay" id="profileEditOverlay" onclick="closeProfileEdit()"></div>
+  <div class="top-sheet" id="profileEditSheet">
+    <div class="ts-pad">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-top:8px;">
+        <div class="ts-title">Editar Perfil</div>
+        <button class="bs-close" onclick="closeProfileEdit()">✕</button>
+      </div>
+      <div class="ts-field">
+        <div class="ts-lbl">Nome</div>
+        <input class="ts-inp" id="editProfileName" type="text" placeholder="Seu nome">
+      </div>
+      <div class="ts-field">
+        <div class="ts-lbl">Função</div>
+        <select class="ts-inp" id="editProfileRole">
+          <option value="dono">Dono</option>
+          <option value="atendente">Atendente</option>
+          <option value="tecnico">Técnico</option>
+        </select>
+      </div>
+      <button onclick="saveProfileEdit()" style="width:100%;background:var(--blue);color:#fff;border:none;border-radius:12px;height:46px;font-family:var(--sans);font-size:14px;font-weight:800;cursor:pointer;">Salvar</button>
+    </div>
+  </div>
+
+  <!-- ARCHIVED MODAL -->
+  <div class="modal-overlay" id="archivedOverlay" onclick="closeArchived()"></div>
+  <div class="bottom-sheet" id="archivedSheet" style="display:none;">
+    <div class="bs-handle"></div>
+    <div class="bs-header">
+      <div class="bs-title">Orçamentos arquivados</div>
+      <button class="bs-close" onclick="closeArchived()">✕</button>
+    </div>
+    <div class="bs-list">
+      <div class="bs-item" onclick="loadArchived('Rafael Lima','iPhone 13','Bateria')">
+        <div class="bs-item-ico"><i class="ph ph-clipboard-text ph-ico" style="font-size:17px;color:var(--blue);"></i></div>
+        <div class="bs-item-info"><div class="bs-item-name">Rafael Lima</div><div class="bs-item-detail">iPhone 13 · Bateria · Recusado · 14:22</div></div>
+        <div class="bs-item-val">R$ 220</div>
+      </div>
+      <div class="bs-item" onclick="loadArchived('João Costa','iPhone 12','Tela compatível')">
+        <div class="bs-item-ico"><i class="ph ph-clipboard-text ph-ico" style="font-size:17px;color:var(--blue);"></i></div>
+        <div class="bs-item-info"><div class="bs-item-name">João Costa</div><div class="bs-item-detail">iPhone 12 · Tela · Recusado · 15:08</div></div>
+        <div class="bs-item-val">R$ 280</div>
+      </div>
+      <div class="bs-item" onclick="loadArchived('Maria Silva','iPhone 14','Câmera traseira')">
+        <div class="bs-item-ico"><i class="ph ph-clipboard-text ph-ico" style="font-size:17px;color:var(--blue);"></i></div>
+        <div class="bs-item-info"><div class="bs-item-name">Maria Silva</div><div class="bs-item-detail">iPhone 14 · Câmera · Recusado · 16:45</div></div>
+        <div class="bs-item-val">R$ 320</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODEL SELECTOR SHEET -->
+  <div class="modal-overlay" id="modelSheetOverlay" onclick="closeModelSheet()"></div>
+  <div class="bottom-sheet" id="modelSheet" style="display:none;max-height:80vh;">
+    <div class="bs-handle"></div>
+    <div class="bs-header">
+      <div class="bs-title">Selecionar Modelo</div>
+      <button class="bs-close" onclick="closeModelSheet()">✕</button>
+    </div>
+    <div style="padding:0 16px 8px;">
+      <input id="modelSearchInput" type="text" placeholder="Buscar modelo..." oninput="filterModelSheet(this.value)" autocomplete="off" style="width:100%;box-sizing:border-box;background:var(--g100);border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-size:14px;font-family:var(--sans);outline:none;color:var(--text);">
+    </div>
+    <div id="modelSheetList" class="bs-list" style="max-height:55vh;overflow-y:auto;padding:0 16px 12px;"></div>
+  </div>
+
+  <!-- PRICES EDITOR MODAL -->
+  <div class="modal-overlay" id="pricesOverlay" onclick="closePricesEditor()"></div>
+  <div class="modal-overlay" id="confirmConsertoOverlay">
+    <div class="alert-card">
+      <div class="alert-icon"><i class="ph ph-wrench ph-ico" style="font-size:36px;"></i></div>
+      <div class="alert-title">Manutenção finalizada?</div>
+      <div class="alert-msg">Confirme antes de notificar o cliente.</div>
+      <div style="display:flex;gap:8px;margin-top:4px;">
+        <button class="alert-btn" style="flex:1;background:var(--g100);color:var(--text);" onclick="document.getElementById('confirmConsertoOverlay').classList.remove('show')">Cancelar</button>
+        <button class="alert-btn" style="flex:1;background:#075E54;color:#fff;" onclick="document.getElementById('confirmConsertoOverlay').classList.remove('show');confirmFinishConserto()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="photoAlertOverlay">
+    <div class="alert-card">
+      <div class="alert-icon"><i class="ph ph-camera ph-ico" style="font-size:36px;"></i></div>
+      <div class="alert-title">Fotos obrigatórias</div>
+      <div class="alert-msg" id="photoAlertMsg">Tire as fotos necessárias antes de confirmar a entrega.</div>
+      <button class="alert-btn" onclick="document.getElementById('photoAlertOverlay').classList.remove('show')">Entendi</button>
+    </div>
+  </div>
+  <div class="bottom-sheet" id="pricesSheet" style="display:none;">
+    <div class="bs-handle"></div>
+    <div class="bs-header">
+      <div class="bs-title">Preços por Modelo</div>
+      <button class="bs-close" onclick="closePricesEditor()">✕</button>
+    </div>
+    <div style="padding:0 16px 8px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+        <span style="font-size:12px;font-weight:600;color:var(--mid);flex-shrink:0;">Modelo:</span>
+        <select id="priceModelSel" onchange="changePriceModel()" style="flex:1;background:var(--g100);border:1.5px solid var(--border);border-radius:8px;padding:7px 8px;font-size:13px;font-weight:600;font-family:var(--sans);outline:none;color:var(--text);-webkit-appearance:none;">
+          <optgroup label="── iPhone ──"><option>iPhone 16 Pro Max</option><option>iPhone 16 Pro</option><option>iPhone 16</option><option>iPhone 15 Pro Max</option><option>iPhone 15 Pro</option><option>iPhone 15</option><option>iPhone 15 Plus</option><option>iPhone 14 Pro Max</option><option selected>iPhone 14 Pro</option><option>iPhone 14 Plus</option><option>iPhone 14</option><option>iPhone 13 Pro Max</option><option>iPhone 13 Pro</option><option>iPhone 13</option><option>iPhone 13 Mini</option><option>iPhone 12 Pro Max</option><option>iPhone 12 Pro</option><option>iPhone 12</option><option>iPhone 12 Mini</option><option>iPhone 11 Pro Max</option><option>iPhone 11 Pro</option><option>iPhone 11</option><option>iPhone SE (3ª geração)</option><option>iPhone SE (2ª geração)</option></optgroup><optgroup label="── Apple Watch ──"><option>Apple Watch Ultra 2</option><option>Apple Watch Series 10</option><option>Apple Watch Series 9</option><option>Apple Watch Series 8</option><option>Apple Watch Series 7</option><option>Apple Watch SE (2ª geração)</option><option>Apple Watch SE (1ª geração)</option><option>Apple Watch Series 6</option></optgroup><optgroup label="── iPad ──"><option>iPad Pro 13" (M4)</option><option>iPad Pro 11" (M4)</option><option>iPad Air 13" (M2)</option><option>iPad Air 11" (M2)</option><option>iPad (10ª geração)</option><option>iPad mini (6ª geração)</option></optgroup>
+        </select>
+        <button onclick="resetModelPrices()" style="background:var(--red-s);border:1px solid #FECACA;color:var(--red);border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700;font-family:var(--sans);cursor:pointer;flex-shrink:0;">↺</button>
+      </div>
+    </div>
+    <div class="bs-list" id="pricesEditorItems" style="max-height:55vh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 12px 4px;"></div>
+    <div style="padding:10px 16px 8px;">
+      <button onclick="closePricesEditor()" style="width:100%;background:var(--green);color:#fff;border:none;border-radius:12px;height:46px;font-family:var(--sans);font-size:14px;font-weight:800;cursor:pointer;">Salvo automaticamente</button>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bnav" id="bnav">
+    <div class="bnav-icons">
+      <button class="nb on" onclick="goTo('entrada',this)" id="nb-entrada" style="padding:5px 0px 0px;"><span class="ni"><i class="ph-bold ph-note-pencil ph-ico"></i></span>Entrada</button>
+      <button class="nb" onclick="goTo('painel',this)" id="nb-painel"><span class="ni"><i class="ph-bold ph-kanban ph-ico"></i></span>Painel</button>
+      <button class="nb" onclick="goTo('entrega',this)" id="nb-entrega"><span class="ni"><i class="ph-bold ph-package ph-ico"></i></span>Entrega</button>
+      <button class="nb" onclick="goTo('resultados',this)" id="nb-resultados"><span class="ni"><i class="ph-bold ph-chart-bar ph-ico"></i></span>Resultados</button>
+      <button class="nb" onclick="goTo('perfil',this)" id="nb-perfil"><span class="ni"><i class="ph-bold ph-user-circle ph-ico" style="font-family:Phosphor-Bold;"></i></span>Perfil</button>
+    </div>
+    <div class="bnav-safe"></div>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+// ─── STATE ───
+let role = 'dono';
+let currentUserName = localStorage.getItem('1hora_username') || '';
+let selectedSvcs = [];
+let currentPhotoData = null;
+let currentOSId = null;
+let currentOSOrigin = 'entrega'; // 'painel' ou 'entrega'
+let currentArchivedNum = null; // número da OS arquivada sendo editada no form
+let editingExistingNum = null; // número da OS existente sendo editada (não arquivada)
+let osList = [];
+let modelPrices = {};
+let osCounter = 2848;
+
+// ─── STORAGE ───
+function loadStorage() {
+  try {
+    const saved = localStorage.getItem('1hora_os');
+    osList = saved ? JSON.parse(saved) : null;
+    if (!osList) {
+      const now = Date.now();
+      osList = [
+        {id:'#2847',num:2847,clientName:'Carlos Mendes',clientWA:'+5511987342291',model:'iPhone 14 Pro',problem:'Tela quebrada — canto inf. esq.',photo:null,diagnosis:[{label:'Face ID',ok:true},{label:'Tela & Display',ok:false},{label:'Touch Screen',ok:true},{label:'Alto-falante',ok:true},{label:'Câmera Frontal',ok:true},{label:'Câmera Traseira',ok:true},{label:'Botões Físicos',ok:true},{label:'Conector',ok:true}],battery:34,services:[{nm:'Troca de Tela OLED Original',price:480,group:'tela'},{nm:'Higienização Completa',price:50},{nm:'Garantia 3 meses',price:120,guarantee:true,group:'garantia'}],total:650,prazo:'1h',status:'fila',tecnico:null,createdAt:now-12*60000,updatedAt:now-12*60000},
+        {id:'#2846',num:2846,clientName:'Ana Santos',clientWA:'',model:'iPhone 13',problem:'Bateria fraca',photo:null,diagnosis:[],battery:72,services:[{nm:'Troca de Bateria Original',price:220}],total:220,prazo:'1h',status:'fila',tecnico:null,createdAt:now-8*60000,updatedAt:now-8*60000},
+        {id:'#2845',num:2845,clientName:'Rafael Lima',clientWA:'',model:'iPhone 15 Pro',problem:'Tela manchada',photo:null,diagnosis:[],battery:89,services:[{nm:'Troca de Tela OLED Original',price:580}],total:580,prazo:'1h',status:'fila',tecnico:null,createdAt:now-25*60000,updatedAt:now-25*60000},
+        {id:'#2839',num:2839,clientName:'Fernanda Costa',clientWA:'',model:'iPhone 12 Pro Max',problem:'Tela + câmera',photo:null,diagnosis:[],battery:91,services:[{nm:'Troca de Tela OLED Original',price:380},{nm:'Câmera Traseira',price:320}],total:700,prazo:'⏱ 2h',status:'conserto',tecnico:'Wei Zhang',createdAt:now-90*60000,updatedAt:now-72*60000},
+        {id:'#2836',num:2836,clientName:'Pedro Alves',clientWA:'',model:'iPhone 14',problem:'Conector',photo:null,diagnosis:[],battery:85,services:[{nm:'Conector USB-C / Lightning',price:190}],total:190,prazo:'1h',status:'conserto',tecnico:'Li Chen',createdAt:now-70*60000,updatedAt:now-52*60000},
+        {id:'#2831',num:2831,clientName:'João Vitor',clientWA:'',model:'iPhone 13 Mini',problem:'Tela',photo:null,diagnosis:[],battery:78,services:[{nm:'Troca de Tela Compatível',price:220}],total:220,prazo:'1h',status:'pronto',tecnico:'Juan Park',createdAt:now-100*60000,updatedAt:now-48*60000},
+        {id:'#2829',num:2829,clientName:'Patrícia Nunes',clientWA:'',model:'iPhone 15 Pro',problem:'Alto-falante',photo:null,diagnosis:[],battery:93,services:[{nm:'Alto-falante',price:150}],total:150,prazo:'1h',status:'pronto',tecnico:'Wei Zhang',createdAt:now-85*60000,updatedAt:now-35*60000},
+      ];
+      osCounter = 2848;
+    }
+    // Limpar duplicatas: se existe OS ativa (fila/conserto/pronto/entregue) e arquivada com mesmo num,
+    // remove o arquivado (o ativo tem precedência — resultado do bug anterior)
+    const activeNums=new Set(osList.filter(o=>o.status!=='arquivado').map(o=>o.num));
+    osList=osList.filter(o=>!(o.status==='arquivado'&&activeNums.has(o.num)));
+    modelPrices = JSON.parse(localStorage.getItem('1hora_prices') || '{}');
+    osCounter = parseInt(localStorage.getItem('1hora_counter') || String(osCounter));
+  } catch(e) { osList = []; modelPrices = {}; osCounter = 2848; }
+}
+
+function persistOS() {
+  try { localStorage.setItem('1hora_os', JSON.stringify(osList)); }
+  catch(e) { showToast('⚠️ Armazenamento cheio — limpe o histórico', 'error', 4000); }
+}
+function persistPrices() { localStorage.setItem('1hora_prices', JSON.stringify(modelPrices)); }
+
+// ─── MODEL LIST ───
+const MODEL_LIST = [
+  {group:'iPhone', models:['iPhone 16 Pro Max','iPhone 16 Pro','iPhone 16','iPhone 15 Pro Max','iPhone 15 Pro','iPhone 15','iPhone 15 Plus','iPhone 14 Pro Max','iPhone 14 Pro','iPhone 14 Plus','iPhone 14','iPhone 13 Pro Max','iPhone 13 Pro','iPhone 13','iPhone 13 Mini','iPhone 12 Pro Max','iPhone 12 Pro','iPhone 12','iPhone 12 Mini','iPhone 11 Pro Max','iPhone 11 Pro','iPhone 11','iPhone SE (3ª geração)','iPhone SE (2ª geração)']},
+  {group:'Apple Watch', models:['Apple Watch Ultra 2','Apple Watch Series 10','Apple Watch Series 9','Apple Watch Series 8','Apple Watch Series 7','Apple Watch SE (2ª geração)','Apple Watch SE (1ª geração)','Apple Watch Series 6']},
+  {group:'iPad', models:['iPad Pro 13" (M4)','iPad Pro 11" (M4)','iPad Air 13" (M2)','iPad Air 11" (M2)','iPad (10ª geração)','iPad mini (6ª geração)']},
+];
+
+// ─── SERVICES DATA ───
+const SVCS = [
+  {cat:'Tela',items:[
+    {nm:'Troca de Tela OLED Original',desc:'Garantia de fábrica inclusa',price:480,group:'tela'},
+    {nm:'Troca de Tela Compatível',desc:'Garantia 30 dias',price:280,group:'tela'},
+  ]},
+  {cat:'Bateria',items:[
+    {nm:'Troca de Bateria Original',desc:'Apple certified · 90 dias',price:220,group:'bateria'},
+    {nm:'Troca de Bateria Compatível',desc:'Garantia 30 dias',price:140,group:'bateria'},
+  ]},
+  {cat:'Componentes',items:[
+    {nm:'Conector USB-C / Lightning',desc:'Carregamento e dados',price:190},
+    {nm:'Alto-falante',desc:'Reparo de áudio',price:150},
+    {nm:'Câmera Traseira',desc:'Módulo completo',price:320},
+    {nm:'Câmera Frontal',desc:'Inclui Face ID',price:280},
+    {nm:'Face ID',desc:'Módulo biométrico original',price:350},
+    {nm:'Botões Físicos',desc:'Volume · Sleep · Silencioso',price:120},
+    {nm:'Tampa Traseira',desc:'Vidro posterior',price:180},
+  ]},
+  {cat:'Extras',items:[
+    {nm:'Higienização Completa',desc:'Limpeza interna · Recomendado',price:50},
+    {nm:'Garantia 7 dias',desc:'Cobre defeitos gerais · Gratuita',price:0,guarantee:true,group:'garantia'},
+    {nm:'Garantia 1 mês',desc:'Cobertura total pós-conserto',price:60,guarantee:true,group:'garantia'},
+    {nm:'Garantia 3 meses',desc:'Defeito de fabricação ou instalação',price:120,guarantee:true,group:'garantia'},
+    {nm:'Garantia 6 meses',desc:'Cobertura premium · Mais vendida',price:200,guarantee:true,group:'garantia'},
+  ]},
+];
+
+// ─── HELPERS ───
+function getModelKey(model){const m=(model||'').trim().toLowerCase();return Object.keys(modelPrices).find(k=>k.toLowerCase()===m)||null;}
+function getModelPrice(model,svcNm,defaultPrice){const key=getModelKey(model);return(key&&modelPrices[key][svcNm]!==undefined)?modelPrices[key][svcNm]:defaultPrice;}
+function formatTime(ts){const d=Math.floor((Date.now()-ts)/60000);if(d<1)return'1min';if(d<60)return d+'min';const h=Math.floor(d/60),m=d%60;return h+'h'+(m?m+'min':'');}
+function timerClass(ts){const d=Math.floor((Date.now()-ts)/60000);if(d>=60)return't-over';if(d>=30)return't-warn';return't-ok';}
+
+// ─── NAV ───
+const TAB_ORDER={entrada:0,painel:1,entrega:2,resultados:3,perfil:4};
+let currentTab='entrada';
+
+function goTo(tab, btn) {
+  const fromIdx=TAB_ORDER[currentTab]??0;
+  const toIdx=TAB_ORDER[tab]??0;
+  const shouldAnimate=tab!==currentTab;
+
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+
+  const incoming=document.getElementById('screen-'+tab);
+  incoming.classList.add('on');
+  if(btn) btn.classList.add('on');
+
+  if(shouldAnimate){
+    const content=document.getElementById('content');
+    const outgoing=document.getElementById('screen-'+currentTab);
+    content.style.overflow='hidden';
+
+    // Cross-fade rápido — operacional, sem distração
+    if(outgoing && outgoing!==incoming){
+      outgoing.style.transition='opacity 110ms ease';
+      outgoing.style.opacity='0';
+    }
+    incoming.style.opacity='0';
+    incoming.offsetHeight;
+    incoming.style.transition='opacity 120ms ease';
+    requestAnimationFrame(()=>{ incoming.style.opacity='1'; });
+
+    setTimeout(()=>{
+      [incoming,outgoing].forEach(el=>{
+        if(!el) return;
+        el.style.opacity='';
+        el.style.transition='';
+      });
+      content.style.overflow='';
+    },140);
+  }
+
+  currentTab=tab;
+  document.getElementById('content').scrollTop=0;
+  if(tab==='painel') renderPainel();
+  if(tab==='entrega') resetEntrega();
+  if(tab==='resultados') renderResultados();
+  if(tab==='perfil'){ renderHistorico();renderEquipe();renderRankingAtendentes();renderRankingTecnicos();renderTeamLists(); }
+  const livePanel=document.getElementById('panelLiveFixed');
+  if(livePanel) livePanel.style.display='none';
+  const archivedWrap=document.getElementById('painelArchivedWrap');
+  if(archivedWrap) archivedWrap.style.display=(tab==='painel')?'flex':'none';
+}
+
+function resetEntrega() {
+  const empty=document.getElementById('entregaEmpty');
+  const wrap=document.getElementById('odWrap');
+  const waSection=document.getElementById('waSection');
+  const proofSection=document.getElementById('proofSection');
+  const finBtn=document.getElementById('finBtn');
+  const editBtn=document.getElementById('odEditBtn');
+  if(empty){empty.style.display='flex';empty.style.height='100%';}
+  if(wrap)wrap.classList.remove('show');
+  if(waSection)waSection.style.display='none';
+  if(proofSection)proofSection.style.display='none';
+  if(finBtn)finBtn.style.display='none';
+  if(editBtn)editBtn.style.display='none';
+  const srch=document.getElementById('osSearch');if(srch)srch.value='';
+  currentOSId=null;
+}
+
+function backToKanbanOrList() {
+  const wrap=document.getElementById('odWrap');
+  const editBtn=document.getElementById('odEditBtn');
+  if(wrap)wrap.classList.remove('show');
+  if(editBtn)editBtn.style.display='none';
+  currentOSId=null;
+  if(currentOSOrigin==='painel'){
+    currentOSOrigin='entrega';
+    goTo('painel',document.getElementById('nb-painel'));
+  } else {
+    const empty=document.getElementById('entregaEmpty');
+    if(empty){empty.style.display='flex';empty.style.height='100%';}
+    renderProntasList();
+  }
+}
+
+// ─── ROLE ───
+function toggleRole() {
+  const roles = ['dono','atendente','tecnico'];
+  const idx = roles.indexOf(role);
+  role = roles[(idx + 1) % roles.length];
+  applyRole();
+}
+
+function setRole(r) {
+  role = r;
+  applyRole();
+}
+
+function applyRole() {
+  const chip=document.getElementById('roleChip');
+  const nbRes=document.getElementById('nb-resultados'),nbEnt=document.getElementById('nb-entrada');
+  const pricesSec=document.getElementById('pricesSection'),switchSec=document.getElementById('switchProfileSection');
+  const donSel=document.getElementById('selDono');if(donSel)donSel.style.opacity='0';
+  const roleLabels={dono:'Dono · Acesso completo',atendente:'Atendente · Entrada e Entrega',tecnico:'Técnico · Conserto e Entrega'};
+  const nm=currentUserName||{dono:'Administrador',atendente:'Atendente',tecnico:'Técnico'}[role];
+  document.getElementById('profileName').textContent=nm;
+  document.getElementById('profileRole').textContent=roleLabels[role]||role;
+  if(role==='dono'){
+    chip.innerHTML='<i class="ph ph-crown-simple ph-ico"></i> Dono';nbRes.classList.remove('locked');nbEnt.classList.remove('locked');
+    const donSel2=document.getElementById('selDono');if(donSel2)donSel2.style.opacity='1';
+    if(pricesSec)pricesSec.style.display='block';if(switchSec)switchSec.style.display='block';
+  } else if(role==='atendente'){
+    chip.innerHTML='<i class="ph ph-identification-badge ph-ico"></i> Atendente';nbRes.classList.add('locked');nbEnt.classList.remove('locked');
+    if(pricesSec)pricesSec.style.display='none';
+  } else {
+    chip.innerHTML='<i class="ph ph-wrench ph-ico"></i> Técnico';nbRes.classList.add('locked');nbEnt.classList.add('locked');
+    if(pricesSec)pricesSec.style.display='none';
+    goTo('painel',document.getElementById('nb-painel'));
+  }
+}
+
+// ─── SERVICES ───
+function updateDiagSummary() {
+  const summary = document.getElementById('diagSummary');
+  const body = document.getElementById('diagBody');
+  if(!summary) return;
+  if(body && body.style.display !== 'none') { summary.style.display = 'none'; return; }
+  let html = '';
+  // Itens com toggle reprovado
+  document.querySelectorAll('#diagBody .di').forEach(row => {
+    if(row.id === 'batRow') return; // bateria tratada separado
+    const tog = row.querySelector('.ios-toggle');
+    if(!tog || !tog.classList.contains('fail')) return;
+    const ico = row.querySelector('.dii')?.innerHTML || '';
+    const nm  = row.querySelector('.dnm')?.textContent || '';
+    const sub = row.querySelector('.dsb')?.textContent || '';
+    html += `<div class="di" style="pointer-events:none;border-bottom:1px solid var(--border);">
+      <div class="dii">${ico}</div>
+      <div class="din"><div class="dnm">${nm}</div><div class="dsb">${sub}</div></div>
+      <div class="ios-toggle fail" style="pointer-events:none;"><div class="ios-track"><div class="ios-thumb"></div></div></div>
+    </div>`;
+  });
+  // Bateria abaixo de 80%
+  const batTog = document.getElementById('batToggle');
+  if(batTog && batTog.classList.contains('fail')) {
+    const batVal = document.getElementById('batNum')?.value || '?';
+    html += `<div class="di" style="pointer-events:none;">
+      <div class="dii"><i class="ph ph-battery-full ph-ico"></i></div>
+      <div class="din"><div class="dnm">Bateria</div><div class="dsb">${batVal}% — abaixo de 80%</div></div>
+      <div class="ios-toggle fail" style="pointer-events:none;"><div class="ios-track"><div class="ios-thumb"></div></div></div>
+    </div>`;
+  }
+  if(html) {
+    summary.innerHTML = html;
+    summary.style.display = 'block';
+  } else {
+    summary.innerHTML = '';
+    summary.style.display = 'none';
+  }
+}
+
+function toggleDiagSection(btn) {
+  const body = document.getElementById('diagBody');
+  const isHidden = body.style.display === 'none';
+  if(isHidden) { _collapseClientData(); _collapseServices(); } // accordion: fecha os outros antes de abrir
+  body.style.display = isHidden ? 'block' : 'none';
+  btn.textContent = isHidden ? 'Minimizar ▲' : 'Expandir ▼';
+  updateDiagSummary();
+}
+
+function buildServices() {
+  const model=document.getElementById('modelInput').value||'iPhone';
+  document.getElementById('svcTitle').textContent=model;
+  const list=document.getElementById('svcList');
+  const openCats={};
+  list.querySelectorAll('.svc-cat-body').forEach(b=>{if(b.style.display!=='none')openCats[b.dataset.cat]=true;});
+  list.innerHTML='';
+  SVCS.forEach(cat=>{
+    const catKey=cat.cat,isOpen=openCats[catKey]||false;
+    const catHd=document.createElement('div');
+    catHd.className='svc-cat';catHd.style.cssText='display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;';
+    catHd.innerHTML=`<span>${cat.cat}</span><span class="svc-arr" style="font-size:11px;color:var(--muted);transition:transform .2s;display:inline-block;">${isOpen?'▲':'▼'}</span>`;
+    const catBody=document.createElement('div');
+    catBody.className='svc-cat-body';catBody.dataset.cat=catKey;catBody.style.display=isOpen?'block':'none';
+    catHd.onclick=()=>{
+      const isNowOpen=catBody.style.display!=='none';
+      list.querySelectorAll('.svc-cat-body').forEach(b=>{b.style.display='none';});
+      list.querySelectorAll('.svc-arr').forEach(a=>{a.textContent='▼';a.style.transform='';});
+      if(isNowOpen)return;
+      catBody.style.display='block';catHd.querySelector('.svc-arr').textContent='▲';
+    };
+    list.appendChild(catHd);
+    cat.items.forEach(item=>{
+      const price=getModelPrice(model,item.nm,item.price);
+      const isSel=selectedSvcs.find(s=>s.nm===item.nm);
+      const d=document.createElement('div');
+      d.className='svc-item'+(isSel?' selected':'')+(item.guarantee?' guarantee-item':'');
+      d.innerHTML=`<div class="svc-ico"></div><div class="svc-info"><div class="svc-nm">${item.nm}</div><div class="svc-desc">${item.desc}</div></div><div class="svc-price">${price===0?'Grátis':'R$ '+price}</div><div class="svc-chk">${isSel?'✓':''}</div>`;
+      d.onclick=()=>toggleSvc({...item,price},d);
+      catBody.appendChild(d);
+    });
+    list.appendChild(catBody);
+  });
+  // Linhas personalizadas do modelo (ex: Apple Watch)
+  const modelKey=getModelKey(model);
+  const customLines=modelKey&&modelPrices[modelKey]&&modelPrices[modelKey].__lines;
+  if(customLines&&customLines.length>0){
+    const catKey='Personalizados';const isOpen=openCats[catKey]||false;
+    const catHd=document.createElement('div');catHd.className='svc-cat';catHd.style.cssText='display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;';
+    catHd.innerHTML=`<span>${catKey}</span><span class="svc-arr" style="font-size:11px;color:var(--muted);transition:transform .2s;display:inline-block;">${isOpen?'▲':'▼'}</span>`;
+    const catBody=document.createElement('div');catBody.className='svc-cat-body';catBody.dataset.cat=catKey;catBody.style.display=isOpen?'block':'none';
+    catHd.onclick=()=>{const isNowOpen=catBody.style.display!=='none';list.querySelectorAll('.svc-cat-body').forEach(b=>{b.style.display='none';});list.querySelectorAll('.svc-arr').forEach(a=>{a.textContent='▼';a.style.transform='';});if(isNowOpen)return;catBody.style.display='block';catHd.querySelector('.svc-arr').textContent='▲';};
+    list.appendChild(catHd);
+    customLines.forEach(ln=>{
+      const isSel=selectedSvcs.find(s=>s.nm===ln.nm);
+      const d=document.createElement('div');d.className='svc-item'+(isSel?' selected':'');
+      d.innerHTML=`<div class="svc-ico"><i class="ph ph-gear ph-ico" style="font-size:18px;color:var(--muted);"></i></div><div class="svc-info"><div class="svc-nm">${ln.nm}</div><div class="svc-desc">${ln.desc||'Serviço personalizado'}</div></div><div class="svc-price">${ln.price===0?'Grátis':'R$ '+ln.price}</div><div class="svc-chk">${isSel?'✓':''}</div>`;
+      d.onclick=()=>toggleSvc({...ln},d);
+      catBody.appendChild(d);
+    });
+    list.appendChild(catBody);
+  }
+}
+
+function toggleSvc(item, el) {
+  const idx = selectedSvcs.findIndex(s => s.nm === item.nm);
+  if(idx >= 0) {
+    // Deselect
+    selectedSvcs.splice(idx,1);
+    el.classList.remove('selected');
+    el.querySelector('.svc-chk').textContent = '';
+  } else {
+    // If item has a group, deselect others in same group first
+    if(item.group) {
+      selectedSvcs = selectedSvcs.filter(s => s.group !== item.group);
+      document.querySelectorAll('.svc-item.selected').forEach(other => {
+        const otherName = other.querySelector('.svc-nm').textContent;
+        const otherItem = SVCS.flatMap(c=>c.items).find(i=>i.nm===otherName);
+        if(otherItem && otherItem.group === item.group) {
+          other.classList.remove('selected');
+          other.querySelector('.svc-chk').textContent = '';
+        }
+      });
+    }
+    selectedSvcs.push(item);
+    el.classList.add('selected');
+    el.querySelector('.svc-chk').textContent = '✓';
+  }
+  updateSummary();
+}
+
+function updateSummary() {
+  const empty = document.getElementById('sumEmpty');
+  const list = document.getElementById('sumList');
+  const total = document.getElementById('sumTotal');
+  const val = document.getElementById('sumVal');
+  if(!selectedSvcs.length) { empty.style.display='block'; list.innerHTML=''; total.style.display='none'; return; }
+  empty.style.display = 'none';
+  let t = 0;
+  list.innerHTML = selectedSvcs.map(s => { t += s.price; return `<div class="sum-row"><div class="sum-name">${s.nm}</div><div class="sum-price">R$ ${s.price}</div><button class="sum-remove" onclick="removeSvc('${s.nm}')">✕</button></div>`; }).join('');
+  val.textContent = 'R$ ' + t.toLocaleString('pt-BR');
+  total.style.display = 'flex';
+}
+
+function removeSvc(nm) {
+  selectedSvcs = selectedSvcs.filter(s => s.nm !== nm);
+  // Update checkmarks without rebuilding list
+  document.querySelectorAll('.svc-item').forEach(el => {
+    const name = el.querySelector('.svc-nm')?.textContent;
+    const isSel = selectedSvcs.find(s => s.nm === name);
+    if(!isSel) { el.classList.remove('selected'); const chk = el.querySelector('.svc-chk'); if(chk) chk.textContent = ''; }
+  });
+  updateSummary();
+}
+
+// ─── DIAG TOGGLES ───
+function tog(btn, state) { const g = btn.closest('.tg'); g.querySelectorAll('.tb').forEach(b => b.classList.remove('ok','fail')); btn.classList.add(state); }
+function togIOS(el) {
+  el.classList.toggle('fail');
+  if(navigator.vibrate) navigator.vibrate(el.classList.contains('fail')?[30,20,30]:15);
+}
+
+function toggleGroup(hd) {
+  const body = hd.nextElementSibling;
+  const arrow = hd.querySelector('.diag-group-arrow');
+  const isOpen = body.classList.contains('open');
+  // Close all groups
+  document.querySelectorAll('.diag-group-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.diag-group-arrow').forEach(a => a.classList.remove('open'));
+  // Open this one if it was closed
+  if(!isOpen) {
+    body.classList.add('open');
+    arrow.classList.add('open');
+  }
+}
+
+function updateGroupStatus(statusId, toggle) {
+  const statusEl = document.getElementById(statusId);
+  if(!statusEl) return;
+  const group = toggle.closest('.diag-group-body');
+  const hasFail = group.querySelectorAll('.ios-toggle.fail').length > 0;
+  if(hasFail) {
+    statusEl.textContent = '⚠ Falha';
+    statusEl.className = 'diag-group-status has-fail';
+  } else {
+    statusEl.textContent = '✓ OK';
+    statusEl.className = 'diag-group-status';
+  }
+}
+function ctog(btn, state) { const g = btn.closest('.conf-tg'); g.querySelectorAll('.ctb').forEach(b => b.classList.remove('ok','fail')); btn.classList.add(state); }
+
+// ─── BATTERY ───
+function batSync(src) {
+  const range = document.getElementById('batV');
+  const num = document.getElementById('batNum');
+  const lbl = document.getElementById('batLabel');
+  const toggle = document.getElementById('batToggle');
+  const v = src === 'range' ? parseInt(range.value) : Math.min(100, Math.max(0, parseInt(num.value)||0));
+  if(src === 'range') num.value = v;
+  else range.value = v;
+  const color = v < 80 ? 'var(--red)' : 'var(--green)';
+  if(lbl){ lbl.textContent = v+'%'; lbl.style.color = color; }
+  if(num) num.style.borderColor = v < 80 ? 'var(--red)' : 'var(--border)';
+  if(toggle){ v < 80 ? toggle.classList.add('fail') : toggle.classList.remove('fail'); }
+}
+function batU(){ batSync('range'); }
+
+// ─── APPROVAL / PRAZO ───
+function selA(btn) {
+  btn.closest('.apv-pair').querySelectorAll('.apv').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  const cta = document.getElementById('ctaBtn');
+  if(btn.classList.contains('n')) {
+    cta.style.background = 'var(--red)';
+    cta.style.boxShadow = '0 4px 16px rgba(212,31,31,.3)';
+    cta.innerHTML = '<i class="ph ph-archive-box ph-ico"></i> Arquivar Orçamento';
+  } else {
+    cta.style.background = 'var(--blue)';
+    cta.style.boxShadow = '0 4px 16px rgba(26,92,200,.3)';
+    cta.innerHTML = '<i class="ph ph-clipboard-text ph-ico"></i> Abrir Ordem de Serviço';
+  }
+  cta.classList.add('ready');
+}
+function selP(c) { c.closest('.pc-chips').querySelectorAll('.pc').forEach(x => x.classList.remove('sel')); c.classList.add('sel'); }
+
+// ─── COLLECT DIAGNOSIS ───
+function collectDiag() {
+  const diag=[];
+  document.querySelectorAll('#diagBody .di').forEach(row=>{
+    const label=row.querySelector('.dnm')?.textContent;
+    if(!label||label==='Bateria')return;
+    const toggle=row.querySelector('.ios-toggle');
+    diag.push({label,ok:!toggle?.classList.contains('fail')});
+  });
+  return diag;
+}
+
+// ─── ARCHIVED ORDERS ───
+function openArchived() {
+  const archived=osList.filter(o=>o.status==='arquivado').sort((a,b)=>b.createdAt-a.createdAt);
+  const bsList=document.querySelector('#archivedSheet .bs-list');
+  bsList.innerHTML=archived.length?archived.map(os=>`
+    <div style="display:flex;align-items:center;gap:0;border-bottom:1px solid var(--border);">
+      <div class="bs-item" style="flex:1;border-bottom:none;" onclick="loadArchived(${os.num})">
+        <div class="bs-item-ico"><i class="ph ph-clipboard-text ph-ico" style="font-size:17px;color:var(--blue);"></i></div>
+        <div class="bs-item-info"><div class="bs-item-name">${os.clientName||'—'}</div><div class="bs-item-detail">${os.model||'—'} · ${os.problem||'Sem problema'} · ${new Date(os.createdAt).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</div></div>
+        <div class="bs-item-val">R$ ${(os.total||0).toLocaleString('pt-BR')}</div>
+      </div>
+      <button onclick="deleteArchived(${os.num})" style="flex-shrink:0;background:#FEE2E2;border:none;border-left:1px solid #FECACA;color:var(--red);padding:0 14px;height:100%;min-height:56px;font-size:18px;cursor:pointer;font-family:var(--sans);"><i class="ph ph-trash ph-ico"></i></button>
+    </div>`).join(''):'<div class="bs-empty">Nenhum orçamento arquivado</div>';
+  document.getElementById('archivedOverlay').classList.add('show');
+  document.getElementById('archivedSheet').style.display='block';
+}
+function deleteArchived(num){
+  if(!confirm('Excluir este orçamento arquivado?'))return;
+  osList=osList.filter(o=>!(o.num===num&&o.status==='arquivado'));
+  persistOS();renderArchivedCount();openArchived();
+}
+function closeArchived() {
+  document.getElementById('archivedOverlay').classList.remove('show');
+  document.getElementById('archivedSheet').style.display='none';
+}
+function loadArchived(num) {
+  const os=osList.find(o=>o.num===num&&o.status==='arquivado');closeArchived();
+  if(!os)return;
+  currentArchivedNum=num; // marca qual arquivado está sendo editado
+
+  // ── Dados básicos ──
+  document.getElementById('clientName').value=os.clientName||'';
+  document.getElementById('clientWA').value=os.clientWA||'';
+  document.getElementById('modelInput').value=os.model||'';
+  const senhaEl=document.getElementById('senhaInput');if(senhaEl)senhaEl.value=os.senha||'';
+  const osAdesEl=document.getElementById('osAdesivo');if(osAdesEl)osAdesEl.value=os.osAdesivo||'';
+  const probEl=document.getElementById('problemInput');
+  probEl.value=os.problem||'';probEl.style.height='auto';probEl.style.height=probEl.scrollHeight+'px';
+
+  // ── Bateria (valor apenas — batSync depois do diag) ──
+  if(os.battery!==undefined){
+    document.getElementById('batV').value=os.battery;
+    document.getElementById('batNum').value=os.battery;
+  }
+
+  // ── Foto ──
+  if(os.photo){
+    currentPhotoData=os.photo;
+    document.getElementById('prev').src=os.photo;
+    const lbl=document.getElementById('photo-detected-label');
+    if(lbl)lbl.innerHTML='<span class="chk">✓</span> Foto carregada';
+  }
+
+  // ── Diagnóstico ──
+  document.querySelectorAll('#diagBody .di').forEach(row=>{
+    const label=row.querySelector('.dnm')?.textContent;
+    if(!label)return;
+    const d=os.diagnosis?.find(x=>x.label===label);
+    if(!d)return;
+    const tog=row.querySelector('.ios-toggle');
+    if(tog&&tog.id!=='batToggle'){d.ok?tog.classList.remove('fail'):tog.classList.add('fail');}
+  });
+  if(os.battery!==undefined) batSync('range'); // depois do diag para não ser sobrescrito
+  updateDiagSummary();
+
+  // ── Serviços: rebuild e re-seleciona ──
+  selectedSvcs = os.services ? [...os.services] : [];
+  buildServices();
+  updateSummary();
+
+  // ── Botão CTA no modo "Arquivar" ──
+  const ctaBtn=document.getElementById('ctaBtn');
+  ctaBtn.style.background='var(--red)';ctaBtn.style.boxShadow='0 4px 16px rgba(212,31,31,.3)';
+  ctaBtn.innerHTML='<i class="ph ph-archive-box ph-ico"></i> Arquivar Orçamento';
+  document.querySelector('.apv.y')?.classList.remove('sel');
+  document.querySelector('.apv.n')?.classList.add('sel');
+
+  goTo('entrada',document.getElementById('nb-entrada'));
+}
+
+// ─── TECH SELECTOR ───
+function selTech(c){c.closest('.tech-selector').querySelectorAll('.tech-chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');}
+
+// ─── PHOTO ───
+function handlePhoto(input) {
+  if(!input.files||!input.files[0])return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=new Image();
+    img.onload=()=>{
+      const canvas=document.createElement('canvas');
+      const MAX=800;let w=img.width,h=img.height;
+      if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      let data=canvas.toDataURL('image/jpeg',0.65);
+      if(data.length>200000)data=canvas.toDataURL('image/jpeg',0.35);
+      currentPhotoData=data;
+      document.getElementById('prev').src=data;
+      const lbl=document.getElementById('photo-detected-label');
+      if(lbl)lbl.innerHTML='<span class="chk">✓</span> Foto capturada';
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+// ─── WHATSAPP HELPERS ───
+function _wordsToDigits(s) {
+  // Multi-palavra primeiro (DDDs compostos como "vinte e um" = 21)
+  const multi=[
+    ['vinte e um','21'],['vinte e dois','22'],['vinte e quatro','24'],['vinte e sete','27'],['vinte e oito','28'],
+    ['trinta e um','31'],['trinta e dois','32'],['trinta e tres','33'],['trinta e quatro','34'],['trinta e cinco','35'],['trinta e seis','36'],['trinta e sete','37'],['trinta e oito','38'],
+    ['quarenta e um','41'],['quarenta e dois','42'],['quarenta e tres','43'],['quarenta e quatro','44'],['quarenta e cinco','45'],['quarenta e seis','46'],['quarenta e sete','47'],
+    ['cinquenta e um','51'],['cinquenta e tres','53'],['cinquenta e quatro','54'],
+    ['sessenta e um','61'],['sessenta e dois','62'],['sessenta e tres','63'],['sessenta e cinco','65'],['sessenta e seis','66'],['sessenta e sete','67'],['sessenta e oito','68'],['sessenta e nove','69'],
+    ['setenta e um','71'],['setenta e cinco','75'],['setenta e sete','77'],['setenta e nove','79'],
+    ['oitenta e um','81'],['oitenta e tres','83'],['oitenta e quatro','84'],['oitenta e cinco','85'],['oitenta e seis','86'],['oitenta e oito','88'],['oitenta e nove','89'],
+    ['noventa e um','91'],['noventa e dois','92'],['noventa e tres','93'],['noventa e quatro','94'],['noventa e cinco','95'],['noventa e seis','96'],['noventa e oito','98'],['noventa e nove','99'],
+  ];
+  for(const[w,d]of multi) s=s.replace(new RegExp('\\b'+w+'\\b','g'),d);
+  // Palavras simples (0-9 + dezenas + meia)
+  const single={
+    'zero':'0','um':'1','uma':'1','dois':'2','duas':'2','tres':'3',
+    'quatro':'4','cinco':'5','seis':'6','meia':'6','sete':'7','oito':'8','nove':'9',
+    'dez':'10','onze':'11','doze':'12','treze':'13','catorze':'14','quatorze':'14',
+    'quinze':'15','dezesseis':'16','dezessete':'17','dezoito':'18','dezenove':'19',
+    'vinte':'20','trinta':'30','quarenta':'40','cinquenta':'50',
+    'sessenta':'60','setenta':'70','oitenta':'80','noventa':'90',
+  };
+  for(const[w,d]of Object.entries(single)) s=s.replace(new RegExp('\\b'+w+'\\b','g'),d);
+  return s;
+}
+
+function normalizeWhatsApp(raw) {
+  const digits=raw.replace(/\D/g,'');
+  const len=digits.length;
+  if(len<8||len>13) return null;
+  // 12-13 dígitos começando com 55: já tem código de país
+  if((len===12||len===13)&&digits.startsWith('55')) return '+'+digits;
+  // 10-11 dígitos: tem DDD, sem país → adicionar +55
+  if(len===10||len===11) return '+55'+digits;
+  // 8-9 dígitos: sem DDD, sem país → assumir DDD 11 (São Paulo)
+  if(len===8||len===9) return '+5511'+digits;
+  return null;
+}
+
+function extractPhoneFromSpeech(norm) {
+  const converted=_wordsToDigits(norm);
+  const kws=['whatsapp','zap','telefone','celular','contato','numero'];
+  for(const kw of kws){
+    const m=converted.match(new RegExp(kw+'[^\\d]*([\\d][\\d\\s\\-\\.()]{5,30}[\\d])'));
+    if(m){const d=m[1].replace(/\D/g,'');if(d.length>=8&&d.length<=13)return d;}
+  }
+  return null;
+}
+
+// ─── VOICE ───
+let recognition = null;
+let _lastVoiceText = '';
+let _silenceTimer = null;
+const VOICE_SILENCE_MS = 1000; // encerra 1s após última fala detectada
+
+function startVoice() {
+  const overlay = document.getElementById('voiceOverlay');
+  const transcript = document.getElementById('voiceTranscript');
+  _lastVoiceText = '';
+  clearTimeout(_silenceTimer);
+  overlay.classList.add('show');
+  if('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SR();
+    recognition.lang = 'pt-BR';
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.onresult = (e) => {
+      const text = Array.from(e.results).map(r => r[0].transcript).join('');
+      _lastVoiceText = text;
+      transcript.textContent = '"' + text + '"';
+      // reinicia o timer a cada trecho de fala detectado
+      clearTimeout(_silenceTimer);
+      _silenceTimer = setTimeout(() => { if(recognition) recognition.stop(); }, VOICE_SILENCE_MS);
+    };
+    recognition.onerror = () => { transcript.textContent = 'Não entendi. Tente novamente.'; };
+    recognition.onend = () => {
+      clearTimeout(_silenceTimer);
+      if(_lastVoiceText.trim()) processVoice(_lastVoiceText.trim());
+      setTimeout(() => overlay.classList.remove('show'), 800);
+    };
+    recognition.start();
+  } else {
+    transcript.textContent = 'Simulando: "iPhone 14 Pro, tela quebrada, bateria 34%"';
+    setTimeout(() => { processVoice('iPhone 14 Pro tela quebrada bateria 34%'); overlay.classList.remove('show'); }, 2000);
+  }
+}
+
+function stopVoice() { clearTimeout(_silenceTimer); if(recognition) recognition.stop(); }
+
+function _normalizeVoiceTranscript(t) {
+  // Corrige variações fonéticas comuns do contexto de assistência técnica
+  const fixes = [
+    [/face\s*[aá][ií]\s*d[eê]/gi, 'Face ID'],
+    [/face\s*[aá][ií]\s*di/gi,    'Face ID'],
+    [/face\s*a[ií]d/gi,           'Face ID'],
+    [/face\s*[ií]d[eê]/gi,        'Face ID'],
+    [/usb\s*c[eê]/gi,             'USB-C'],
+    [/usb\s*s[eê]/gi,             'USB-C'],
+    [/\btach\s*screen\b/gi,       'touch screen'],
+    [/\btach\b/gi,                'touch'],
+    [/\bairpod\b/gi,              'AirPod'],
+    [/\blaiter\b/gi,              'lightning'],
+    [/\blait[eê]ning\b/gi,        'lightning'],
+  ];
+  for(const[rx,rep]of fixes) t=t.replace(rx,rep);
+  return t;
+}
+
+function processVoice(rawText) {
+  const text = _normalizeVoiceTranscript(rawText);
+  const lower = text.toLowerCase();
+
+  // ── MODELO ──
+  if(lower.includes('iphone')) {
+    const models=['16 pro max','16 pro','16','15 pro max','15 pro','15 plus','15','14 pro max','14 pro','14 plus','14','13 pro max','13 pro','13 mini','13','12 pro max','12 pro','12 mini','12','11 pro max','11 pro','11'];
+    for(const m of models){
+      if(lower.includes(m)){
+        document.getElementById('modelInput').value='iPhone '+m.split(' ').map(w=>w[0].toUpperCase()+w.slice(1)).join(' ');
+        buildServices();break;
+      }
+    }
+  }
+
+  // ── BATERIA ──
+  const batMatch=lower.match(/bateria[^\d]*(\d+)/);
+  if(batMatch){document.getElementById('batV').value=batMatch[1];batU();}
+
+  // ── NORMALIZE (remove acentos para matching de keywords) ──
+  // norm tem o mesmo comprimento que text (substituição 1:1), então índices alinham
+  const norm=lower
+    .replace(/[áàãâä]/g,'a').replace(/[éêè]/g,'e')
+    .replace(/[íì]/g,'i').replace(/[óôõò]/g,'o')
+    .replace(/[úùû]/g,'u').replace(/ç/g,'c');
+
+  // ── NOME: preserva acentos originais via índice no text ──
+  const nomeRx=/(?:nome(?:\s+do)?\s+cliente|nome)\s+(?:e\s+)?([^,]+?)(?=\s+(?:whatsapp|telefone|celular|zap|modelo|iphone|senha|codigo|problema|defeito|bateria)|$)/;
+  const nomeM=norm.match(nomeRx);
+  if(nomeM){
+    // nomeM.index aponta para o mesmo offset em text (comprimentos iguais)
+    const captureStart=nomeM.index+nomeM[0].length-nomeM[1].length;
+    let nm=text.slice(captureStart,captureStart+nomeM[1].length).trim().replace(/^(e |o |a |um |uma )+/gi,'');
+    nm=nm.replace(/\b\w/g,l=>l.toUpperCase()).trim();
+    if(nm.length>1) document.getElementById('clientName').value=nm;
+  }
+
+  // ── WHATSAPP: extração + normalização ──
+  const phoneRaw=extractPhoneFromSpeech(norm);
+  if(phoneRaw){const normalized=normalizeWhatsApp(phoneRaw);if(normalized)document.getElementById('clientWA').value=normalized;}
+
+  // ── SENHA: sequência curta após keyword ──
+  const senhaRx=/(?:senha|codigo)\s+(?:e\s+)?([a-z0-9]{3,10})/;
+  const senhaM=norm.match(senhaRx);
+  if(senhaM){
+    const senhaEl=document.getElementById('senhaInput');
+    if(senhaEl) senhaEl.value=senhaM[1].trim();
+  }
+
+  // ── PROBLEMA: captura do original, para na próxima keyword ──
+  const probRx=/(?:e\s+)?(?:o\s+)?(?:problema|defeito)\s+(?:relatado\s+)?(?:e\s+)?(?:um\s+|uma\s+)?/;
+  const probM=norm.match(probRx);
+  const probEl=document.getElementById('problemInput');
+  if(probM){
+    const idx=probM.index+probM[0].length;
+    let prob=text.slice(idx).trim();
+    // Para antes da próxima keyword para não capturar outros campos
+    const stopM=prob.toLowerCase().match(/\s+(?:bateria|whatsapp|telefone|celular|zap|senha|codigo|nome\s|modelo|iphone)/);
+    if(stopM) prob=prob.slice(0,stopM.index);
+    prob=prob.replace(/[,.]$/,'').trim();
+    prob=prob.charAt(0).toUpperCase()+prob.slice(1);
+    if(prob.length>2){probEl.value=prob;probEl.style.height='auto';probEl.style.height=probEl.scrollHeight+'px';}
+  }
+
+  // ── SUGESTÃO DE NÚMERO OS (não preenche, só sugere) ──
+  const osNumM=norm.match(/(?:numero|os|ordem)[^\d]*(\d{3,5})/);
+  if(osNumM) _showOSSuggestion(osNumM[1]);
+}
+
+function _showOSSuggestion(num) {
+  let chip=document.getElementById('osSuggestionChip');
+  if(!chip){
+    chip=document.createElement('div');
+    chip.id='osSuggestionChip';
+    chip.style.cssText='display:flex;align-items:center;gap:8px;margin-top:6px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:12px;padding:6px 10px;font-size:13px;font-weight:600;color:#1A5CC8;';
+    const adesivoEl=document.getElementById('osAdesivo');
+    adesivoEl.closest('.fi').after(chip);
+  }
+  chip.innerHTML=`<span>Usar Nº <strong>${num}</strong> no adesivo?</span>`
+    +`<button onclick="document.getElementById('osAdesivo').value='${num}';document.getElementById('osSuggestionChip').remove();" style="background:#1A5CC8;color:#fff;border:none;border-radius:8px;padding:2px 10px;font-size:12px;font-weight:700;font-family:var(--sans);cursor:pointer;">Usar</button>`
+    +`<button onclick="document.getElementById('osSuggestionChip').remove();" style="background:none;border:none;color:#9CA3AF;font-size:16px;line-height:1;cursor:pointer;padding:0;">✕</button>`;
+}
+
+// ─── OPEN OS ───
+function openOS() {
+  if(!validateForm()) return;
+  const btn=document.getElementById('ctaBtn');
+  const isArchived=btn.innerHTML.includes('Arquivar');
+  const osAdesivo=document.getElementById('osAdesivo').value.trim();
+  const name=document.getElementById('clientName').value.trim()||'Cliente';
+  const wa=document.getElementById('clientWA').value.trim();
+  const model=document.getElementById('modelInput').value.trim()||'iPhone';
+  const problem=document.getElementById('problemInput').value.trim();
+  const senha=document.getElementById('senhaInput').value.trim();
+  const prazoEl=document.querySelector('.pc.sel');
+  const prazo=prazoEl?prazoEl.textContent:'1h';
+  const battery=parseInt(document.getElementById('batNum').value)||0;
+  const total=selectedSvcs.reduce((s,x)=>s+x.price,0);
+  const diag=collectDiag();
+
+  // ── MODO: Editando OS existente (não arquivada) ──
+  if(editingExistingNum!==null){
+    const idx=osList.findIndex(o=>o.num===editingExistingNum);
+    if(idx===-1){showToast('OS não encontrada','error');return;}
+    const existing=osList[idx];
+    existing.clientName=name;existing.clientWA=wa;existing.model=model;
+    existing.problem=problem;existing.senha=senha;
+    existing.photo=currentPhotoData;existing.diagnosis=diag;existing.battery=battery;
+    existing.services=[...selectedSvcs];existing.total=total;existing.prazo=prazo;
+    // Não toca em updatedAt nem createdAt — preserva ordem de fila e timers
+    persistOS();
+    showToast('OS '+existing.id+' atualizada!','success',3000);
+    if(navigator.vibrate) navigator.vibrate([40,30,40]);
+    setTimeout(()=>{resetForm();goTo('painel',document.getElementById('nb-painel'));},1200);
+    return;
+  }
+
+  // ── MODO: Retomando orçamento arquivado ──
+  if(currentArchivedNum!==null){
+    const idx=osList.findIndex(o=>o.num===currentArchivedNum&&o.status==='arquivado');
+    if(idx===-1){alert('Orçamento não encontrado.');return;}
+    const existing=osList[idx];
+    if(!isArchived){
+      // Convertendo para fila: exige número do adesivo agora
+      if(!osAdesivo){showToast('Informe o Nº do adesivo','warning');document.getElementById('osAdesivo').focus();return;}
+      const newNum=parseInt(osAdesivo);
+      if(!newNum){showToast('Número do adesivo inválido','error');document.getElementById('osAdesivo').focus();return;}
+      // Verificar duplicata (ignora o próprio arquivado)
+      const dup=osList.find(o=>o.num===newNum&&o.status!=='arquivado');
+      if(dup){
+        const st={fila:'na Fila',conserto:'em Conserto',pronto:'Pronto p/ entrega',entregue:'Entregue'};
+        alert(`⚠️ OS #${newNum} já está aberta!\n${dup.clientName} · ${st[dup.status]||dup.status}`);
+        return;
+      }
+      existing.num=newNum;existing.id='#'+newNum;existing.osAdesivo=osAdesivo;
+      if(newNum>=osCounter){osCounter=newNum;localStorage.setItem('1hora_counter',String(osCounter));}
+      existing.status='fila';existing.tecnico=null;existing.createdAt=Date.now();
+    }
+    // Atualiza campos editados (ambos os casos)
+    existing.clientName=name;existing.clientWA=wa;existing.model=model;
+    existing.problem=problem;existing.senha=senha;
+    existing.photo=currentPhotoData;existing.diagnosis=diag;existing.battery=battery;
+    existing.services=[...selectedSvcs];existing.total=total;existing.prazo=prazo;
+    existing.updatedAt=Date.now();
+    persistOS();renderArchivedCount();
+    showToast(isArchived?'Orçamento atualizado!':'OS '+existing.id+' aberta!',isArchived?'archived':'opened',3000);
+    if(navigator.vibrate) navigator.vibrate([40,30,40]);
+    setTimeout(()=>{
+      resetForm();
+      if(!isArchived)goTo('painel',document.getElementById('nb-painel'));
+    },1200);
+    return;
+  }
+
+  // ── MODO: Nova OS (Sim) — número obrigatório ──
+  // ── Novo orçamento (Não) — sem número, ID interno ──
+  if(!isArchived){
+    if(!osAdesivo){showToast('Informe o Nº do adesivo','warning');document.getElementById('osAdesivo').focus();return;}
+    const osNum=parseInt(osAdesivo);
+    if(!osNum){showToast('Número do adesivo inválido','error');document.getElementById('osAdesivo').focus();return;}
+    // Verificar duplicata (ativo ou arquivado com mesmo número)
+    const dup=osList.find(o=>o.num===osNum);
+    if(dup){
+      const st={fila:'na Fila',conserto:'em Conserto',pronto:'Pronto p/ entrega',entregue:'Entregue',arquivado:'Arquivado'};
+      alert(`⚠️ OS #${osNum} já existe no sistema!\n${dup.clientName} · ${st[dup.status]||dup.status}`);
+      return;
+    }
+    if(osNum>=osCounter){osCounter=osNum;localStorage.setItem('1hora_counter',String(osCounter));}
+    const os={id:'#'+osNum,num:osNum,osAdesivo,clientName:name,clientWA:wa,model,problem,senha,photo:currentPhotoData,diagnosis:diag,battery,services:[...selectedSvcs],total,prazo,status:'fila',tecnico:null,atendente:(role!=='tecnico'?(currentUserName||'—'):null),createdAt:Date.now(),updatedAt:Date.now()};
+    osList.push(os);persistOS();renderArchivedCount();
+    showToast('OS '+os.id+' aberta com sucesso!','opened',3000);
+    if(navigator.vibrate) navigator.vibrate([40,30,40]);
+    setTimeout(()=>{resetForm();goTo('painel',document.getElementById('nb-painel'));},1200);
+    return;
+  }
+  // Arquivar novo orçamento: sem número, ID interno automático
+  // ID interno negativo para não colidir com números reais de adesivo
+  const arcNum=-(Date.now());
+  const os={id:'Orç.',num:arcNum,osAdesivo:'',clientName:name,clientWA:wa,model,problem,senha,photo:currentPhotoData,diagnosis:diag,battery,services:[...selectedSvcs],total,prazo,status:'arquivado',tecnico:null,atendente:(role!=='tecnico'?(currentUserName||'—'):null),createdAt:Date.now(),updatedAt:Date.now()};
+  osList.push(os);persistOS();renderArchivedCount();
+  showToast('Orçamento arquivado!','archived',3000);
+  setTimeout(()=>{resetForm();},1200);
+}
+
+function resetForm() {
+  document.getElementById('clientName').value='';document.getElementById('clientWA').value='';
+  document.getElementById('modelInput').value='';document.getElementById('senhaInput').value='';
+  document.getElementById('osAdesivo').value='';
+  const prob=document.getElementById('problemInput');prob.value='';prob.style.height='auto';
+  currentPhotoData=null;
+  document.getElementById('prev').src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='145' viewBox='0 0 400 145'%3E%3Crect width='400' height='145' fill='%23F2F2F7'/%3E%3Crect x='174' y='28' width='52' height='89' rx='8' fill='none' stroke='%23C7C7CC' stroke-width='3'/%3E%3Ccircle cx='200' cy='122' r='5' fill='%23C7C7CC'/%3E%3Crect x='188' y='34' width='24' height='4' rx='2' fill='%23C7C7CC'/%3E%3C/svg%3E";
+  const lbl=document.getElementById('photo-detected-label');if(lbl)lbl.innerHTML='Adicionar foto';
+  selectedSvcs=[];updateSummary();buildServices();
+  document.getElementById('batV').value=85;document.getElementById('batNum').value=85;batSync('range');
+  document.querySelectorAll('#diagBody .ios-toggle').forEach(t=>t.classList.remove('fail'));
+  updateDiagSummary();
+  const ctaBtn=document.getElementById('ctaBtn');
+  ctaBtn.style.background='var(--blue)';ctaBtn.style.boxShadow='0 4px 16px rgba(26,92,200,.3)';ctaBtn.innerHTML='<i class="ph ph-clipboard-text ph-ico"></i> Abrir Ordem de Serviço';ctaBtn.classList.remove('ready');
+  document.querySelector('.apv.y').classList.add('sel');document.querySelector('.apv.n').classList.remove('sel');
+  currentArchivedNum=null;
+  editingExistingNum=null;
+  const osSug=document.getElementById('osSuggestionChip');if(osSug)osSug.remove();
+}
+
+// ─── PAINEL ───
+function renderPainel() {
+  const fila=osList.filter(o=>o.status==='fila').sort((a,b)=>a.createdAt-b.createdAt);
+  const conserto=osList.filter(o=>o.status==='conserto').sort((a,b)=>b.updatedAt-a.updatedAt);
+  const pronto=osList.filter(o=>o.status==='pronto').sort((a,b)=>b.updatedAt-a.updatedAt);
+  const entregue=osList.filter(o=>o.status==='entregue').length;
+  const sf=document.getElementById('stat-fila'),sc=document.getElementById('stat-conserto'),sp=document.getElementById('stat-pronto');
+  if(sf)sf.textContent=fila.length;if(sc)sc.textContent=conserto.length;if(sp)sp.textContent=pronto.length+entregue;
+  renderOSColumn('colFila',fila,'fila');renderOSColumn('colConserto',conserto,'conserto');renderOSColumn('colPronto',pronto,'pronto');
+  renderArchivedCount();
+  const archivedWrap=document.getElementById('painelArchivedWrap');
+  if(archivedWrap) archivedWrap.style.display='flex';
+}
+
+function renderOSColumn(colId,list,status) {
+  const col=document.getElementById(colId);if(!col)return;
+  if(!list.length){col.innerHTML='<div class="pb-empty">Vazio</div>';return;}
+  col.innerHTML=list.map(os=>{
+    const ts=status==='fila'?os.createdAt:os.updatedAt;
+    // Pronto: freeze timer — show duration from creation to completion
+    let time,tc;
+    if(status==='pronto'){
+      const dur=Math.floor((os.updatedAt-(os.consertoAt||os.createdAt))/60000);
+      time=dur<60?dur+'min':Math.floor(dur/60)+'h'+(dur%60?dur%60+'min':'');
+      tc='t-ok';
+    } else {
+      time=formatTime(ts);tc=timerClass(ts);
+    }
+    const timerTxt=status==='pronto'?'✓ '+time:(tc==='t-over'?'⚠ '+time:time);
+    const bColor=status==='pronto'?'var(--green)':status==='conserto'?'var(--orange)':'var(--blue)';
+    const parts=os.clientName.split(' ');const sn=parts[0]+(parts.length>1?' '+parts[parts.length-1][0]+'.':'');
+    const model=os.model||'Modelo não informado';
+    const problem=os.problem?os.problem.split(/[,.!?]/)[0].trim():'';
+    return `<div class="pb-item" style="border-left-color:${bColor};" onclick="openOS_from_panel(${os.num})"><div class="pb-item-row1"><div class="pb-item-os">${os.id}</div><div class="pb-item-timer ${tc}">${timerTxt}</div></div><div class="pb-item-name">${sn}</div><div class="pb-item-model">${model}</div>${problem?`<div class="pb-item-problem">${problem}</div>`:''}</div>`;
+  }).join('');
+}
+function renderArchivedCount() {
+  const n=osList.filter(o=>o.status==='arquivado').length;
+  document.querySelectorAll('.archived-pill-count').forEach(el=>el.textContent=n);
+}
+
+// ─── SEARCH OS ───
+function doSearch() {
+  const raw=document.getElementById('osSearch').value.trim();if(!raw)return;
+  const cleaned=raw.replace(/^#(os-?)?/i,'').trim().toLowerCase();
+  const isNum=/^\d+$/.test(cleaned);
+  const found=osList.find(os=>{
+    if(isNum) return String(os.num)===cleaned||String(os.osAdesivo||'')===cleaned;
+    return os.clientName.toLowerCase().includes(cleaned);
+  });
+  if(found){currentOSOrigin='search';loadOSToEntrega(found);}
+  else{document.getElementById('odWrap').classList.remove('show');showToast('OS não encontrada','error');}
+}
+function openOS_from_panel(num) {
+  const archivedWrap=document.getElementById('painelArchivedWrap');
+  if(archivedWrap) archivedWrap.style.display='none';
+  currentOSOrigin='painel';
+  const os=osList.find(o=>o.num===num);if(os)loadOSToEntrega(os);
+}
+function renderODDiag(os) {
+  const container = document.getElementById('od-chips');
+  if(!container) return;
+  const diag = os.diagnosis || [];
+  const fails = diag.filter(d => !d.ok);
+  const oks   = diag.filter(d => d.ok);
+  const batFail = (os.battery || 100) < 80;
+  const batLabel = `Bateria ${os.battery || '?'}%`;
+  const allFails = batFail ? [...fails, {label: batLabel}] : fails;
+
+  // ── Resumo: só falhas ──
+  let summaryHtml = '';
+  if(allFails.length) {
+    summaryHtml = allFails.map(d =>
+      `<div class="od-diag-fail-item"><i class="ph ph-warning ph-ico"></i>${d.label}</div>`
+    ).join('');
+  } else if(!diag.length) {
+    summaryHtml = `<div class="od-diag-empty no-data"><i class="ph ph-minus-circle ph-ico"></i>Sem diagnóstico registrado</div>`;
+  } else {
+    summaryHtml = `<div class="od-diag-empty"><i class="ph ph-check-circle ph-ico"></i>Sem pendências na entrada</div>`;
+  }
+
+  // ── Expandido: falhas + OK separados ──
+  let expandedHtml = '';
+  if(allFails.length) {
+    expandedHtml += '';
+    expandedHtml += allFails.map(d =>
+      `<div class="od-diag-expanded-fail-item"><i class="ph ph-warning ph-ico"></i><span>${d.label}</span></div>`
+    ).join('');
+  }
+  const okItems = [...oks];
+  if(!batFail && os.battery !== undefined) okItems.push({label: batLabel});
+  if(okItems.length) {
+    expandedHtml += allFails.length ? '<div style="height:6px;"></div>' : '';
+    expandedHtml += `<div class="od-diag-ok-grid">${okItems.map(d =>
+      `<div class="od-diag-ok-item"><i class="ph ph-check ph-ico"></i><span>${d.label}</span></div>`
+    ).join('')}</div>`;
+  }
+  if(!expandedHtml) {
+    expandedHtml = `<div class="od-diag-empty no-data"><i class="ph ph-minus-circle ph-ico"></i>Sem diagnóstico registrado</div>`;
+  }
+
+  container.innerHTML = `<div id="od-diag-summary">${summaryHtml}</div><div id="od-diag-expanded" style="display:none;">${expandedHtml}</div>`;
+}
+function toggleODDiag(btn) {
+  const summary  = document.getElementById('od-diag-summary');
+  const expanded = document.getElementById('od-diag-expanded');
+  const arrow    = btn.querySelector('.diag-arrow');
+  if(!summary || !expanded) return;
+  const isOpen = expanded.style.display !== 'none';
+  summary.style.display  = isOpen ? '' : 'none';
+  expanded.style.display = isOpen ? 'none' : '';
+  if(arrow) arrow.textContent = isOpen ? '▼' : '▲';
+}
+function loadOSToEntrega(os) {
+  currentOSId=os.num;
+  document.getElementById('od-os-num-text').textContent=os.id+' · Aberta há '+formatTime(os.createdAt);
+  document.getElementById('od-client-name').textContent=os.clientName;
+  document.getElementById('od-model-chip').textContent=os.model;
+  const senhaEl=document.getElementById('od-senha-display');if(senhaEl)senhaEl.textContent='Senha: '+(os.senha||'—');
+  const probEl=document.getElementById('od-problem-display');if(probEl)probEl.textContent=os.problem||'';
+  const thumb=document.getElementById('od-photo-thumb');
+  if(thumb){thumb.style.display=os.photo?'block':'none';if(os.photo)thumb.src=os.photo;}
+  renderODDiag(os);
+  const svcsDiv=document.getElementById('od-svcs');
+  if(svcsDiv&&os.services){
+    svcsDiv.innerHTML=os.services.map(s=>`<div class="od-svc-row"><div class="od-svc-nm">${s.nm}</div><div class="od-svc-pr">R$ ${s.price.toLocaleString('pt-BR')}</div></div>`).join('')+
+      `<div class="od-total-row"><div class="od-total-nm">Total</div><div class="od-total-pr">R$ ${os.total.toLocaleString('pt-BR')}</div></div>`;
+  }
+  const batToggle=document.getElementById('conf-bat-toggle');
+  if(batToggle){batToggle.classList.toggle('fail',(os.battery||0)<80);}
+  const techEl=document.getElementById('od-tech-name');
+  if(techEl)techEl.textContent=os.tecnico||'Não atribuído';
+  const metaLine=document.getElementById('od-meta-line');
+  if(metaLine)metaLine.textContent=`Atendente: ${os.atendente||'—'} · Técnico: ${os.tecnico||'—'}`;
+  const diagExtra=document.getElementById('conf-diag-extra');
+  if(diagExtra){
+    const fails=os.diagnosis?os.diagnosis.filter(d=>!d.ok):[];
+    const failLabels=new Set(fails.map(d=>d.label));
+    document.querySelectorAll('#conf-section .conf-item[data-label]').forEach(el=>{
+      el.style.display=failLabels.has(el.dataset.label)?'none':'';
+    });
+    if(fails.length){
+      diagExtra.innerHTML=fails.map(d=>`<div class="conf-item"><div class="conf-ico"><i class="ph ph-warning ph-ico"></i></div><div class="conf-lbl">${d.label}</div><div class="ios-toggle fail" onclick="togIOS(this)"><div class="ios-track"><div class="ios-thumb"></div></div></div></div>`).join('');
+    } else {
+      diagExtra.innerHTML='';
+    }
+  }
+  // Restaurar estado de conferência de saída salvo pelo técnico
+  if(os.diagSaida&&os.diagSaida.length){
+    const savedMap={};os.diagSaida.forEach(d=>savedMap[d.label]=d.ok);
+    document.querySelectorAll('#conf-section .conf-item').forEach(item=>{
+      const lbl=item.dataset.label||(item.querySelector('.conf-lbl')||{}).textContent||'';
+      const tog=item.querySelector('.ios-toggle');
+      if(lbl&&tog&&savedMap[lbl]!==undefined){savedMap[lbl]?tog.classList.remove('fail'):tog.classList.add('fail');}
+    });
+  }
+  updateEntregaStatus(os.status);buildWAMessage(os);
+  const statusBadge=document.getElementById('od-status-badge');
+  if(statusBadge)statusBadge.style.display=currentOSOrigin==='search'?'':'none';
+  // Resetar proofs
+  ['1','2'].forEach(n=>{
+    const t=document.getElementById('proofThumb'+n);const ic=document.getElementById('proofIcon'+n);const z=document.getElementById('proofZone'+n);
+    if(t){t.style.display='none';t.src='';}if(ic)ic.style.display='';if(z)z.classList.remove('proof-ok');
+  });
+  // Show edit button now that OS is opened
+  const editBtn=document.getElementById('odEditBtn');if(editBtn)editBtn.style.display='block';
+  // Mostrar tela sem resetar estado
+  document.getElementById('entregaEmpty').style.display='none';
+  document.getElementById('odWrap').classList.add('show');
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('screen-entrega').classList.add('on');
+  document.getElementById('nb-entrega').classList.add('on');
+  document.getElementById('content').scrollTop=0;
+}
+function updateEntregaStatus(status) {
+  const badge=document.getElementById('od-status-badge');
+  const btn=document.getElementById('od-action-btn');
+  const conf=document.getElementById('conf-section');
+  const waSection=document.getElementById('waSection');
+  const proofSection=document.getElementById('proofSection');
+  const finBtn=document.getElementById('finBtn');
+  btn.style.background='';btn.style.display='';btn.disabled=false;
+  const actionSection=document.getElementById('od-action-section');if(actionSection)actionSection.style.display='';
+  if(waSection)waSection.style.display='none';
+  if(proofSection)proofSection.style.display='none';
+  if(finBtn)finBtn.style.display='none';
+
+  if(status==='fila'){
+    badge.className='od-status-badge status-fila';badge.textContent='Aguardando técnico';
+    if(conf)conf.style.display='none';
+    if(role==='atendente'){
+      btn.className='od-action-btn';btn.style.background='var(--mid)';
+      btn.textContent='Aguardando técnico';btn.disabled=true;
+    } else {
+      btn.className='od-action-btn od-action-pegar';btn.innerHTML='<i class="ph ph-wrench ph-ico"></i> Pegar este serviço';
+      const techEl=document.getElementById('od-tech-name');
+      if(techEl){
+        const fixedTecs=teamMembers.filter(m=>m.role==='tecnico').map(m=>m.name);
+        const names=[...new Set([...fixedTecs,...osList.filter(o=>o.tecnico).map(o=>o.tecnico)].filter(Boolean))];
+        const sel=(role==='tecnico'&&currentUserName)||names[0]||'';
+        techEl.innerHTML=`<div class="tech-selector" style="margin-top:4px;display:flex;flex-wrap:wrap;gap:6px;">${names.map(n=>`<div class="tech-chip${n===sel?' sel':''}" onclick="selTech(this)">${n.split(' ')[0]}</div>`).join('')}</div>`;
+      }
+    }
+
+  } else if(status==='conserto'){
+    badge.className='od-status-badge status-conserto';badge.textContent='Em conserto';
+    if(conf)conf.style.display='block';
+    if(role==='atendente'){
+      btn.className='od-action-btn';btn.style.background='var(--mid)';
+      btn.textContent='Em andamento pelo técnico';btn.disabled=true;
+    } else {
+      btn.style.display='none';
+      const actionSection=document.getElementById('od-action-section');if(actionSection)actionSection.style.display='none';
+      if(waSection)waSection.style.display='block';
+      if(finBtn){finBtn.style.display='flex';finBtn.innerHTML='<span><i class="ph ph-paper-plane-tilt ph-ico"></i></span> Concluir e Notificar Cliente';finBtn.style.background='#075E54';finBtn.style.boxShadow='0 4px 16px rgba(7,94,84,.3)';}
+    }
+
+  } else if(status==='pronto'){
+    badge.className='od-status-badge status-pronto';badge.textContent='Pronto · aguardando entrega';
+    if(conf)conf.style.display='block';
+    if(role==='tecnico'){
+      btn.className='od-action-btn';btn.style.background='var(--mid)';
+      btn.innerHTML='<i class="ph ph-check-circle ph-ico"></i> Pronto · aguardando atendente';btn.disabled=true;
+    } else {
+      btn.style.display='none';
+      const actionSection=document.getElementById('od-action-section');if(actionSection)actionSection.style.display='none';
+      if(proofSection)proofSection.style.display='block';
+      if(finBtn){finBtn.style.display='flex';finBtn.innerHTML='<span><i class="ph ph-package ph-ico"></i></span> Confirmar Entrega ao Cliente';finBtn.style.background='var(--green)';finBtn.style.boxShadow='0 4px 16px rgba(22,163,74,.3)';}
+    }
+
+  } else if(status==='entregue'){
+    badge.className='od-status-badge status-pronto';badge.textContent='Entregue';
+    btn.className='od-action-btn';btn.style.background='var(--mid)';
+    btn.innerHTML='<i class="ph ph-check ph-ico"></i> OS Concluída';btn.disabled=true;
+    if(conf)conf.style.display='none';
+    const editBtn=document.getElementById('odEditBtn');if(editBtn)editBtn.style.display='none';
+  }
+}
+
+function handleOSAction() {
+  const os=currentOSId?osList.find(o=>o.num===currentOSId):null;
+  if(!os)return;
+  const btn=document.getElementById('od-action-btn');
+
+  // Usa os.status do localStorage — imune a bug de texto de botão
+  if(os.status==='fila'){
+    if(role==='atendente'){alert('⚠️ Apenas técnicos podem pegar serviços.');return;}
+    const selChip=document.querySelector('#od-tech-name .tech-chip.sel');
+    const chipFirst=selChip?selChip.textContent:null;
+    const tecFull=chipFirst?(teamMembers.find(m=>m.role==='tecnico'&&m.name.split(' ')[0]===chipFirst)||{name:chipFirst}).name:(currentUserName||null);
+    os.status='conserto';os.tecnico=tecFull;os.consertoAt=Date.now();os.updatedAt=Date.now();persistOS();
+    btn.innerHTML='<i class="ph ph-check-circle ph-ico"></i> Serviço pego!';btn.style.background='var(--green)';btn.disabled=true;
+    renderPainel();
+    setTimeout(()=>goTo('painel',document.getElementById('nb-painel')),1200);
+
+  } else if(os.status==='conserto'){
+    if(role==='atendente'){alert('⚠️ Apenas técnicos podem finalizar consertos.');return;}
+    os.status='pronto';os.updatedAt=Date.now();persistOS();
+    if(os.clientWA){
+      const wa=os.clientWA.replace(/\D/g,'');
+      const waEl=document.getElementById('waMsg');
+      window.open('https://wa.me/'+wa+'?text='+encodeURIComponent(waEl?waEl.value:''),'_blank');
+    }
+    btn.innerHTML='<i class="ph ph-check-circle ph-ico"></i> Cliente notificado!';btn.style.background='var(--green)';btn.disabled=true;
+    renderPainel();
+    setTimeout(()=>goTo('painel',document.getElementById('nb-painel')),1500);
+
+  } else if(os.status==='pronto'){
+    if(role==='tecnico'){alert('⚠️ Apenas atendentes podem fazer a entrega.');return;}
+    finishOS();
+
+  } else if(os.status==='entregue'){
+    // já entregue — só volta ao painel
+    goTo('painel',document.getElementById('nb-painel'));
+  }
+}
+
+function handleFinBtn() {
+  const os=currentOSId?osList.find(o=>o.num===currentOSId):null;
+  if(!os)return;
+  if(os.status==='conserto'){
+    if(role==='atendente'){alert('⚠️ Apenas técnicos podem finalizar consertos.');return;}
+    document.getElementById('confirmConsertoOverlay').classList.add('show');
+  } else if(os.status==='pronto'){
+    finishOS();
+  }
+}
+
+function collectConfDiag() {
+  const items=[];
+  document.querySelectorAll('#conf-section .conf-item').forEach(item=>{
+    if(item.style.display==='none') return; // ignora duplicatas ocultas dos itens de falha
+    const lbl=item.dataset.label||(item.querySelector('.conf-lbl')||{}).textContent||'';
+    const tog=item.querySelector('.ios-toggle');
+    if(lbl&&tog)items.push({label:lbl.trim(),ok:!tog.classList.contains('fail')});
+  });
+  return items;
+}
+
+function confirmFinishConserto() {
+  const os=currentOSId?osList.find(o=>o.num===currentOSId):null;
+  if(!os)return;
+  os.diagSaida=collectConfDiag();os.status='pronto';os.updatedAt=Date.now();persistOS();
+  if(os.clientWA){
+    const wa=os.clientWA.replace(/\D/g,'');
+    const waEl=document.getElementById('waMsg');
+    window.open('https://wa.me/'+wa+'?text='+encodeURIComponent(waEl?waEl.value:''),'_blank');
+  }
+  const btn=document.getElementById('finBtn');
+  if(btn){btn.innerHTML='<i class="ph ph-check-circle ph-ico"></i> Pronto! Cliente notificado.';btn.style.background='var(--green)';}
+  renderPainel();
+  setTimeout(()=>goTo('painel',document.getElementById('nb-painel')),1500);
+}
+
+// ─── PROOF PHOTOS ───
+function handleProofPhoto(input, num) {
+  if(!input.files||!input.files[0])return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=new Image();
+    img.onload=()=>{
+      const canvas=document.createElement('canvas');
+      const MAX=600;let w=img.width,h=img.height;
+      if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      const data=canvas.toDataURL('image/jpeg',0.6);
+      const thumb=document.getElementById('proofThumb'+num);
+      const icon=document.getElementById('proofIcon'+num);
+      const zone=document.getElementById('proofZone'+num);
+      if(thumb){thumb.src=data;thumb.style.display='block';}
+      if(icon)icon.style.display='none';
+      if(zone)zone.classList.add('proof-ok');
+      if(currentOSId){const os=osList.find(o=>o.num===currentOSId);if(os){os['proof'+num]=data;persistOS();}}
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+// ─── WHATSAPP ───
+function buildWAMessage(os) {
+  const svcsText=os.services?os.services.map(s=>s.nm).join(' + '):'—';
+  const msg=`Olá, ${os.clientName.split(' ')[0]}! 👋\n\nSeu ${os.model} está pronto para retirada! ✅\n\n🔧 Serviços: ${svcsText}\n💰 Total: R$ ${os.total.toLocaleString('pt-BR')}\n⏱ Tempo: ${formatTime(os.createdAt)}\n\n🛡 Garantia inclusa.\n\nEstamos no Shopping Oriental, Loja 120.\nUma Hora Assistência Técnica 🔵🔴`;
+  const el=document.getElementById('waMsg');if(el){el.value=msg;waCount();}
+  const hd=document.getElementById('wa-hd-name');if(hd)hd.textContent=os.clientName;
+}
+function waCount(){const len=document.getElementById('waMsg').value.length;document.getElementById('waChar').textContent=len+' / 500';}
+function resetWA(){const os=currentOSId?osList.find(o=>o.num===currentOSId):null;if(os)buildWAMessage(os);}
+
+// ─── FINISH OS ───
+function finishOS() {
+  const z1=document.getElementById('proofZone1');
+  const z2=document.getElementById('proofZone2');
+  const ok1=z1&&z1.classList.contains('proof-ok');
+  const ok2=z2&&z2.classList.contains('proof-ok');
+  if(!ok1||!ok2){
+    const missing=[];if(!ok1)missing.push('Foto do aparelho');if(!ok2)missing.push('Comprovante PIX');
+    document.getElementById('photoAlertMsg').innerHTML='Adicione as fotos antes de confirmar:<br><br><strong>'+missing.join('<br>')+'</strong>';
+    document.getElementById('photoAlertOverlay').classList.add('show');
+    return;
+  }
+  const btn=document.getElementById('finBtn');
+  const os=currentOSId?osList.find(o=>o.num===currentOSId):null;
+  if(os){os.status='entregue';os.updatedAt=Date.now();persistOS();}
+  if(btn){btn.innerHTML='<i class="ph ph-check-circle ph-ico"></i> Entregue!';btn.style.background='var(--green)';}
+  renderPainel();
+  setTimeout(()=>{
+    document.getElementById('odWrap').classList.remove('show');
+    currentOSId=null;
+    goTo('painel',document.getElementById('nb-painel'));
+  },1800);
+}
+
+// ─── MODEL SHEET ───
+function openModelSheet(){
+  document.getElementById('modelSheetOverlay').classList.add('show');
+  document.getElementById('modelSheet').style.display='block';
+  const si=document.getElementById('modelSearchInput');si.value='';
+  filterModelSheet('');
+  setTimeout(()=>si.focus(),200);
+}
+function closeModelSheet(){
+  document.getElementById('modelSheetOverlay').classList.remove('show');
+  document.getElementById('modelSheet').style.display='none';
+}
+function selectModel(nm){
+  document.getElementById('modelInput').value=nm;
+  buildServices();
+  closeModelSheet();
+}
+function filterModelSheet(q){
+  const cont=document.getElementById('modelSheetList');cont.innerHTML='';
+  const lq=q.trim().toLowerCase();
+  MODEL_LIST.forEach(grp=>{
+    const matches=grp.models.filter(m=>!lq||m.toLowerCase().includes(lq));
+    if(!matches.length)return;
+    const grpEl=document.createElement('div');
+    grpEl.style.cssText='font-size:11px;font-weight:800;color:var(--muted);padding:12px 4px 4px;text-transform:uppercase;letter-spacing:.5px;';
+    grpEl.textContent=grp.group;cont.appendChild(grpEl);
+    matches.forEach(m=>{
+      const hasPrice=!!getModelKey(m);
+      const current=document.getElementById('modelInput').value.trim().toLowerCase()===m.toLowerCase();
+      const btn=document.createElement('button');
+      btn.style.cssText=`width:100%;text-align:left;background:${current?'var(--blue-s,#EFF6FF)':'none'};border:none;border-bottom:1px solid var(--border);padding:13px 4px;font-size:14px;font-weight:${current?'800':'600'};font-family:var(--sans);color:${hasPrice||current?'var(--blue)':'var(--text)'};cursor:pointer;display:flex;align-items:center;gap:8px;`;
+      btn.innerHTML=`<span style="flex:1;">${m}</span>${hasPrice?'<span style="font-size:11px;background:var(--blue);color:#fff;border-radius:6px;padding:2px 6px;font-weight:700;">R$</span>':''}${current?'<span style="font-size:16px;">✓</span>':''}`;
+      btn.onclick=()=>selectModel(m);
+      cont.appendChild(btn);
+    });
+  });
+  if(!cont.children.length){
+    const empty=document.createElement('div');empty.style.cssText='text-align:center;padding:24px;font-size:13px;color:var(--muted);';empty.textContent='Nenhum modelo encontrado';cont.appendChild(empty);
+  }
+}
+
+// ─── PRICES EDITOR ───
+function openPricesEditor(){document.getElementById('pricesOverlay').classList.add('show');document.getElementById('pricesSheet').style.display='block';renderPricesEditor(document.getElementById('priceModelSel').value);}
+function closePricesEditor(){document.getElementById('pricesOverlay').classList.remove('show');document.getElementById('pricesSheet').style.display='none';buildServices();}
+function renderPricesEditor(model) {
+  const cont=document.getElementById('pricesEditorItems');cont.innerHTML='';
+  // Serviços padrão (mesma ordem do buildServices)
+  SVCS.forEach(cat=>{
+    const hd=document.createElement('div');hd.className='svc-cat';hd.style.pointerEvents='none';hd.textContent=cat.cat;cont.appendChild(hd);
+    cat.items.forEach(item=>{
+      const price=getModelPrice(model,item.nm,item.price);
+      const row=document.createElement('div');
+      row.style.cssText='display:flex;align-items:center;padding:10px 4px;border-bottom:1px solid var(--border);gap:8px;';
+      row.innerHTML=`<div style="flex:1;font-size:13px;font-weight:600;color:var(--text);">${item.nm}</div><span style="font-size:12px;color:var(--muted);">R$</span><input type="number" min="0" max="9999" value="${price}" style="width:72px;background:var(--g100);border:1.5px solid var(--border);border-radius:8px;padding:6px;font-size:13px;font-weight:700;text-align:center;font-family:var(--sans);outline:none;color:var(--text);" onchange="updateModelPrice('${model.replace(/'/g,'&#39;')}','${item.nm.replace(/'/g,'&#39;')}',this.value)" onfocus="this.select()">`;
+      cont.appendChild(row);
+    });
+  });
+  // Seção de serviços personalizados
+  const key=getModelKey(model)||model;
+  const lines=(modelPrices[key]&&modelPrices[key].__lines)||[];
+  const secHd=document.createElement('div');
+  secHd.className='svc-cat';secHd.style.cssText='pointer-events:none;margin-top:4px;';secHd.textContent='Personalizados deste modelo';cont.appendChild(secHd);
+  if(lines.length===0){
+    const empty=document.createElement('div');empty.style.cssText='font-size:12px;color:var(--muted);padding:8px 4px 4px;';empty.textContent='Nenhum serviço personalizado ainda.';cont.appendChild(empty);
+  }
+  const linesWrap=document.createElement('div');linesWrap.id='customLinesWrap';cont.appendChild(linesWrap);
+  lines.forEach((ln,i)=>linesWrap.appendChild(buildCustomLineCard(key,ln,i,lines.length)));
+  const addBtn=document.createElement('button');
+  addBtn.style.cssText='width:100%;margin-top:10px;background:var(--g100);border:1.5px dashed var(--border);border-radius:10px;padding:11px;font-size:13px;font-weight:700;font-family:var(--sans);color:var(--blue);cursor:pointer;';
+  addBtn.textContent='＋ Adicionar serviço personalizado';
+  addBtn.onclick=()=>addCustomLine(key);
+  cont.appendChild(addBtn);
+}
+function buildCustomLineCard(key,ln,i,total){
+  const esc=s=>(s||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  const card=document.createElement('div');
+  card.dataset.lineIdx=i;
+  card.style.cssText='background:#fff;border:1.5px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden;touch-action:pan-y;';
+  card.innerHTML=`
+    <div style="display:flex;align-items:center;padding:10px 10px 6px;gap:8px;">
+      <span class="drag-handle" data-idx="${i}" style="font-size:20px;color:#C7C7CC;cursor:grab;touch-action:none;flex-shrink:0;padding:2px 4px;line-height:1;user-select:none;">⠿</span>
+      <input type="text" value="${esc(ln.nm)}" placeholder="Nome do serviço" style="flex:1;min-width:0;background:var(--g100);border:1.5px solid var(--border);border-radius:8px;padding:7px 8px;font-size:13px;font-weight:600;font-family:var(--sans);outline:none;color:var(--text);" onchange="updateCustomLine('${esc(key)}',${i},'nm',this.value)">
+      <span style="font-size:12px;color:var(--muted);flex-shrink:0;">R$</span>
+      <input type="number" min="0" max="9999" value="${ln.price||0}" style="width:64px;flex-shrink:0;background:var(--g100);border:1.5px solid var(--border);border-radius:8px;padding:7px 6px;font-size:13px;font-weight:700;text-align:center;font-family:var(--sans);outline:none;color:var(--text);" onchange="updateCustomLine('${esc(key)}',${i},'price',this.value)" onfocus="this.select()">
+      <div style="display:flex;flex-direction:column;gap:2px;flex-shrink:0;">
+        <button onclick="moveCustomLine('${esc(key)}',${i},-1)" ${i===0?'disabled':''} style="background:${i===0?'var(--g100)':'var(--g100)'};border:1px solid var(--border);border-radius:6px;width:26px;height:22px;font-size:11px;cursor:${i===0?'default':'pointer'};color:${i===0?'#C7C7CC':'var(--text)'};font-family:var(--sans);padding:0;display:flex;align-items:center;justify-content:center;">▲</button>
+        <button onclick="moveCustomLine('${esc(key)}',${i},1)" ${i===total-1?'disabled':''} style="background:var(--g100);border:1px solid var(--border);border-radius:6px;width:26px;height:22px;font-size:11px;cursor:${i===total-1?'default':'pointer'};color:${i===total-1?'#C7C7CC':'var(--text)'};font-family:var(--sans);padding:0;display:flex;align-items:center;justify-content:center;">▼</button>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;padding:0 10px 10px 46px;gap:8px;">
+      <input type="text" value="${esc(ln.desc||'')}" placeholder="Descrição (ex: Vidro + OLED · 90 dias)" style="flex:1;background:var(--g100);border:1.5px solid var(--border);border-radius:8px;padding:7px 8px;font-size:12px;font-weight:500;font-family:var(--sans);outline:none;color:var(--muted);" onchange="updateCustomLine('${esc(key)}',${i},'desc',this.value)">
+      <button onclick="deleteCustomLine('${esc(key)}',${i})" style="flex-shrink:0;background:#FEE2E2;border:1px solid #FECACA;color:var(--red);border-radius:8px;padding:7px 10px;font-size:12px;font-weight:700;font-family:var(--sans);cursor:pointer;white-space:nowrap;"><i class="ph ph-trash ph-ico"></i> Excluir</button>
+    </div>`;
+  // Attach drag events to handle
+  const handle=card.querySelector('.drag-handle');
+  handle.addEventListener('touchstart',e=>onDragStart(e,key,i),{passive:false});
+  return card;
+}
+function updateModelPrice(model,svcNm,value){const key=getModelKey(model)||model;if(!modelPrices[key])modelPrices[key]={};modelPrices[key][svcNm]=Math.max(0,parseInt(value)||0);persistPrices();}
+function addCustomLine(model){const key=getModelKey(model)||model;if(!modelPrices[key])modelPrices[key]={};if(!modelPrices[key].__lines)modelPrices[key].__lines=[];modelPrices[key].__lines.push({nm:'Novo serviço',desc:'',price:0});persistPrices();renderPricesEditor(key);const wrap=document.getElementById('customLinesWrap');if(wrap)wrap.lastElementChild&&wrap.lastElementChild.querySelector('input').focus();}
+function deleteCustomLine(model,idx){const key=getModelKey(model)||model;if(modelPrices[key]&&modelPrices[key].__lines){modelPrices[key].__lines.splice(idx,1);persistPrices();renderPricesEditor(key);}}
+function moveCustomLine(model,idx,dir){const key=getModelKey(model)||model;const lines=modelPrices[key]&&modelPrices[key].__lines;if(!lines)return;const newIdx=idx+dir;if(newIdx<0||newIdx>=lines.length)return;[lines[idx],lines[newIdx]]=[lines[newIdx],lines[idx]];persistPrices();renderPricesEditor(key);}
+function updateCustomLine(model,idx,field,value){const key=getModelKey(model)||model;if(modelPrices[key]&&modelPrices[key].__lines&&modelPrices[key].__lines[idx]!==undefined){if(field==='price')modelPrices[key].__lines[idx].price=Math.max(0,parseInt(value)||0);else modelPrices[key].__lines[idx][field]=value;persistPrices();}}
+function changePriceModel(){renderPricesEditor(document.getElementById('priceModelSel').value);}
+function resetModelPrices(){const m=document.getElementById('priceModelSel').value;if(confirm('Resetar preços do '+m+' para padrão?')){delete modelPrices[m];persistPrices();renderPricesEditor(m);}}
+
+// ─── DRAG-AND-DROP TOUCH (linhas personalizadas) ───
+let _drag=null;
+function onDragStart(e,key,idx){
+  e.preventDefault();
+  const wrap=document.getElementById('customLinesWrap');
+  if(!wrap)return;
+  const cards=Array.from(wrap.querySelectorAll('[data-line-idx]'));
+  const card=cards[idx];
+  const rect=card.getBoundingClientRect();
+  // Clone visual seguindo o dedo
+  const clone=card.cloneNode(true);
+  clone.style.cssText=`position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;z-index:9999;pointer-events:none;opacity:.88;box-shadow:0 8px 28px rgba(0,0,0,.18);border-radius:12px;transition:none;`;
+  document.body.appendChild(clone);
+  card.style.opacity='.25';
+  _drag={key,startIdx:idx,curIdx:idx,clone,card,cards,wrap,cardH:rect.height,startY:e.touches[0].clientY,origTop:rect.top};
+  document.addEventListener('touchmove',onDragMove,{passive:false});
+  document.addEventListener('touchend',onDragEnd);
+}
+function onDragMove(e){
+  if(!_drag)return;
+  e.preventDefault();
+  const dy=e.touches[0].clientY-_drag.startY;
+  _drag.clone.style.top=(_drag.origTop+dy)+'px';
+  const newIdx=Math.max(0,Math.min(_drag.cards.length-1,_drag.startIdx+Math.round(dy/_drag.cardH)));
+  if(newIdx!==_drag.curIdx){
+    _drag.curIdx=newIdx;
+    _drag.cards.forEach((c,i)=>{
+      if(i===_drag.startIdx){c.style.transform='';return;}
+      const shift=_drag.startIdx<_drag.curIdx?(i>_drag.startIdx&&i<=_drag.curIdx?-_drag.cardH-8:0):(i<_drag.startIdx&&i>=_drag.curIdx?_drag.cardH+8:0);
+      c.style.transition='transform .15s';c.style.transform=shift?`translateY(${shift}px)`:'';
+    });
+  }
+}
+function onDragEnd(){
+  if(!_drag)return;
+  document.removeEventListener('touchmove',onDragMove);
+  document.removeEventListener('touchend',onDragEnd);
+  _drag.clone.remove();
+  _drag.cards.forEach(c=>{c.style.transform='';c.style.transition='';c.style.opacity='';});
+  const {key,startIdx,curIdx}=_drag;_drag=null;
+  if(startIdx!==curIdx){
+    const lines=modelPrices[key].__lines;
+    const [item]=lines.splice(startIdx,1);
+    lines.splice(curIdx,0,item);
+    persistPrices();renderPricesEditor(key);
+  }
+}
+
+// ─── RESULTADOS ───
+function togglePayments(){
+  const list=document.getElementById('paymentsList');
+  const btn=document.getElementById('payments-arrow');
+  if(!list)return;
+  const open=list.style.display==='none';
+  list.style.display=open?'block':'none';
+  if(btn)btn.style.transform=open?'rotate(180deg)':'rotate(0deg)';
+}
+
+function renderResultados() {
+  const today=new Date();today.setHours(0,0,0,0);const todayTs=today.getTime();
+  const monthStart=new Date(today.getFullYear(),today.getMonth(),1).getTime();
+  const todayOS=osList.filter(o=>o.createdAt>=todayTs);
+  const entregues=todayOS.filter(o=>o.status==='entregue');
+  const aprovadas=todayOS.filter(o=>o.status!=='arquivado').length;
+  const recusadas=todayOS.filter(o=>o.status==='arquivado').length;
+  const faturado=entregues.reduce((s,o)=>s+(o.total||0),0);
+  const osCount=entregues.length;
+  const extra=entregues.reduce((s,o)=>s+(o.services?o.services.filter(sv=>sv.guarantee&&sv.price>0).reduce((a,sv)=>a+sv.price,0):0),0);
+  const ticket=osCount>0?Math.round(faturado/osCount):0;
+  const taxa=(aprovadas+recusadas)>0?Math.round(aprovadas/(aprovadas+recusadas)*100):0;
+  const mesEntregues=osList.filter(o=>o.status==='entregue'&&o.updatedAt>=monthStart);
+  const mesFaturado=mesEntregues.reduce((s,o)=>s+(o.total||0),0);
+  const mesCount=mesEntregues.length;
+  const mesTicket=mesCount>0?Math.round(mesFaturado/mesCount):0;
+  const meses=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const mesLabel=meses[today.getMonth()]+' '+today.getFullYear();
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  set('res-faturado',faturado>0?'R$'+faturado.toLocaleString('pt-BR'):'R$0');
+  set('res-os',osCount);
+  set('res-extra',extra>0?'R$'+extra.toLocaleString('pt-BR'):'R$0');
+  set('res-ticket',ticket>0?'R$'+ticket.toLocaleString('pt-BR'):'—');
+  set('res-taxa',taxa+'%');
+  set('res-faturado2','R$ '+mesFaturado.toLocaleString('pt-BR'));
+  set('res-os2',mesCount);
+  set('res-ticket2',mesTicket>0?'R$'+mesTicket.toLocaleString('pt-BR'):'—');
+  set('res-mes-label',mesLabel);
+  // Payments list
+  const pList=document.getElementById('paymentsList');
+  if(pList){
+    pList.innerHTML=entregues.length?entregues.slice(-10).reverse().map(o=>`
+      <div class="pr"><div class="pr-ico ico-c"><i class="ph ph-check-circle ph-ico" style="font-size:18px;color:var(--green);"></i></div><div class="pr-info"><div class="pr-os">${o.id}</div><div class="pr-name">${o.clientName}</div><div class="pr-det">${o.services&&o.services[0]?o.services[0].nm:'—'}${o.tecnico?' · '+o.tecnico:''}</div></div><div class="pr-right"><div class="pr-val" style="color:var(--blue)">R$ ${(o.total||0).toLocaleString('pt-BR')}</div><div class="pr-badge pb-c">Entregue</div></div></div>`).join('')
+    :'<div class="bs-empty">Nenhuma entrega hoje ainda</div>';
+  }
+  // Tech OS chart
+  const tecMap={};
+  osList.filter(o=>o.tecnico&&o.status==='entregue'&&o.createdAt>=todayTs).forEach(o=>{
+    if(!tecMap[o.tecnico])tecMap[o.tecnico]={count:0,totalTime:0};
+    tecMap[o.tecnico].count++;tecMap[o.tecnico].totalTime+=o.updatedAt-o.createdAt;
+  });
+  const tecList=Object.entries(tecMap).sort((a,b)=>b[1].count-a[1].count);
+  const colors=['var(--blue)','var(--blue)','var(--blue)','var(--blue)','var(--blue)'];
+  const garColors=['var(--red)','var(--red)','var(--red)','var(--red)','var(--red)'];
+  const maxCount=tecList.length?tecList[0][1].count:1;
+  const osChart=document.getElementById('techOSChart');
+  if(osChart)osChart.innerHTML=tecList.length?tecList.map(([nm,d],i)=>`<div class="bar-row"><div class="bar-label">${nm.split(' ')[0]}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(d.count/maxCount*100)}%;background:${colors[i%colors.length]}"><span class="bar-val">${d.count}</span></div></div><div class="bv" style="color:${colors[i%colors.length]}">${d.count}</div></div>`).join(''):'<div style="text-align:center;padding:12px;font-size:13px;color:var(--muted);">Nenhum dado hoje ainda</div>';
+  // Garantias por atendente
+  const atendentesSet=new Set(teamMembers.filter(m=>m.role==='atendente').map(m=>m.name));
+  const garMap={};
+  osList.filter(o=>o.atendente&&atendentesSet.has(o.atendente)&&o.createdAt>=todayTs).forEach(o=>{
+    const gars=(o.services||[]).filter(sv=>sv.guarantee);
+    if(gars.length){
+      if(!garMap[o.atendente])garMap[o.atendente]=0;
+      garMap[o.atendente]+=gars.length;
+    }
+  });
+  const garList=Object.entries(garMap).sort((a,b)=>b[1]-a[1]);
+  const maxGar=garList.length?garList[0][1]:1;
+  const garChart=document.getElementById('garantiaChart');
+  if(garChart)garChart.innerHTML=garList.length?garList.map(([nm,count],i)=>`<div class="bar-row"><div class="bar-label">${nm.split(' ')[0]}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(count/maxGar*100)}%;background:${garColors[i%garColors.length]}"><span class="bar-val">${count}</span></div></div><div class="bv" style="color:${garColors[i%garColors.length]}">${count}</div></div>`).join(''):'<div style="text-align:center;padding:12px;font-size:13px;color:var(--muted);">Nenhuma garantia vendida hoje</div>';
+}
+
+// ─── SHARE PANEL ───
+function sharePanel() {
+  if(navigator.share) {
+    navigator.share({ title:'Painel Uma Hora', text:'Acompanhe sua OS em tempo real:', url: window.location.href });
+  } else {
+    alert('Link copiado!\numahora.app/painel/live\n\nCompartilhe pelo WhatsApp com o cliente.');
+  }
+}
+
+// ─── PROFILE EDIT ───
+function openProfileEdit() {
+  const nameEl=document.getElementById('editProfileName');
+  const roleEl=document.getElementById('editProfileRole');
+  if(nameEl)nameEl.value=currentUserName||document.getElementById('profileName').textContent;
+  if(roleEl)roleEl.value=role;
+  document.getElementById('profileEditOverlay').classList.add('show');
+  document.getElementById('profileEditSheet').classList.add('show');
+}
+function closeProfileEdit() {
+  document.getElementById('profileEditOverlay').classList.remove('show');
+  document.getElementById('profileEditSheet').classList.remove('show');
+}
+function saveProfileEdit() {
+  const name=document.getElementById('editProfileName').value.trim();
+  const newRole=document.getElementById('editProfileRole').value;
+  if(!name){alert('Informe o nome.');return;}
+  currentUserName=name;
+  localStorage.setItem('1hora_username',name);
+  role=newRole;
+  applyRole();
+  closeProfileEdit();
+  renderHistorico();renderEquipe();
+}
+
+// ─── MEU HISTÓRICO ───
+function renderHistorico() {
+  const el=document.getElementById('myHistorico');if(!el)return;
+  let atendidas=0,entregues=0,svcs=0,retrab=0;
+  if(role==='tecnico'&&currentUserName){
+    const first=currentUserName.split(' ')[0].toLowerCase();
+    osList.forEach(o=>{
+      if(o.tecnico&&o.tecnico.toLowerCase().includes(first)){
+        if(o.status==='conserto'||o.status==='pronto'||o.status==='entregue')atendidas++;
+        if(o.status==='entregue')entregues++;
+        if(o.services)svcs+=o.services.length;
+        if(o.retrabalho)retrab++;
+      }
+    });
+  } else {
+    atendidas=osList.filter(o=>o.status!=='arquivado').length;
+    entregues=osList.filter(o=>o.status==='entregue').length;
+    svcs=osList.reduce((s,o)=>s+(o.services?o.services.length:0),0);
+    retrab=osList.filter(o=>o.retrabalho).length;
+  }
+  // Atualiza stats no hero
+  const today=new Date();today.setHours(0,0,0,0);
+  const todayOS=osList.filter(o=>o.createdAt>=today.getTime()&&o.status==='entregue');
+  const meusTodayOS=role==='tecnico'&&currentUserName?todayOS.filter(o=>o.tecnico&&o.tecnico.toLowerCase().includes(currentUserName.split(' ')[0].toLowerCase())):todayOS;
+  const avgMin=meusTodayOS.length?Math.round(meusTodayOS.reduce((s,o)=>s+(o.updatedAt-o.createdAt),0)/meusTodayOS.length/60000):0;
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  set('ph-os',meusTodayOS.length);set('ph-tempo',avgMin>0?avgMin+'min':'—');set('ph-retrab',retrab);
+  el.innerHTML=`
+    <div class="hist-row"><span class="hist-lbl">OS atendidas</span><span class="hist-val">${atendidas}</span></div>
+    <div class="hist-row"><span class="hist-lbl">OS entregues</span><span class="hist-val">${entregues}</span></div>
+    <div class="hist-row"><span class="hist-lbl">Serviços realizados</span><span class="hist-val">${svcs}</span></div>
+    <div class="hist-row"><span class="hist-lbl">Retrabalhos</span><span class="hist-val" style="color:${retrab>0?'var(--red)':'var(--green)'}">${retrab}</span></div>`;
+}
+
+// ─── EQUIPE RANKING ───
+function renderEquipe() {
+  const tecMap={};
+  osList.forEach(o=>{
+    if(o.tecnico){
+      if(!tecMap[o.tecnico])tecMap[o.tecnico]={finalizadas:0};
+      if(o.status==='entregue'||o.status==='pronto')tecMap[o.tecnico].finalizadas++;
+    }
+  });
+  const tecList=Object.entries(tecMap).sort((a,b)=>b[1].finalizadas-a[1].finalizadas);
+  const el=document.getElementById('equipe-tecnicos');
+  if(el)el.innerHTML=tecList.length?tecList.map(([nm,d],i)=>`
+    <div class="rk-row">
+      <div class="rk-pos ${i<3?'pos-'+(i+1):'pos-n'}">${i+1}</div>
+      <div class="rk-info"><div class="rk-name">${nm}</div><div class="rk-detail">${d.finalizadas} OS finalizadas</div></div>
+      <div class="rk-score"><div class="rk-os">${d.finalizadas}</div><div class="rk-sub">finalizadas</div></div>
+    </div>`).join(''):'<div class="bs-empty">Nenhum dado ainda</div>';
+}
+
+// ─── RANKING PERIOD ───
+function rkPeriod(btn, period) { btn.closest('.rk-period').querySelectorAll('button').forEach(b => b.classList.remove('on')); btn.classList.add('on'); }
+
+// ─── EQUIPE ───
+const teamMembers = [
+  {name:'Ana Silva',      role:'atendente'},
+  {name:'Carla Mendes',   role:'atendente'},
+  {name:'Juliana Costa',  role:'atendente'},
+  {name:'Fernanda Lima',  role:'atendente'},
+  {name:'Camila Souza',   role:'atendente'},
+  {name:'Beatriz Rocha',  role:'atendente'},
+  {name:'Larissa Pinto',  role:'atendente'},
+  {name:'Priscila Nunes', role:'atendente'},
+  {name:'Lucas Ferreira', role:'tecnico'},
+  {name:'Rafael Alves',   role:'tecnico'},
+  {name:'Bruno Carvalho', role:'tecnico'},
+  {name:'Diego Santos',   role:'tecnico'},
+  {name:'Matheus Gomes',  role:'tecnico'},
+  {name:'Felipe Moreira', role:'tecnico'},
+  {name:'Gustavo Pereira',role:'tecnico'},
+  {name:'André Ribeiro',  role:'tecnico'},
+];
+
+function renderTeamLists() {
+  const roleIcons={atendente:{bg:'var(--blue-s)',ic:'<i class="ph ph-identification-badge ph-ico"></i>',desc:'Entrada · Painel · Entrega'},tecnico:{bg:'var(--green-s)',ic:'<i class="ph ph-wrench ph-ico"></i>',desc:'Painel · Conserto · Entrega'}};
+  ['atendente','tecnico'].forEach(r=>{
+    const el=document.getElementById('list'+(r==='atendente'?'Atendentes':'Tecnicos'));
+    if(!el)return;
+    const members=teamMembers.filter(m=>m.role===r);
+    el.innerHTML=members.map(m=>{
+      const cfg=roleIcons[r];
+      const active=(currentUserName===m.name&&role===r);
+      return `<div class="role-opt" onclick="switchProfile('${m.name}','${r}')">
+        <div class="role-info"><div class="role-name">${m.name}</div><div class="role-desc">${cfg.desc}</div></div>
+        <div style="color:var(--red);font-size:16px;font-weight:800;opacity:${active?1:0}">✓</div>
+      </div>`;
+    }).join('');
+  });
+  // dono check
+  const donSel=document.getElementById('selDono');
+  if(donSel)donSel.style.opacity=(role==='dono')?'1':'0';
+}
+
+function switchProfile(name, r) {
+  currentUserName=name;
+  localStorage.setItem('1hora_username',name);
+  role=r;
+  applyRole();
+  renderTeamLists();
+  renderHistorico();
+  renderEquipe();
+  renderRankingAtendentes();
+  renderRankingTecnicos();
+}
+
+// ─── INIT ───
+loadStorage();
+batSync('range');
+buildServices();
+waCount();
+applyRole();
+renderPainel();
+setInterval(() => { if(document.getElementById('screen-painel').classList.contains('on')) renderPainel(); }, 30000);
+renderArchivedCount();
+renderHistorico();
+renderEquipe();
+renderRankingAtendentes();
+renderRankingTecnicos();
+renderTeamLists();
+  // Fix iOS scroll on input focus
+document.querySelectorAll('input, select, textarea').forEach(el => {
+  el.addEventListener('focus', function(e) {
+    const scrollPos = document.getElementById('content').scrollTop;
+    setTimeout(() => {
+      document.getElementById('content').scrollTop = scrollPos;
+    }, 50);
+  });
+});
+
+// ─── ALTURA DINÂMICA (fix iOS 100vh bug) ───
+function setAppHeight() {
+  const app = document.querySelector('.app');
+  const h = window.innerHeight;
+  app.style.height = h + 'px';
+  // Calcular safe area real e setar no bnav-safe
+  const sab = h - document.documentElement.clientHeight;
+  const safe = document.querySelector('.bnav-safe');
+  if(safe) safe.style.height = Math.max(0, sab > 0 ? sab : 0) + 'px';
+}
+setAppHeight();
+window.addEventListener('resize', setAppHeight);
+
+// Open first diag group by default
+const firstGroup = document.querySelector('.diag-group-body');
+const firstArrow = document.querySelector('.diag-group-arrow');
+if(firstGroup) firstGroup.classList.add('open');
+if(firstArrow) firstArrow.classList.add('open');
+
+// Esconde banner de instalação se já está rodando como PWA
+if(window.navigator.standalone === true) {
+  const ib = document.getElementById('ib');
+  if(ib) ib.remove();
+}
+
+// ─── SERVICE WORKER ───
+if('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(() => console.log('SW registrado'))
+      .catch(e => console.log('SW erro:', e));
+  });
+}
+
+
+// ─── TOAST SYSTEM ───
+function showToast(message, type='info', duration=2800) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'toast ' + type;
+  const icons = {success:'<i class="ph ph-check-circle ph-ico"></i>',error:'<i class="ph ph-x-circle ph-ico"></i>',warning:'<i class="ph ph-warning ph-ico"></i>',info:'<i class="ph ph-lightbulb ph-ico"></i>'};
+  toast.innerHTML = '<span class="toast-ico">' + (icons[type]||icons.info) + '</span>' + message;
+  container.appendChild(toast);
+  if(navigator.vibrate) navigator.vibrate(type==='error'?[50,30,50]:30);
+  setTimeout(() => {
+    toast.classList.add('toast-out');
+    setTimeout(() => toast.remove(), 300);
+  }, duration);
+}
+
+// ─── FORM VALIDATION (red error indicators) ───
+function validateForm() {
+  let valid = true;
+  let firstInvalid = null;
+  const fields = [
+    {id:'clientName', label:'Nome do cliente'},
+    {id:'modelInput', label:'Modelo do aparelho'}
+  ];
+  document.querySelectorAll('.fi.has-error').forEach(el => el.classList.remove('has-error','shake'));
+  
+  fields.forEach(f => {
+    const input = document.getElementById(f.id);
+    if(!input || !input.value.trim()) {
+      const fi = input.closest('.fi');
+      if(fi) { fi.classList.add('has-error','shake'); setTimeout(()=>fi.classList.remove('shake'),500); }
+      if(!firstInvalid) firstInvalid = input;
+      valid = false;
+    }
+  });
+  if(!valid) {
+    // Expand client data if collapsed
+    const body = document.getElementById('clientDataBody');
+    if(body && body.style.display === 'none') toggleClientData();
+    showToast('Preencha os campos obrigatórios', 'error');
+    if(firstInvalid) firstInvalid.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  return valid;
+}
+
+// ─── CLIENT DATA COLLAPSE ───
+// ─── ACCORDION HELPERS ───
+function _collapseClientData() {
+  const body = document.getElementById('clientDataBody');
+  if(!body || body.style.display === 'none') return;
+  const card = document.getElementById('clientDataCard');
+  const btn  = document.getElementById('clientToggleBtn');
+  const summaryRow = document.getElementById('clientSummaryRow');
+  if(card) card.style.display = 'none';
+  body.style.display = 'none';
+  if(btn) btn.textContent = 'Expandir ▼';
+  if(summaryRow) {
+    const name  = document.getElementById('clientName').value.trim() || '—';
+    const model = document.getElementById('modelInput').value.trim() || '—';
+    const nameEl = document.getElementById('clientSummaryName');
+    if(nameEl) nameEl.innerHTML = name + '<span style="font-weight:300;color:var(--muted);"> · ' + model + '</span>';
+    summaryRow.style.display = 'flex';
+  }
+}
+function _collapseDiag() {
+  const body = document.getElementById('diagBody');
+  if(!body || body.style.display === 'none') return;
+  const btn = document.getElementById('diagToggleBtn');
+  body.style.display = 'none';
+  if(btn) btn.textContent = 'Expandir ▼';
+  updateDiagSummary();
+}
+function _collapseServices() {
+  const body = document.getElementById('svcBody');
+  if(!body || body.style.display === 'none') return;
+  const btn = document.getElementById('svcToggleBtn');
+  body.style.display = 'none';
+  if(btn) btn.textContent = 'Expandir ▼';
+}
+function toggleSvcSection(btn) {
+  const body = document.getElementById('svcBody');
+  const isHidden = body.style.display === 'none';
+  if(isHidden) { _collapseClientData(); _collapseDiag(); }
+  body.style.display = isHidden ? '' : 'none';
+  btn.textContent = isHidden ? 'Minimizar ▲' : 'Expandir ▼';
+}
+
+function toggleClientData() {
+  const body = document.getElementById('clientDataBody');
+  const card = document.getElementById('clientDataCard');
+  const btn  = document.getElementById('clientToggleBtn');
+  const summaryRow = document.getElementById('clientSummaryRow');
+  const isVisible = body.style.display !== 'none';
+  if(!isVisible) { _collapseDiag(); _collapseServices(); } // accordion: fecha os outros antes de abrir
+  if(card) card.style.display = isVisible ? 'none' : '';
+  body.style.display = isVisible ? 'none' : '';
+  if(btn) btn.textContent = isVisible ? 'Expandir ▼' : 'Minimizar ▲';
+  if(summaryRow) {
+    if(isVisible) {
+      const name  = document.getElementById('clientName').value.trim() || '—';
+      const model = document.getElementById('modelInput').value.trim() || '—';
+      const nameEl = document.getElementById('clientSummaryName');
+      if(nameEl) nameEl.innerHTML = name + '<span style="font-weight:300;color:var(--muted);"> · ' + model + '</span>';
+      summaryRow.style.display = 'flex';
+    } else {
+      summaryRow.style.display = 'none';
+    }
+  }
+}
+
+// ─── EDIT OS FROM ENTREGA ───
+function editOSFromEntrega() {
+  const os = currentOSId ? osList.find(o => o.num === currentOSId) : null;
+  if(!os) return;
+  // Load OS data into the entry form
+  document.getElementById('clientName').value = os.clientName || '';
+  document.getElementById('clientWA').value = os.clientWA || '';
+  document.getElementById('modelInput').value = os.model || '';
+  const senhaEl = document.getElementById('senhaInput'); if(senhaEl) senhaEl.value = os.senha || '';
+  const osAdesEl = document.getElementById('osAdesivo'); if(osAdesEl) osAdesEl.value = os.osAdesivo || String(os.num) || '';
+  const probEl = document.getElementById('problemInput');
+  probEl.value = os.problem || ''; probEl.style.height = 'auto'; probEl.style.height = probEl.scrollHeight + 'px';
+  if(os.photo) { currentPhotoData = os.photo; document.getElementById('prev').src = os.photo; }
+  if(os.battery !== undefined) { document.getElementById('batV').value = os.battery; document.getElementById('batNum').value = os.battery; }
+  // Diagnóstico — resetar primeiro, depois restaurar; batSync só depois para não ser sobrescrito
+  document.querySelectorAll('#diagBody .ios-toggle').forEach(t => { if(t.id!=='batToggle') t.classList.remove('fail'); });
+  document.querySelectorAll('#diagBody .di').forEach(row => {
+    const label = row.querySelector('.dnm')?.textContent;
+    if(!label) return;
+    const d = os.diagnosis?.find(x => x.label === label);
+    if(!d) return;
+    const tog = row.querySelector('.ios-toggle');
+    if(tog && tog.id!=='batToggle') { d.ok ? tog.classList.remove('fail') : tog.classList.add('fail'); }
+  });
+  if(os.battery !== undefined) batSync('range'); // depois do diag para não ser zerado
+  updateDiagSummary();
+  // Services
+  selectedSvcs = os.services ? [...os.services] : [];
+  buildServices();
+  updateSummary();
+  // Mark as editing existing (non-archived) OS
+  editingExistingNum = os.num;
+  currentArchivedNum = null;
+  // Keep approval as-is
+  const ctaBtn = document.getElementById('ctaBtn');
+  ctaBtn.style.background = 'var(--blue)'; ctaBtn.style.boxShadow = '0 4px 16px rgba(59,123,219,.3)';
+  ctaBtn.innerHTML = '<i class="ph ph-floppy-disk ph-ico"></i> Salvar Alterações';
+  document.querySelector('.apv.y')?.classList.add('sel');
+  document.querySelector('.apv.n')?.classList.remove('sel');
+  // Expand client data
+  const body = document.getElementById('clientDataBody');
+  if(body && body.style.display === 'none') toggleClientData();
+  goTo('entrada', document.getElementById('nb-entrada'));
+  showToast('Editando OS ' + os.id, 'info');
+}
+
+// Listen for input changes (error clear)
+['clientName','clientWA','modelInput','problemInput','osAdesivo'].forEach(id => {
+  const el = document.getElementById(id);
+  if(el) el.addEventListener('input', () => { 
+    const fi = el.closest('.fi');
+    if(fi) fi.classList.remove('has-error');
+  });
+});
+
+// ─── COUNTER ANIMATION ───
+function animateCounter(el, target, duration=600) {
+  const start = parseInt(el.textContent) || 0;
+  if(start === target) return;
+  const startTime = performance.now();
+  function step(now) {
+    const progress = Math.min((now - startTime) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(start + (target - start) * eased);
+    if(progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// ─── RANKING ATENDENTES (perfil) ───
+function renderRankingAtendentes() {
+  const el=document.getElementById('rankingAtendentes');if(!el)return;
+  const garMap={};
+  osList.forEach(o=>{
+    if(!o.atendente)return;
+    const gars=(o.services||[]).filter(sv=>sv.guarantee);
+    if(!garMap[o.atendente])garMap[o.atendente]=0;
+    garMap[o.atendente]+=gars.length;
+  });
+  // include all atendentes even with 0 guarantees, ranked by count
+  const all=teamMembers.filter(m=>m.role==='atendente').map(m=>({name:m.name,count:garMap[m.name]||0}));
+  const sorted=all.sort((a,b)=>b.count-a.count).slice(0,3);
+  el.innerHTML=sorted.some(r=>r.count>0)?sorted.map((r,i)=>`
+    <div class="rk-row">
+      <div class="rk-pos pos-${i+1}">${i+1}</div>
+      <div class="rk-info"><div class="rk-name">${r.name}</div><div class="rk-detail">${r.count} garantia${r.count!==1?'s':''} vendida${r.count!==1?'s':''}</div></div>
+      <div class="rk-score"><div class="rk-os">${r.count}</div><div class="rk-sub">garantias</div></div>
+    </div>`).join(''):'<div class="bs-empty">Nenhuma garantia vendida ainda</div>';
+}
+
+// ─── RANKING TÉCNICOS (perfil) ───
+function renderRankingTecnicos() {
+  const el=document.getElementById('rankingTecnicos');if(!el)return;
+  const today=new Date();
+  const todayTs=new Date(today.getFullYear(),today.getMonth(),today.getDate()).getTime();
+  const tecMap={};
+  osList.forEach(o=>{
+    if(!o.tecnico)return;
+    if(!tecMap[o.tecnico])tecMap[o.tecnico]=0;
+    // conta qualquer OS finalizada hoje (updatedAt), independente de quando foi criada
+    const statusOk=o.status==='pronto'||o.status==='entregue';
+    const todayOk=o.updatedAt>=todayTs;
+    // também conta OS em conserto atualizada hoje (recém atribuída)
+    const emConserto=o.status==='conserto'&&todayOk;
+    if((statusOk&&todayOk)||emConserto)tecMap[o.tecnico]++;
+  });
+  const all=teamMembers.filter(m=>m.role==='tecnico').map(m=>({name:m.name,count:tecMap[m.name]||0}));
+  const sorted=all.sort((a,b)=>b.count-a.count).slice(0,3);
+  el.innerHTML=sorted.some(r=>r.count>0)?sorted.map((r,i)=>`
+    <div class="rk-row">
+      <div class="rk-pos pos-${i+1}">${i+1}</div>
+      <div class="rk-info"><div class="rk-name">${r.name}</div><div class="rk-detail">${r.count} OS atendida${r.count!==1?'s':''}</div></div>
+      <div class="rk-score"><div class="rk-os">${r.count}</div><div class="rk-sub">OS</div></div>
+    </div>`).join(''):'<div class="bs-empty">Nenhuma OS finalizada ainda</div>';
+}
+
+// ─── RANKING DINÂMICO ───
+function renderRanking() {
+  const body=document.getElementById('rankingBody');if(!body)return;
+  const tecMap={};
+  osList.forEach(o=>{
+    if(!o.tecnico)return;
+    if(!tecMap[o.tecnico])tecMap[o.tecnico]={count:0,totalTime:0,retrab:0};
+    if(o.status==='entregue'||o.status==='pronto'||o.status==='conserto'){
+      tecMap[o.tecnico].count++;
+      if(o.status==='entregue')tecMap[o.tecnico].totalTime+=(o.updatedAt-o.createdAt);
+      if(o.retrabalho)tecMap[o.tecnico].retrab++;
+    }
+  });
+  const tecList=Object.entries(tecMap).sort((a,b)=>b[1].count-a[1].count);
+  body.innerHTML=tecList.length?tecList.map(([nm,d],i)=>{
+    const avg=d.count>0?Math.round(d.totalTime/Math.max(1,d.count-(d.count-tecList.filter(([,x])=>x.totalTime>0).length))/60000):0;
+    const avgDisplay=d.totalTime>0?Math.round(d.totalTime/d.count/60000)+'min':'—';
+    const retrabHtml=d.retrab>0?` <span class="penalty-badge">⚠ ${d.retrab} retrab.</span>`:'';
+    return `<div class="rk-row">
+      <div class="rk-pos ${i<3?'pos-'+(i+1):'pos-n'}">${i+1}</div>
+      <div class="rk-info"><div class="rk-name">${nm}${retrabHtml}</div><div class="rk-detail">${avgDisplay} médio</div></div>
+      <div class="rk-score"><div class="rk-os">${d.count}</div><div class="rk-sub">OS</div></div>
+    </div>`;
+  }).join(''):'<div class="bs-empty">Nenhum dado de técnicos ainda</div>';
+}
+
+// ─── ENTREGA: LISTA DE OS PRONTAS ───
+function renderProntasList() {
+  const el=document.getElementById('prontasList');if(!el)return;
+  const titleEl=document.getElementById('prontasTitle');
+  const prontas=osList.filter(o=>o.status==='pronto').sort((a,b)=>b.updatedAt-a.updatedAt);
+  if(!prontas.length){el.innerHTML='';if(titleEl)titleEl.style.display='none';return;}
+  if(titleEl)titleEl.style.display='block';
+  el.innerHTML=prontas.map(os=>`
+    <div class="entrega-pronta-card" onclick="loadOSToEntrega(osList.find(o=>o.num===${os.num}))">
+      <div class="ep-info">
+        <div class="ep-name">${os.clientName}</div>
+        <div class="ep-model">${os.model||'—'}</div>
+        <div class="ep-meta">${os.id} · ${formatTime(os.updatedAt)}</div>
+      </div>
+      <div class="ep-value">
+        <div class="ep-val">R$&nbsp;${(os.total||0).toLocaleString('pt-BR')}</div>
+        <span class="ep-badge">Pronto</span>
+      </div>
+    </div>`).join('');
+}
+
+// ─── PHOTO PERSISTENCE ───
+function savePhotoToStorage() {
+  if(currentPhotoData) {
+    try { localStorage.setItem('1hora_current_photo', currentPhotoData); } catch(e) {}
+  } else {
+    localStorage.removeItem('1hora_current_photo');
+  }
+}
+function loadPhotoFromStorage() {
+  const saved = localStorage.getItem('1hora_current_photo');
+  if(saved) {
+    currentPhotoData = saved;
+    document.getElementById('prev').src = saved;
+    const lbl=document.getElementById('photo-detected-label');
+    if(lbl) lbl.innerHTML='<span class="chk">✓</span> Foto carregada';
+  }
+}
+loadPhotoFromStorage();
+
+// ─── SEARCH: INCLUDE ENTREGUES (HISTÓRICO) ───
+const _origDoSearch = doSearch;
+doSearch = function() {
+  const raw=document.getElementById('osSearch').value.trim();if(!raw)return;
+  const cleaned=raw.replace(/^#(os-?)?/i,'').trim().toLowerCase();
+  const isNum=/^\d+$/.test(cleaned);
+  const found=osList.find(os=>{
+    if(isNum) return String(os.num)===cleaned||String(os.osAdesivo||'')===cleaned;
+    return os.clientName.toLowerCase().includes(cleaned);
+  });
+  if(found){
+    currentOSOrigin='entrega';
+    loadOSToEntrega(found);
+    if(found.status==='entregue') showToast('OS finalizada — modo consulta','info');
+  } else {
+    document.getElementById('odWrap').classList.remove('show');
+    showToast('OS não encontrada','error');
+  }
+};
+
+// ─── HOOKS: atualizar lista de prontas e ranking ao mudar de tela ───
+const _origGoTo = goTo;
+goTo = function(screen, btn) {
+  _origGoTo(screen, btn);
+  if(screen==='entrega') renderProntasList();
+  if(screen==='perfil') { renderRanking(); renderRankingAtendentes(); renderRankingTecnicos(); }
+};
+
+// Atualiza ranking e prontas no init
+renderRanking();
+renderRankingAtendentes();
+renderRankingTecnicos();
+renderProntasList();
+
+// ─── Override handlePhoto to persist ───
+const _origHandlePhoto = handlePhoto;
+handlePhoto = function(input) {
+  _origHandlePhoto(input);
+  setTimeout(savePhotoToStorage, 500);
+};
+
+// ─── Override resetForm to clear persisted photo ───
+const _origResetForm = resetForm;
+resetForm = function() {
+  _origResetForm();
+  savePhotoToStorage();
+};
+
+</script>
+</body>
+</html>
