@@ -641,42 +641,41 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 }
 #splashScreen.fade-out{opacity:0;pointer-events:none;}
 #splashLogoWrap{
-  width:192px;height:192px;
+  width:152px;height:152px;
   display:flex;align-items:center;justify-content:center;
   animation:splash-float 1.6s .55s ease-in-out both;
 }
 #splashLogoImg{
-  width:192px;height:192px;object-fit:contain;
+  width:152px;height:152px;object-fit:contain;
   animation:splash-logo-in .5s ease-out forwards;
   opacity:0;
 }
+#splashTextBlock{
+  position:absolute;
+  bottom:22%;left:0;right:0;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+}
 #splashTagline{
-  margin-top:40px;
   font-size:11px;font-weight:600;color:#94A3B8;
   letter-spacing:.16em;text-transform:uppercase;
   opacity:0;
   animation:splash-tagline-in .6s .65s ease forwards;
 }
 #splashSlogan{
-  margin-top:10px;
   font-size:14px;font-weight:300;color:#94A3B8;
   letter-spacing:.01em;
+  min-height:1.4em;
   opacity:0;
 }
 .splash-typing::after{
   content:'|';color:inherit;
   animation:splash-blink .55s step-end infinite;
 }
-.splash-typed::after{
-  content:'|';color:inherit;
-  animation:splash-cursor-out .3s ease forwards;
-}
 @keyframes splash-tagline-in{
   from{opacity:0;letter-spacing:.02em;}
   to  {opacity:1;letter-spacing:.16em;}
 }
 @keyframes splash-blink{50%{opacity:0;}}
-@keyframes splash-cursor-out{to{opacity:0;}}
 @keyframes splash-logo-in{
   0%  {opacity:0;transform:scale(.68);}
   65% {opacity:1;transform:scale(1.04);}
@@ -699,8 +698,10 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
   <div id="splashLogoWrap">
     <img id="splashLogoImg" src="Logo _1 HORA_ com seta azul.png" alt="1 Hora"/>
   </div>
-  <div id="splashTagline">Assistência Técnica</div>
-  <div id="splashSlogan"></div>
+  <div id="splashTextBlock">
+    <div id="splashTagline">Assistência Técnica</div>
+    <div id="splashSlogan"></div>
+  </div>
 </div>
 <div class="app">
   <div class="toast-container" id="toastContainer"></div>
@@ -2960,9 +2961,7 @@ setInterval(() => { if(document.getElementById('screen-painel').classList.contai
       el.textContent = text.slice(0, ++i);
       if(i >= text.length){
         clearInterval(iv);
-        el.classList.remove('splash-typing');
-        el.classList.add('splash-typed');
-        setTimeout(() => { el.classList.remove('splash-typed'); if(cb) cb(); }, 300);
+        if(cb) setTimeout(cb, 120);
       }
     }, charDelay);
   }
