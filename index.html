@@ -73,7 +73,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 /* ─── CONTENT ─── */
 .content{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .screen{display:none !important;}.screen.on{display:block !important;padding-bottom:calc(44px + env(safe-area-inset-bottom,0px) + 8px);}
-#screen-painel.on{display:flex !important;flex-direction:column;height:100%;overflow:hidden;gap:4px;padding-bottom:0;}
+#screen-painel.on{display:flex !important;flex-direction:column;height:100%;overflow:hidden;gap:4px;padding-bottom:calc(44px + env(safe-area-inset-bottom,0px) + 8px);}
 #screen-entrega.on{display:flex !important;flex-direction:column;height:100% !important;overflow:hidden !important;padding-bottom:0 !important;}
 #screen-resultados.on,#screen-perfil.on{display:flex !important;flex-direction:column;height:100%;overflow:hidden;padding-bottom:0;}
 
@@ -631,9 +631,77 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .od-wrap::-webkit-scrollbar-thumb,
 .ios-scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,.18);border-radius:3px;}
 
+/* ─── SPLASH ─── */
+#splashScreen{
+  position:fixed;inset:0;z-index:10000;
+  background:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0;
+  transition:opacity .5s ease;
+}
+#splashScreen.fade-out{opacity:0;pointer-events:none;}
+#splashLogoWrap{
+  width:192px;height:192px;
+  display:flex;align-items:center;justify-content:center;
+  animation:splash-float 1.6s .55s ease-in-out both;
+}
+#splashLogoImg{
+  width:192px;height:192px;object-fit:contain;
+  animation:splash-logo-in .5s ease-out forwards;
+  opacity:0;
+}
+#splashTagline{
+  margin-top:40px;
+  font-size:11px;font-weight:600;color:#94A3B8;
+  letter-spacing:.16em;text-transform:uppercase;
+  opacity:0;
+  animation:splash-tagline-in .6s .65s ease forwards;
+}
+#splashSlogan{
+  margin-top:10px;
+  font-size:14px;font-weight:300;color:#94A3B8;
+  letter-spacing:.01em;
+  opacity:0;
+}
+.splash-typing::after{
+  content:'|';color:inherit;
+  animation:splash-blink .55s step-end infinite;
+}
+.splash-typed::after{
+  content:'|';color:inherit;
+  animation:splash-cursor-out .3s ease forwards;
+}
+@keyframes splash-tagline-in{
+  from{opacity:0;letter-spacing:.02em;}
+  to  {opacity:1;letter-spacing:.16em;}
+}
+@keyframes splash-blink{50%{opacity:0;}}
+@keyframes splash-cursor-out{to{opacity:0;}}
+@keyframes splash-logo-in{
+  0%  {opacity:0;transform:scale(.68);}
+  65% {opacity:1;transform:scale(1.04);}
+  100%{opacity:1;transform:scale(1);}
+}
+@keyframes splash-float{
+  0%  {transform:translateY(0)    scale(1);}
+  45% {transform:translateY(-8px) scale(1.03);}
+  100%{transform:translateY(0)    scale(1);}
+}
+@keyframes splash-fade-in{
+  to{opacity:1;}
+}
+
 </style>
 </head>
 <body>
+<!-- SPLASH -->
+<div id="splashScreen">
+  <div id="splashLogoWrap">
+    <img id="splashLogoImg" src="Logo _1 HORA_ com seta azul.png" alt="1 Hora"/>
+  </div>
+  <div id="splashTagline">Assistência Técnica</div>
+  <div id="splashSlogan"></div>
+</div>
 <div class="app">
   <div class="toast-container" id="toastContainer"></div>
   <div class="status-bar"></div>
@@ -835,7 +903,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
     <div class="screen" id="screen-entrega">
 
       <!-- ESTADO INICIAL: busca + lista de OS prontas -->
-      <div id="entregaEmpty" class="entrega-empty" style="display:flex;flex-direction:column;height:795px;overflow:hidden;align-items:stretch;">
+      <div id="entregaEmpty" class="entrega-empty" style="display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;align-items:stretch;padding-bottom:0;">
         <div class="entrega-fixed-header" style="text-align:center;padding:16px 16px 0;flex-shrink:0;">
           <div style="margin-bottom:12px;"><i class="ph ph-package ph-ico" style="font-size:42px;color:var(--muted);justify-content:center;align-items:center;"></i></div>
           <div style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:5px;">Buscar ou Entregar OS</div>
@@ -846,7 +914,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
         <!-- Título fixo -->
         <div id="prontasTitle" style="display:none;padding:14px 16px 6px;flex-shrink:0;font-size:12px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;height:40px;">Prontas para entrega</div>
         <!-- Lista de OS prontas com scroll próprio -->
-        <div class="entrega-scroll" id="prontasList" style="padding:5px 12px 86px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;height:430px;font-weight:700;color:rgb(32,27,192);letter-spacing:0px;width:366px;opacity:1;margin:0px;"></div>
+        <div class="entrega-scroll" id="prontasList" style="padding:5px 12px 12px;overflow-y:auto;flex:1;min-height:0;-webkit-overflow-scrolling:touch;font-weight:700;color:rgb(32,27,192);letter-spacing:0px;width:366px;opacity:1;margin:0px;"></div>
       </div>
 
       <!-- DADOS DA OS (oculto até busca) -->
@@ -2876,6 +2944,40 @@ waCount();
 applyRole();
 renderPainel();
 setInterval(() => { if(document.getElementById('screen-painel').classList.contains('on')) renderPainel(); }, 30000);
+
+// ─── SPLASH DISMISS + TYPEWRITER ───
+(function(){
+  const splash   = document.getElementById('splashScreen');
+  if(!splash) return;
+  const sloganEl = document.getElementById('splashSlogan');
+
+  function typeInto(el, text, charDelay, cb){
+    let i = 0;
+    el.textContent = '';
+    el.style.opacity = '1';
+    el.classList.add('splash-typing');
+    const iv = setInterval(() => {
+      el.textContent = text.slice(0, ++i);
+      if(i >= text.length){
+        clearInterval(iv);
+        el.classList.remove('splash-typing');
+        el.classList.add('splash-typed');
+        setTimeout(() => { el.classList.remove('splash-typed'); if(cb) cb(); }, 300);
+      }
+    }, charDelay);
+  }
+
+  // Slogan digita enquanto tagline ainda está surgindo
+  setTimeout(() => {
+    typeInto(sloganEl, 'Sua assistência técnica expressa.', 24, null);
+  }, 1000);
+
+  // Dismiss: logo(0.5s) + tagline(0.65+0.6s) + slogan(1.0+0.79s) + respiro
+  setTimeout(() => {
+    splash.classList.add('fade-out');
+    setTimeout(() => splash.remove(), 520);
+  }, 2600);
+})();
 renderArchivedCount();
 renderHistorico();
 renderEquipe();
