@@ -530,6 +530,16 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .proof-zone:active{opacity:.7;}
 .proof-zone img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
 .proof-ok{border-color:var(--green);background:var(--green-s);}
+.proof-readonly .proof-zone{cursor:zoom-in;}
+.proof-readonly .proof-zone:not(.proof-ok){pointer-events:none;cursor:default;opacity:.5;}
+.proof-readonly .proof-zoom-ico{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);border-radius:6px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;}
+.conf-readonly .ios-toggle{pointer-events:none;opacity:.75;}
+/* ─── PROOF LIGHTBOX ─── */
+#proofLightbox{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s ease;}
+#proofLightbox.show{opacity:1;pointer-events:auto;}
+#proofLightbox img{max-width:100%;max-height:calc(100vh - 80px);object-fit:contain;border-radius:6px;}
+#proofLightboxLabel{color:rgba(255,255,255,.55);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-top:14px;}
+#proofLightboxClose{position:absolute;top:calc(env(safe-area-inset-top,0px) + 14px);right:16px;width:38px;height:38px;background:rgba(255,255,255,.12);border-radius:50%;border:none;color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
 
 /* ─── PROFILE TOP-SHEET MODAL ─── */
 .top-sheet{position:fixed;top:0;left:50%;transform:translateX(-50%) translateY(-120%);width:100%;max-width:430px;background:white;border-radius:0 0 24px 24px;z-index:400;padding-top:calc(var(--sat) + 8px);transition:transform .32s cubic-bezier(.4,0,.2,1);box-shadow:0 8px 40px rgba(0,0,0,.25);}
@@ -643,11 +653,11 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 #splashLogoWrap{
   width:152px;height:152px;
   display:flex;align-items:center;justify-content:center;
-  animation:splash-float 1.6s .55s ease-in-out both;
+  animation:splash-float 1.4s 1.1s ease-in-out both;
 }
 #splashLogoImg{
   width:152px;height:152px;object-fit:contain;
-  animation:splash-logo-in .5s ease-out forwards;
+  animation:splash-logo-in .95s cubic-bezier(.2,0,.3,1) forwards;
   opacity:0;
 }
 #splashTextBlock{
@@ -659,7 +669,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
   font-size:11px;font-weight:600;color:#94A3B8;
   letter-spacing:.16em;text-transform:uppercase;
   opacity:0;
-  animation:splash-tagline-in .6s .65s ease forwards;
+  animation:splash-tagline-in .6s .85s ease forwards;
 }
 #splashSlogan{
   font-size:14px;font-weight:300;color:#94A3B8;
@@ -677,9 +687,13 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 }
 @keyframes splash-blink{50%{opacity:0;}}
 @keyframes splash-logo-in{
-  0%  {opacity:0;transform:scale(.68);}
-  65% {opacity:1;transform:scale(1.04);}
-  100%{opacity:1;transform:scale(1);}
+  0%  {opacity:0; transform:translateX(-280px) scale(.85);}
+  42% {opacity:1; transform:translateX(20px)   scale(1.05);}
+  57% {           transform:translateX(-11px)  scale(.99);}
+  70% {           transform:translateX(6px)    scale(1.01);}
+  80% {           transform:translateX(-3px);}
+  89% {           transform:translateX(2px);}
+  100%{opacity:1; transform:translateX(0)      scale(1);}
 }
 @keyframes splash-float{
   0%  {transform:translateY(0)    scale(1);}
@@ -705,6 +719,13 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 </div>
 <div class="app">
   <div class="toast-container" id="toastContainer"></div>
+
+  <!-- PROOF LIGHTBOX — fora de qualquer display:none -->
+  <div id="proofLightbox" onclick="closeProofLightbox()">
+    <button id="proofLightboxClose" onclick="event.stopPropagation();closeProofLightbox()"><i class="ph ph-x ph-ico" style="font-size:18px;"></i></button>
+    <img id="proofLightboxImg" src="" alt="" onclick="event.stopPropagation()">
+    <div id="proofLightboxLabel"></div>
+  </div>
   <div class="status-bar"></div>
 
   <!-- HEADER -->
@@ -1025,17 +1046,19 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
           <div class="proof-grid">
             <div>
               <div style="font-size:10px;font-weight:600;color:var(--muted);margin-bottom:6px;">Aparelho pronto</div>
-              <div class="proof-zone" id="proofZone1" onclick="document.getElementById('proofInput1').click()">
+              <div class="proof-zone" id="proofZone1" onclick="handleProofZoneClick(1)">
                 <img id="proofThumb1" style="display:none;">
                 <span id="proofIcon1" style="font-size:22px;"><i class="ph ph-camera ph-ico" style="font-size:22px;color:var(--muted);"></i></span>
+                <span class="proof-zoom-ico" id="proofZoom1" style="display:none;"><i class="ph ph-magnifying-glass-plus ph-ico" style="font-size:13px;"></i></span>
               </div>
               <input type="file" id="proofInput1" accept="image/*" capture="environment" style="display:none" onchange="handleProofPhoto(this,1)">
             </div>
             <div>
               <div style="font-size:10px;font-weight:600;color:var(--muted);margin-bottom:6px;">Comprovante PIX</div>
-              <div class="proof-zone" id="proofZone2" onclick="document.getElementById('proofInput2').click()">
+              <div class="proof-zone" id="proofZone2" onclick="handleProofZoneClick(2)">
                 <img id="proofThumb2" style="display:none;">
                 <span id="proofIcon2" style="font-size:22px;"><i class="ph ph-credit-card ph-ico" style="font-size:22px;color:var(--muted);"></i></span>
+                <span class="proof-zoom-ico" id="proofZoom2" style="display:none;"><i class="ph ph-magnifying-glass-plus ph-ico" style="font-size:13px;"></i></span>
               </div>
               <input type="file" id="proofInput2" accept="image/*" capture="environment" style="display:none" onchange="handleProofPhoto(this,2)">
             </div>
@@ -1375,7 +1398,7 @@ function persistPrices() { localStorage.setItem('1hora_prices', JSON.stringify(m
 
 // ─── MODEL LIST ───
 const MODEL_LIST = [
-  {group:'iPhone', models:['iPhone 16 Pro Max','iPhone 16 Pro','iPhone 16','iPhone 15 Pro Max','iPhone 15 Pro','iPhone 15','iPhone 15 Plus','iPhone 14 Pro Max','iPhone 14 Pro','iPhone 14 Plus','iPhone 14','iPhone 13 Pro Max','iPhone 13 Pro','iPhone 13','iPhone 13 Mini','iPhone 12 Pro Max','iPhone 12 Pro','iPhone 12','iPhone 12 Mini','iPhone 11 Pro Max','iPhone 11 Pro','iPhone 11','iPhone SE (3ª geração)','iPhone SE (2ª geração)']},
+  {group:'iPhone', models:['iPhone 17 Pro Max','iPhone 17 Pro','iPhone 17 Air','iPhone 17','iPhone 16 Pro Max','iPhone 16 Pro','iPhone 16 Plus','iPhone 16','iPhone 15 Pro Max','iPhone 15 Pro','iPhone 15 Plus','iPhone 15','iPhone 14 Pro Max','iPhone 14 Pro','iPhone 14 Plus','iPhone 14','iPhone 13 Pro Max','iPhone 13 Pro','iPhone 13','iPhone 13 Mini','iPhone 12 Pro Max','iPhone 12 Pro','iPhone 12','iPhone 12 Mini','iPhone 11 Pro Max','iPhone 11 Pro','iPhone 11','iPhone SE (3ª geração)','iPhone SE (2ª geração)']},
   {group:'Apple Watch', models:['Apple Watch Ultra 2','Apple Watch Series 10','Apple Watch Series 9','Apple Watch Series 8','Apple Watch Series 7','Apple Watch SE (2ª geração)','Apple Watch SE (1ª geração)','Apple Watch Series 6']},
   {group:'iPad', models:['iPad Pro 13" (M4)','iPad Pro 11" (M4)','iPad Air 13" (M2)','iPad Air 11" (M2)','iPad (10ª geração)','iPad mini (6ª geração)']},
 ];
@@ -1995,7 +2018,7 @@ function processVoice(rawText) {
 
   // ── MODELO ──
   if(lower.includes('iphone')) {
-    const models=['16 pro max','16 pro','16','15 pro max','15 pro','15 plus','15','14 pro max','14 pro','14 plus','14','13 pro max','13 pro','13 mini','13','12 pro max','12 pro','12 mini','12','11 pro max','11 pro','11'];
+    const models=['17 pro max','17 pro','17 air','17','16 pro max','16 pro','16 plus','16','15 pro max','15 pro','15 plus','15','14 pro max','14 pro','14 plus','14','13 pro max','13 pro','13 mini','13','12 pro max','12 pro','12 mini','12','11 pro max','11 pro','11'];
     for(const m of models){
       if(lower.includes(m)){
         document.getElementById('modelInput').value='iPhone '+m.split(' ').map(w=>w[0].toUpperCase()+w.slice(1)).join(' ');
@@ -2353,11 +2376,27 @@ function loadOSToEntrega(os) {
   updateEntregaStatus(os.status);buildWAMessage(os);
   const statusBadge=document.getElementById('od-status-badge');
   if(statusBadge)statusBadge.style.display=currentOSOrigin==='search'?'':'none';
-  // Resetar proofs
+  // Restaurar ou resetar proofs conforme OS
   ['1','2'].forEach(n=>{
     const t=document.getElementById('proofThumb'+n);const ic=document.getElementById('proofIcon'+n);const z=document.getElementById('proofZone'+n);
-    if(t){t.style.display='none';t.src='';}if(ic)ic.style.display='';if(z)z.classList.remove('proof-ok');
+    const saved=os['proof'+n];
+    const zoom=document.getElementById('proofZoom'+n);
+    if(saved){
+      if(t){t.src=saved;t.style.display='block';}
+      if(ic)ic.style.display='none';
+      if(z)z.classList.add('proof-ok');
+      if(zoom)zoom.style.display='flex';
+    } else {
+      if(t){t.style.display='none';t.src='';}
+      if(ic)ic.style.display='';
+      if(z)z.classList.remove('proof-ok');
+      if(zoom)zoom.style.display='none';
+    }
   });
+  // Limpar classes de modo leitura (serão reaplicadas por updateEntregaStatus se necessário)
+  const ps=document.getElementById('proofSection');const cs=document.getElementById('conf-section');
+  if(ps)ps.classList.remove('proof-readonly');
+  if(cs)cs.classList.remove('conf-readonly');
   // Show edit button now that OS is opened
   const editBtn=document.getElementById('odEditBtn');if(editBtn)editBtn.style.display='block';
   // Mostrar tela sem resetar estado
@@ -2429,8 +2468,11 @@ function updateEntregaStatus(status) {
     badge.className='od-status-badge status-pronto';badge.textContent='Entregue';
     btn.className='od-action-btn';btn.style.background='var(--mid)';
     btn.innerHTML='<i class="ph ph-check ph-ico"></i> OS Concluída';btn.disabled=true;
-    if(conf)conf.style.display='none';
-    const editBtn=document.getElementById('odEditBtn');if(editBtn)editBtn.style.display='none';
+    if(conf){conf.style.display='block';conf.classList.add('conf-readonly');}
+    if(proofSection){proofSection.style.display='block';proofSection.classList.add('proof-readonly');}
+    // Edição apenas para dono (retorno de garantia)
+    const editBtn=document.getElementById('odEditBtn');
+    if(editBtn)editBtn.style.display=(role==='dono'?'block':'none');
   }
 }
 
@@ -2544,6 +2586,33 @@ function buildWAMessage(os) {
 }
 function waCount(){const len=document.getElementById('waMsg').value.length;document.getElementById('waChar').textContent=len+' / 500';}
 function resetWA(){const os=currentOSId?osList.find(o=>o.num===currentOSId):null;if(os)buildWAMessage(os);}
+
+// ─── PROOF LIGHTBOX ───
+function handleProofZoneClick(num){
+  const ps=document.getElementById('proofSection');
+  if(ps&&ps.classList.contains('proof-readonly')){
+    const os=currentOSId?osList.find(o=>o.num===currentOSId):null;
+    const src=os&&os['proof'+num];
+    if(!src)return;
+    const labels=['','Aparelho pronto','Comprovante PIX'];
+    openProofLightbox(src,labels[num]||'');
+    return;
+  }
+  document.getElementById('proofInput'+num).click();
+}
+function openProofLightbox(src,label){
+  const lb=document.getElementById('proofLightbox');
+  const img=document.getElementById('proofLightboxImg');
+  const lbl=document.getElementById('proofLightboxLabel');
+  if(!lb||!img)return;
+  img.src=src;
+  if(lbl)lbl.textContent=label||'';
+  lb.classList.add('show');
+}
+function closeProofLightbox(){
+  const lb=document.getElementById('proofLightbox');
+  if(lb){lb.classList.remove('show');setTimeout(()=>{const img=document.getElementById('proofLightboxImg');if(img)img.src='';},250);}
+}
 
 // ─── FINISH OS ───
 function finishOS() {
@@ -2966,10 +3035,10 @@ setInterval(() => { if(document.getElementById('screen-painel').classList.contai
     }, charDelay);
   }
 
-  // Slogan digita enquanto tagline ainda está surgindo
+  // Slogan começa após a logo pousar
   setTimeout(() => {
     typeInto(sloganEl, 'Sua assistência técnica expressa.', 24, null);
-  }, 1000);
+  }, 1200);
 
   // Dismiss: logo(0.5s) + tagline(0.65+0.6s) + slogan(1.0+0.79s) + respiro
   setTimeout(() => {
