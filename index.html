@@ -144,6 +144,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .photo-zone img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
 .photo-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6),transparent 55%);}
 .photo-detected{position:absolute;top:9px;left:10px;background:rgba(0,0,0,.65);backdrop-filter:blur(8px);border-radius:10px;padding:5px 10px;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;gap:5px;}
+.photo-remove{position:absolute;bottom:8px;left:8px;z-index:10;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);border:none;border-radius:50%;width:26px;height:26px;display:none;align-items:center;justify-content:center;color:#fff;font-size:16px;cursor:pointer;line-height:1;font-weight:300;}
 .photo-detected .chk{color:#4ade80;}
 .photo-acts{position:absolute;bottom:0;right:0;top:0;left:0;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end;padding:9px 10px;pointer-events:none;}
 .pbtn{backdrop-filter:blur(8px);border:none;border-radius:20px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);pointer-events:auto;display:flex;align-items:center;gap:5px;}
@@ -797,6 +798,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
             <img src="https://images.unsplash.com/photo-1591337676887-a217a6970a8a?w=600&q=80" id="prev">
             <div class="photo-ov"></div>
             <div class="photo-detected" id="photo-detected-label"><span class="chk">✓</span> Adicionar foto</div>
+            <button id="removePhotoBtn" class="photo-remove" onclick="event.stopPropagation();removePhoto()">×</button>
             <!-- VOICE OVERLAY (inside photo-zone so sibling selector hides acts) -->
             <div class="voice-overlay" id="voiceOverlay" onclick="event.stopPropagation();stopVoice()">
               <div class="voice-text-col">
@@ -1884,6 +1886,7 @@ function loadArchived(num) {
     document.getElementById('prev').src=os.photo;
     const lbl=document.getElementById('photo-detected-label');
     if(lbl)lbl.innerHTML='<span class="chk">✓</span> Foto carregada';
+    _showRemoveBtn();
   }
 
   // ── Diagnóstico ──
@@ -1917,6 +1920,10 @@ function loadArchived(num) {
 function selTech(c){c.closest('.tech-selector').querySelectorAll('.tech-chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');}
 
 // ─── PHOTO ───
+const PHOTO_PLACEHOLDER="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='145' viewBox='0 0 400 145'%3E%3Crect width='400' height='145' fill='%23F2F2F7'/%3E%3Crect x='174' y='28' width='52' height='89' rx='8' fill='none' stroke='%23C7C7CC' stroke-width='3'/%3E%3Ccircle cx='200' cy='122' r='5' fill='%23C7C7CC'/%3E%3Crect x='188' y='34' width='24' height='4' rx='2' fill='%23C7C7CC'/%3E%3C/svg%3E";
+function _showRemoveBtn(){const b=document.getElementById('removePhotoBtn');if(b)b.style.display='flex';}
+function _hideRemoveBtn(){const b=document.getElementById('removePhotoBtn');if(b)b.style.display='none';}
+function removePhoto(){currentPhotoData=null;document.getElementById('prev').src=PHOTO_PLACEHOLDER;const lbl=document.getElementById('photo-detected-label');if(lbl)lbl.innerHTML='Adicionar foto';const pi=document.getElementById('pi');if(pi)pi.value='';_hideRemoveBtn();savePhotoToStorage();}
 function handlePhoto(input) {
   if(!input.files||!input.files[0])return;
   const reader=new FileReader();
@@ -1934,6 +1941,7 @@ function handlePhoto(input) {
       document.getElementById('prev').src=data;
       const lbl=document.getElementById('photo-detected-label');
       if(lbl)lbl.innerHTML='<span class="chk">✓</span> Foto capturada';
+      _showRemoveBtn();
     };
     img.src=e.target.result;
   };
@@ -2077,14 +2085,29 @@ function processVoice(rawText) {
     .replace(/[úùû]/g,'u').replace(/ç/g,'c');
 
   // ── NOME: preserva acentos originais via índice no text ──
-  const nomeRx=/(?:nome(?:\s+do)?\s+cliente|nome)\s+(?:e\s+)?([^,]+?)(?=\s+(?:whatsapp|telefone|celular|zap|modelo|iphone|senha|codigo|problema|defeito|bateria)|$)/;
+  // Cobre: "nome do cliente X", "nome X", "cliente X"
+  const nomeRx=/(?:nome(?:\s+do)?\s+cliente|cliente|nome)\s+(?:e\s+)?([^,]+?)(?=\s+(?:whatsapp|telefone|celular|zap|modelo|iphone|senha|codigo|problema|defeito|bateria)|$)/;
   const nomeM=norm.match(nomeRx);
+  let _nomeFound=false;
   if(nomeM){
-    // nomeM.index aponta para o mesmo offset em text (comprimentos iguais)
     const captureStart=nomeM.index+nomeM[0].length-nomeM[1].length;
     let nm=text.slice(captureStart,captureStart+nomeM[1].length).trim().replace(/^(e |o |a |um |uma )+/gi,'');
     nm=nm.replace(/\b\w/g,l=>l.toUpperCase()).trim();
-    if(nm.length>1) document.getElementById('clientName').value=nm;
+    if(nm.length>1){document.getElementById('clientName').value=nm;_nomeFound=true;}
+  }
+  // Fallback: nome solto no início do texto, antes de qualquer keyword conhecida
+  // Ex: "Ana Lima iPhone 14 tela quebrada" → captura "Ana Lima"
+  if(!_nomeFound){
+    const firstKwM=norm.match(/\b(iphone|ipad|apple\s+watch|whatsapp|telefone|celular|zap|senha|codigo|problema|defeito|bateria|tela|camera|conector|higienizacao|garantia)\b/);
+    if(firstKwM&&firstKwM.index>0){
+      const candidate=norm.slice(0,firstKwM.index).trim();
+      const words=candidate.split(/\s+/).filter(w=>w.length>1&&!/^\d+$/.test(w));
+      if(words.length>=2&&words.length<=4&&!/\d/.test(candidate)){
+        let nm=text.slice(0,firstKwM.index).trim().replace(/[,.]$/,'').replace(/^(e |o |a |um |uma )+/gi,'').trim();
+        nm=nm.replace(/\b\w/g,l=>l.toUpperCase()).trim();
+        if(nm.length>1) document.getElementById('clientName').value=nm;
+      }
+    }
   }
 
   // ── WHATSAPP: extração + normalização ──
@@ -2242,6 +2265,7 @@ function resetForm() {
   currentPhotoData=null;
   document.getElementById('prev').src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='145' viewBox='0 0 400 145'%3E%3Crect width='400' height='145' fill='%23F2F2F7'/%3E%3Crect x='174' y='28' width='52' height='89' rx='8' fill='none' stroke='%23C7C7CC' stroke-width='3'/%3E%3Ccircle cx='200' cy='122' r='5' fill='%23C7C7CC'/%3E%3Crect x='188' y='34' width='24' height='4' rx='2' fill='%23C7C7CC'/%3E%3C/svg%3E";
   const lbl=document.getElementById('photo-detected-label');if(lbl)lbl.innerHTML='Adicionar foto';
+  _hideRemoveBtn();
   selectedSvcs=[];updateSummary();buildServices();
   document.getElementById('batV').value=85;document.getElementById('batNum').value=85;batSync('range');
   document.querySelectorAll('#diagBody .ios-toggle').forEach(t=>t.classList.remove('fail'));
@@ -3258,7 +3282,7 @@ function editOSFromEntrega() {
   const osAdesEl = document.getElementById('osAdesivo'); if(osAdesEl) osAdesEl.value = os.osAdesivo || String(os.num) || '';
   const probEl = document.getElementById('problemInput');
   probEl.value = os.problem || ''; probEl.style.height = 'auto'; probEl.style.height = probEl.scrollHeight + 'px';
-  if(os.photo) { currentPhotoData = os.photo; document.getElementById('prev').src = os.photo; }
+  if(os.photo) { currentPhotoData = os.photo; document.getElementById('prev').src = os.photo; _showRemoveBtn(); }
   if(os.battery !== undefined) { document.getElementById('batV').value = os.battery; document.getElementById('batNum').value = os.battery; }
   // Diagnóstico — resetar primeiro, depois restaurar; batSync só depois para não ser sobrescrito
   document.querySelectorAll('#diagBody .ios-toggle').forEach(t => { if(t.id!=='batToggle') t.classList.remove('fail'); });
@@ -3424,6 +3448,7 @@ function loadPhotoFromStorage() {
     document.getElementById('prev').src = saved;
     const lbl=document.getElementById('photo-detected-label');
     if(lbl) lbl.innerHTML='<span class="chk">✓</span> Foto carregada';
+    _showRemoveBtn();
   }
 }
 loadPhotoFromStorage();
