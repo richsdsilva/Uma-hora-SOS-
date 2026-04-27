@@ -286,7 +286,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .bs-item-val{font-size:14px;font-weight:800;color:var(--blue);}
 .bs-empty{text-align:center;padding:24px;color:var(--muted);font-size:13px;}
 .cta-wrap{padding:10px 16px 4px;}
-#screen-entrada .cta-wrap{
+#entranceCTA{
   position:fixed;
   bottom:calc(44px + env(safe-area-inset-bottom,0px));
   left:50%;
@@ -294,12 +294,11 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
   width:100%;
   max-width:430px;
   z-index:90;
-  display:flex;
   padding:8px 16px 6px;
   background:#fff;
   box-shadow:0 -1px 0 rgba(0,0,0,.06);
 }
-#screen-entrada .cta-wrap .cta{
+#entranceCTA .cta{
   flex:1;
   width:auto;
   min-width:0;
@@ -909,9 +908,6 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
         </div>
       </div>
 
-      <div class="cta-wrap">
-        <button class="cta" id="ctaBtn" onclick="openOS()"><i class="ph ph-clipboard-text ph-ico"></i> Abrir Ordem de Serviço</button>
-      </div>
     </div>
 
     <!-- ══════════════════════════════════════
@@ -1357,6 +1353,11 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
   </div>
 
   <!-- BOTTOM NAV -->
+  <!-- CTA ENTRADA — fora do overflow container, position:fixed funciona no iOS -->
+  <div id="entranceCTA" class="cta-wrap" style="display:flex;">
+    <button class="cta" id="ctaBtn" onclick="openOS()"><i class="ph ph-clipboard-text ph-ico"></i> Abrir Ordem de Serviço</button>
+  </div>
+
   <div class="bnav" id="bnav">
     <div class="bnav-icons">
       <button class="nb on" onclick="goTo('entrada',this)" id="nb-entrada" style="padding:5px 0px 0px;"><span class="ni"><i class="ph-bold ph-note-pencil ph-ico"></i></span>Entrada</button>
@@ -1502,6 +1503,8 @@ function goTo(tab, btn) {
 
   currentTab=tab;
   document.getElementById('content').scrollTop=0;
+  const _cta=document.getElementById('entranceCTA');
+  if(_cta)_cta.style.display=(tab==='entrada'?'flex':'none');
   if(tab==='painel') renderPainel();
   if(tab==='entrega') resetEntrega();
   if(tab==='resultados') renderResultados();
