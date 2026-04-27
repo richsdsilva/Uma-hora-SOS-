@@ -95,7 +95,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
   overflow:visible;
 }
 .bnav-icons{display:flex;height:44px;overflow:visible;position:relative;z-index:2;}
-.bnav-safe{background:transparent;position:relative;z-index:1;height:env(safe-area-inset-bottom,0px);}
+.bnav-safe{background:transparent;position:relative;z-index:1;}
 .nb{flex:1;padding:0;border:none;background:none;color:var(--muted);font-family:var(--sans);font-size:10px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:5px;gap:3px;transition:.15s;position:relative;overflow:visible;}
 .nb .ni{line-height:1;transition:.15s;display:flex;align-items:center;justify-content:center;height:24px;}
 .nb.on{color:var(--red);}
@@ -1178,8 +1178,8 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
           </div>
           <div class="fh-val" id="res-faturado2">R$ 0</div>
           <div class="fh-row">
-            <div><div class="fm-lbl">Ticket médio</div><div class="fm-val" id="res-ticket2">—</div></div>
-            <div style="text-align:right"><div class="fm-lbl">Entregues no mês</div><div class="fm-val" id="res-os2">0</div></div>
+            <div><div class="fm-lbl">Entregues no mês</div><div class="fm-val" id="res-os2">0</div></div>
+            <div style="text-align:right"><div class="fm-lbl">Ticket médio</div><div class="fm-val" id="res-ticket2">—</div></div>
           </div>
         </div>
       </div>
@@ -3099,6 +3099,9 @@ function setAppHeight() {
   const app = document.querySelector('.app');
   const h = window.innerHeight;
   app.style.height = h + 'px';
+  const sab = h - document.documentElement.clientHeight;
+  const safe = document.querySelector('.bnav-safe');
+  if(safe) safe.style.height = Math.max(0, sab > 0 ? sab : 0) + 'px';
 }
 setAppHeight();
 window.addEventListener('resize', setAppHeight);
