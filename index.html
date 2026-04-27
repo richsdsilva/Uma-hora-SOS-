@@ -153,14 +153,18 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .voice-overlay.show ~ .photo-acts{display:none;}
 
 /* ─── VOICE OVERLAY ─── */
-.voice-overlay{display:none;position:absolute;inset:0;background:rgba(212,31,31,.97);z-index:50;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
+.voice-overlay{display:none;position:absolute;inset:0;background:#D41F1F;z-index:50;flex-direction:row;align-items:center;justify-content:space-between;padding:0 20px 0 18px;}
 .voice-overlay.show{display:flex;}
-.voice-pulse{width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.15);border:3px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font-size:32px;animation:vpulse 1.5s ease-in-out infinite;box-shadow:0 0 0 0 rgba(255,255,255,.3);}
-@keyframes vpulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,255,255,.3)}50%{transform:scale(1.15);box-shadow:0 0 0 20px rgba(255,255,255,.0)}}
-.voice-label{font-size:14px;font-weight:700;color:#fff;letter-spacing:.02em;}
-.voice-transcript{font-size:12px;color:rgba(255,255,255,.8);text-align:center;max-width:260px;line-height:1.5;min-height:36px;}
-.voice-stop{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.5);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;animation:vpulse-stop 1.2s ease-in-out infinite;margin-top:4px;}
-@keyframes vpulse-stop{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.3);transform:scale(1);}50%{box-shadow:0 0 0 12px rgba(255,255,255,.0);transform:scale(1.08);}}
+.voice-text-col{flex:1;display:flex;flex-direction:column;gap:6px;align-items:flex-start;padding-right:12px;}
+.voice-label{font-size:11px;font-weight:800;color:rgba(255,255,255,.85);letter-spacing:.1em;text-transform:uppercase;}
+.voice-transcript{font-size:13px;color:#fff;text-align:left;line-height:1.45;font-weight:500;}
+.voice-mic-wrap{position:relative;width:72px;height:72px;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.voice-ring{position:absolute;border-radius:50%;background:rgba(255,255,255,.18);}
+.voice-ring-1{width:72px;height:72px;animation:vring 1.8s ease-out infinite;}
+.voice-ring-2{width:72px;height:72px;animation:vring 1.8s ease-out .9s infinite;}
+@keyframes vring{0%{transform:scale(.6);opacity:.65;}100%{transform:scale(1.55);opacity:0;}}
+.voice-mic-circle{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;z-index:1;}
+.voice-stop{display:none;}
 
 /* ─── FIELDS ─── */
 .fi{display:flex;align-items:center;padding:11px 15px;border-bottom:1px solid var(--border);gap:11px;}
@@ -794,11 +798,19 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
             <div class="photo-ov"></div>
             <div class="photo-detected" id="photo-detected-label"><span class="chk">✓</span> Adicionar foto</div>
             <!-- VOICE OVERLAY (inside photo-zone so sibling selector hides acts) -->
-            <div class="voice-overlay" id="voiceOverlay">
-              <div class="voice-pulse"><i class="ph ph-microphone ph-ico" style="font-size:48px;color:#fff;"></i></div>
-              <div class="voice-label">OUVINDO...</div>
-              <div class="voice-transcript" id="voiceTranscript">Fale: modelo, problema e serviços</div>
-              <button class="voice-stop" onclick="stopVoice()"><i class="ph ph-stop-circle ph-ico"></i></button>
+            <div class="voice-overlay" id="voiceOverlay" onclick="event.stopPropagation();stopVoice()">
+              <div class="voice-text-col">
+                <div class="voice-label">OUVINDO...</div>
+                <div class="voice-transcript" id="voiceTranscript">Fale: modelo, problema e serviços</div>
+              </div>
+              <div class="voice-mic-wrap">
+                <div class="voice-ring voice-ring-1"></div>
+                <div class="voice-ring voice-ring-2"></div>
+                <div class="voice-mic-circle">
+                  <i class="ph-bold ph-microphone ph-ico" style="font-size:30px;color:#fff;line-height:1;"></i>
+                </div>
+              </div>
+              <button class="voice-stop" onclick="stopVoice()">Parar</button>
             </div>
             <div class="photo-acts">
               <button class="pbtn photo" onclick="event.stopPropagation();document.getElementById('pi').click()"><span class="cam-ico"><i class="ph ph-camera ph-ico"></i></span><span>Foto</span></button>
@@ -1343,7 +1355,7 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
         <span style="font-size:12px;font-weight:600;color:var(--mid);flex-shrink:0;">Modelo:</span>
         <select id="priceModelSel" onchange="changePriceModel()" style="flex:1;background:var(--g100);border:1.5px solid var(--border);border-radius:8px;padding:7px 8px;font-size:13px;font-weight:600;font-family:var(--sans);outline:none;color:var(--text);-webkit-appearance:none;">
-          <optgroup label="── iPhone ──"><option>iPhone 16 Pro Max</option><option>iPhone 16 Pro</option><option>iPhone 16</option><option>iPhone 15 Pro Max</option><option>iPhone 15 Pro</option><option>iPhone 15</option><option>iPhone 15 Plus</option><option>iPhone 14 Pro Max</option><option selected>iPhone 14 Pro</option><option>iPhone 14 Plus</option><option>iPhone 14</option><option>iPhone 13 Pro Max</option><option>iPhone 13 Pro</option><option>iPhone 13</option><option>iPhone 13 Mini</option><option>iPhone 12 Pro Max</option><option>iPhone 12 Pro</option><option>iPhone 12</option><option>iPhone 12 Mini</option><option>iPhone 11 Pro Max</option><option>iPhone 11 Pro</option><option>iPhone 11</option><option>iPhone SE (3ª geração)</option><option>iPhone SE (2ª geração)</option></optgroup><optgroup label="── Apple Watch ──"><option>Apple Watch Ultra 2</option><option>Apple Watch Series 10</option><option>Apple Watch Series 9</option><option>Apple Watch Series 8</option><option>Apple Watch Series 7</option><option>Apple Watch SE (2ª geração)</option><option>Apple Watch SE (1ª geração)</option><option>Apple Watch Series 6</option></optgroup><optgroup label="── iPad ──"><option>iPad Pro 13" (M4)</option><option>iPad Pro 11" (M4)</option><option>iPad Air 13" (M2)</option><option>iPad Air 11" (M2)</option><option>iPad (10ª geração)</option><option>iPad mini (6ª geração)</option></optgroup>
+          <optgroup label="── iPhone ──"><option>iPhone 17 Pro Max</option><option>iPhone 17 Pro</option><option>iPhone 17 Air</option><option>iPhone 17</option><option>iPhone 16 Pro Max</option><option>iPhone 16 Pro</option><option>iPhone 16 Plus</option><option>iPhone 16</option><option>iPhone 15 Pro Max</option><option>iPhone 15 Pro</option><option>iPhone 15 Plus</option><option>iPhone 15</option><option>iPhone 14 Pro Max</option><option selected>iPhone 14 Pro</option><option>iPhone 14 Plus</option><option>iPhone 14</option><option>iPhone 13 Pro Max</option><option>iPhone 13 Pro</option><option>iPhone 13</option><option>iPhone 13 Mini</option><option>iPhone 12 Pro Max</option><option>iPhone 12 Pro</option><option>iPhone 12</option><option>iPhone 12 Mini</option><option>iPhone 11 Pro Max</option><option>iPhone 11 Pro</option><option>iPhone 11</option><option>iPhone SE (3ª geração)</option><option>iPhone SE (2ª geração)</option></optgroup><optgroup label="── Apple Watch ──"><option>Apple Watch Ultra 2</option><option>Apple Watch Series 10</option><option>Apple Watch Series 9</option><option>Apple Watch Series 8</option><option>Apple Watch Series 7</option><option>Apple Watch SE (2ª geração)</option><option>Apple Watch SE (1ª geração)</option><option>Apple Watch Series 6</option></optgroup><optgroup label="── iPad ──"><option>iPad Pro 13" (M4)</option><option>iPad Pro 11" (M4)</option><option>iPad Air 13" (M2)</option><option>iPad Air 11" (M2)</option><option>iPad (10ª geração)</option><option>iPad mini (6ª geração)</option></optgroup>
         </select>
         <button onclick="resetModelPrices()" style="background:var(--red-s);border:1px solid #FECACA;color:var(--red);border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700;font-family:var(--sans);cursor:pointer;flex-shrink:0;">↺</button>
       </div>
