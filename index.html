@@ -95,7 +95,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
   overflow:visible;
 }
 .bnav-icons{display:flex;height:44px;overflow:visible;position:relative;z-index:2;}
-.bnav-safe{background:transparent;position:relative;z-index:1;}
+.bnav-safe{background:transparent;position:relative;z-index:1;height:env(safe-area-inset-bottom,0px);}
 .nb{flex:1;padding:0;border:none;background:none;color:var(--muted);font-family:var(--sans);font-size:10px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:5px;gap:3px;transition:.15s;position:relative;overflow:visible;}
 .nb .ni{line-height:1;transition:.15s;display:flex;align-items:center;justify-content:center;height:24px;}
 .nb.on{color:var(--red);}
@@ -294,8 +294,10 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
   width:100%;
   max-width:430px;
   z-index:90;
-  padding:20px 16px 4px;
-  background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,#fff 35%);
+  padding:8px 16px 6px;
+  background:rgba(255,255,255,0.82);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
   box-shadow:none;
 }
 #entranceCTA .cta{
@@ -304,7 +306,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
   min-width:0;
 }
 #screen-entrada.on{
-  padding-bottom:calc(44px + env(safe-area-inset-bottom,0px) + 84px);
+  padding-bottom:calc(44px + env(safe-area-inset-bottom,0px) + 72px);
 }
 .cta{width:100%;background:var(--blue);color:#fff;border:none;border-radius:14px;height:52px;font-family:var(--sans);font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(26,92,200,.3);transition:transform .2s cubic-bezier(0.34,1.56,0.64,1),opacity .15s ease;}
 
@@ -611,8 +613,8 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 /* ─── CTA INTERACTION ─── */
 .cta{transition:transform .2s cubic-bezier(0.34,1.56,0.64,1),opacity .15s ease;}
 .cta:active{transform:scale(.97);opacity:.9;}
-@keyframes cta-ready{0%,100%{box-shadow:0 4px 16px rgba(0,0,0,.2)}60%{box-shadow:0 8px 28px rgba(0,0,0,.3)}}
-.cta.ready{animation:cta-ready 2.8s ease-in-out infinite;}
+@keyframes cta-ready{0%,100%{transform:scale(1);}50%{transform:scale(1.025);}}
+.cta.ready{animation:cta-ready 1.6s ease-in-out infinite;}
 
 /* ─── SUBTLE CARD HOVER ─── */
 .pb-item{transition:transform .12s,box-shadow .12s;}
@@ -1797,13 +1799,12 @@ function selA(btn) {
   const cta = document.getElementById('ctaBtn');
   if(btn.classList.contains('n')) {
     cta.style.background = 'var(--red)';
-    cta.style.boxShadow = '0 4px 16px rgba(212,31,31,.3)';
     cta.innerHTML = '<i class="ph ph-archive-box ph-ico"></i> Arquivar Orçamento';
   } else {
     cta.style.background = 'var(--blue)';
-    cta.style.boxShadow = '0 4px 16px rgba(26,92,200,.3)';
     cta.innerHTML = '<i class="ph ph-clipboard-text ph-ico"></i> Abrir Ordem de Serviço';
   }
+  cta.style.boxShadow = '';
   cta.classList.add('ready');
 }
 function selP(c) { c.closest('.pc-chips').querySelectorAll('.pc').forEach(x => x.classList.remove('sel')); c.classList.add('sel'); }
@@ -3098,10 +3099,6 @@ function setAppHeight() {
   const app = document.querySelector('.app');
   const h = window.innerHeight;
   app.style.height = h + 'px';
-  // Calcular safe area real e setar no bnav-safe
-  const sab = h - document.documentElement.clientHeight;
-  const safe = document.querySelector('.bnav-safe');
-  if(safe) safe.style.height = Math.max(0, sab > 0 ? sab : 0) + 'px';
 }
 setAppHeight();
 window.addEventListener('resize', setAppHeight);
