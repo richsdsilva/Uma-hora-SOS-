@@ -286,6 +286,26 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .bs-item-val{font-size:14px;font-weight:800;color:var(--blue);}
 .bs-empty{text-align:center;padding:24px;color:var(--muted);font-size:13px;}
 .cta-wrap{padding:10px 16px 4px;}
+#screen-entrada .cta-wrap{
+  position:fixed;
+  bottom:calc(44px + env(safe-area-inset-bottom,0px));
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:430px;
+  z-index:90;
+  display:flex;
+  padding:12px 16px 8px;
+  background:linear-gradient(to top,#fff 55%,rgba(255,255,255,0));
+}
+#screen-entrada .cta-wrap .cta{
+  flex:1;
+  width:auto;
+  min-width:0;
+}
+#screen-entrada.on{
+  padding-bottom:calc(44px + env(safe-area-inset-bottom,0px) + 84px);
+}
 .cta{width:100%;background:var(--blue);color:#fff;border:none;border-radius:14px;height:52px;font-family:var(--sans);font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(26,92,200,.3);transition:transform .2s cubic-bezier(0.34,1.56,0.64,1),opacity .15s ease;}
 
 /* ─────────────────────────────────────────── */
@@ -496,7 +516,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .role-sel{color:var(--red);font-size:18px;font-weight:800;}
 
 /* ─── FINANCEIRO ─── */
-.fin-hero{background:var(--red);margin:0;border-radius:var(--radius-card);padding:18px 20px;color:#fff;box-shadow:0 4px 20px rgba(212,31,31,.28);}
+.fin-hero{background:var(--blue);margin:0;border-radius:var(--radius-card);padding:18px 20px;color:#fff;box-shadow:0 4px 20px rgba(26,92,200,.28);}
 .fh-lbl{font-size:12px;opacity:.7;text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:4px;}
 .fh-val{font-size:34px;font-weight:800;letter-spacing:-1px;margin-bottom:12px;}
 .fh-row{display:flex;justify-content:space-between;}
@@ -1083,7 +1103,7 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
          TELA 4 — RESULTADOS (DONO)
     ══════════════════════════════════════ -->
     <div class="screen" id="screen-resultados">
-      <div class="ios-scroll" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(56px + env(safe-area-inset-bottom,0px) + 24px);">
+      <div class="ios-scroll" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:16px;">
 
       <div class="sec">
         <div class="results-summary" style="grid-template-columns:repeat(2,1fr);">
@@ -1092,20 +1112,6 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
           <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-extra" style="color:var(--blue)">R$0</div><div class="rs-lbl">Garantia</div></div>
           <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-ticket" style="color:var(--blue)">—</div><div class="rs-lbl">Ticket Médio</div></div>
           <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-taxa" style="color:var(--blue)">0%</div><div class="rs-lbl">Taxa de Aprovação</div></div>
-        </div>
-      </div>
-
-      <div class="sec">
-        <div class="fin-hero" style="margin:0 0 0;">
-          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2px;">
-            <div class="fh-lbl">Faturamento do mês</div>
-            <div id="res-mes-label" style="font-size:10px;opacity:.55;font-weight:700;letter-spacing:.06em;text-transform:uppercase;"></div>
-          </div>
-          <div class="fh-val" id="res-faturado2">R$ 0</div>
-          <div class="fh-row">
-            <div><div class="fm-lbl">Entregues no mês</div><div class="fm-val" id="res-os2">0</div></div>
-            <div style="text-align:right"><div class="fm-lbl">Ticket médio</div><div class="fm-val" id="res-ticket2">—</div></div>
-          </div>
         </div>
       </div>
 
@@ -1163,6 +1169,21 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
       </div>
 
       </div><!-- /resultados scroll -->
+
+      <!-- FATURAMENTO DO MÊS — fixo na base, rola por trás -->
+      <div style="padding:8px 16px calc(44px + env(safe-area-inset-bottom,0px) + 8px);background:linear-gradient(to top,#fff 60%,transparent);">
+        <div class="fin-hero">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2px;">
+            <div class="fh-lbl">Faturamento do mês</div>
+            <div id="res-mes-label" style="font-size:10px;opacity:.55;font-weight:700;letter-spacing:.06em;text-transform:uppercase;"></div>
+          </div>
+          <div class="fh-val" id="res-faturado2">R$ 0</div>
+          <div class="fh-row">
+            <div><div class="fm-lbl">Entregues no mês</div><div class="fm-val" id="res-os2">0</div></div>
+            <div style="text-align:right"><div class="fm-lbl">Ticket médio</div><div class="fm-val" id="res-ticket2">—</div></div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ══════════════════════════════════════
@@ -2579,8 +2600,14 @@ function handleProofPhoto(input, num) {
 
 // ─── WHATSAPP ───
 function buildWAMessage(os) {
-  const svcsText=os.services?os.services.map(s=>s.nm).join(' + '):'—';
-  const msg=`Olá, ${os.clientName.split(' ')[0]}! 👋\n\nSeu ${os.model} está pronto para retirada! ✅\n\n🔧 Serviços: ${svcsText}\n💰 Total: R$ ${os.total.toLocaleString('pt-BR')}\n⏱ Tempo: ${formatTime(os.createdAt)}\n\n🛡 Garantia inclusa.\n\nEstamos no Shopping Oriental, Loja 120.\nUma Hora Assistência Técnica 🔵🔴`;
+  const svcList=os.services||[];
+  const garantiaSvc=svcList.find(s=>s.nm&&s.nm.toLowerCase().startsWith('garantia'));
+  const otherSvcs=svcList.filter(s=>!(s.nm&&s.nm.toLowerCase().startsWith('garantia')));
+  const svcsText=otherSvcs.length?otherSvcs.map(s=>s.nm).join(' + '):'—';
+  const garantiaLabel=garantiaSvc
+    ?`🛡 Garantia de ${garantiaSvc.nm.replace(/^garantia\s*/i,'').trim()} inclusa.`
+    :`🛡 Garantia de 7 dias inclusa.`;
+  const msg=`Olá, ${os.clientName.split(' ')[0]}! 👋\n\nSeu ${os.model} está pronto para retirada! ✅\n\n🔧 Serviços: ${svcsText}\n💰 Total: R$ ${os.total.toLocaleString('pt-BR')}\n⏱ Tempo: ${formatTime(os.createdAt)}\n\n${garantiaLabel}\n\nEstamos no Shopping Oriental, Loja 120.\nUma Hora Assistência Técnica 🔵🔴`;
   const el=document.getElementById('waMsg');if(el){el.value=msg;waCount();}
   const hd=document.getElementById('wa-hd-name');if(hd)hd.textContent=os.clientName;
 }
