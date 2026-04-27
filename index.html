@@ -1173,13 +1173,13 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
       <div style="padding:8px 16px calc(44px + env(safe-area-inset-bottom,0px) + 4px);background:linear-gradient(to top,#fff 60%,transparent);">
         <div class="fin-hero">
           <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2px;">
-            <div class="fh-lbl">Faturamento do mês</div>
+            <div class="fh-lbl">Ticket médio</div>
             <div id="res-mes-label" style="font-size:10px;opacity:.55;font-weight:700;letter-spacing:.06em;text-transform:uppercase;"></div>
           </div>
-          <div class="fh-val" id="res-faturado2">R$ 0</div>
+          <div class="fh-val" id="res-ticket2">—</div>
           <div class="fh-row">
-            <div><div class="fm-lbl">Entregues no mês</div><div class="fm-val" id="res-os2">0</div></div>
-            <div style="text-align:right"><div class="fm-lbl">Ticket médio</div><div class="fm-val" id="res-ticket2">—</div></div>
+            <div><div class="fm-lbl">Faturamento do mês</div><div class="fm-val" id="res-faturado2">R$ 0</div></div>
+            <div style="text-align:right"><div class="fm-lbl">Entregues no mês</div><div class="fm-val" id="res-os2">0</div></div>
           </div>
         </div>
       </div>
@@ -3099,9 +3099,6 @@ function setAppHeight() {
   const app = document.querySelector('.app');
   const h = window.innerHeight;
   app.style.height = h + 'px';
-  const sab = h - document.documentElement.clientHeight;
-  const safe = document.querySelector('.bnav-safe');
-  if(safe) safe.style.height = Math.max(0, sab > 0 ? sab : 0) + 'px';
 }
 setAppHeight();
 window.addEventListener('resize', setAppHeight);
