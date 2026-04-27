@@ -294,9 +294,9 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
   width:100%;
   max-width:430px;
   z-index:90;
-  padding:8px 16px 6px;
-  background:#fff;
-  box-shadow:0 -1px 0 rgba(0,0,0,.06);
+  padding:20px 16px 4px;
+  background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,#fff 35%);
+  box-shadow:none;
 }
 #entranceCTA .cta{
   flex:1;
@@ -1168,16 +1168,16 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
       </div><!-- /resultados scroll -->
 
       <!-- FATURAMENTO DO MÊS — fixo na base, rola por trás -->
-      <div style="padding:8px 16px calc(44px + env(safe-area-inset-bottom,0px) + 8px);background:linear-gradient(to top,#fff 60%,transparent);">
+      <div style="padding:8px 16px calc(44px + env(safe-area-inset-bottom,0px) + 4px);background:linear-gradient(to top,#fff 60%,transparent);">
         <div class="fin-hero">
           <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2px;">
-            <div class="fh-lbl">Faturamento do mês</div>
+            <div class="fh-lbl">Ticket médio</div>
             <div id="res-mes-label" style="font-size:10px;opacity:.55;font-weight:700;letter-spacing:.06em;text-transform:uppercase;"></div>
           </div>
-          <div class="fh-val" id="res-faturado2">R$ 0</div>
+          <div class="fh-val" id="res-ticket2">—</div>
           <div class="fh-row">
-            <div><div class="fm-lbl">Entregues no mês</div><div class="fm-val" id="res-os2">0</div></div>
-            <div style="text-align:right"><div class="fm-lbl">Ticket médio</div><div class="fm-val" id="res-ticket2">—</div></div>
+            <div><div class="fm-lbl">Faturamento do mês</div><div class="fm-val" id="res-faturado2">R$ 0</div></div>
+            <div style="text-align:right"><div class="fm-lbl">Entregues no mês</div><div class="fm-val" id="res-os2">0</div></div>
           </div>
         </div>
       </div>
