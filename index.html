@@ -832,13 +832,13 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
       <div class="sec">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
           <div class="sec-title" style="margin-bottom:0;">Dados do Atendimento</div>
-          <button onclick="toggleClientData()" id="clientToggleBtn" class="sec-toggle">Expandir ▼</button>
+          <button onclick="toggleClientData()" id="clientToggleBtn" class="sec-toggle">Minimizar ▲</button>
         </div>
         <div id="clientSummaryRow" class="card" style="display:none;padding:11px 15px;align-items:center;">
           <div id="clientSummaryName" style="flex:1;font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
         </div>
-        <div class="card" id="clientDataCard" style="display:none;">
-          <div id="clientDataBody" style="display:none;">
+        <div class="card" id="clientDataCard">
+          <div id="clientDataBody">
             <div class="fi"><div class="fii"><i class="ph ph-user ph-ico"></i></div><div class="fic"><div class="lbl">Nome do Cliente</div><input id="clientName" type="text" placeholder="Nome completo..." value=""></div></div>
             <div class="fi"><div class="fii"><i class="ph ph-chat-circle ph-ico"></i></div><div class="fic"><div class="lbl">WhatsApp</div><input id="clientWA" type="tel" placeholder="+55 11 9 0000-0000" value=""></div></div>
             <div class="fi" onclick="openModelSheet()" style="cursor:pointer;"><div class="fii"><i class="ph ph-device-mobile ph-ico"></i></div><div class="fic"><div class="lbl">Modelo</div><input id="modelInput" type="text" placeholder="Ex: iPhone 14 Pro" value="" oninput="buildServices()" onclick="event.stopPropagation();openModelSheet()" style="pointer-events:auto;cursor:pointer;caret-color:var(--blue);" readonly></div><div style="color:var(--muted);font-size:11px;font-weight:600;flex-shrink:0;padding-left:4px;">▼</div></div>
