@@ -2861,7 +2861,7 @@ function renderResultados() {
   const osCount=entregues.length;
   const extra=entregues.reduce((s,o)=>s+(o.services?o.services.filter(sv=>sv.guarantee&&sv.price>0).reduce((a,sv)=>a+sv.price,0):0),0);
   const ticket=osCount>0?Math.round(faturado/osCount):0;
-  const taxa=faturado>0?(extra/faturado*100).toFixed(1):null;
+  const taxa=faturado>0?(extra/faturado*100).toFixed(2):null;
   const mesEntregues=osList.filter(o=>o.status==='entregue'&&o.updatedAt>=monthStart);
   const mesFaturado=mesEntregues.reduce((s,o)=>s+(o.total||0),0);
   const mesCount=mesEntregues.length;
