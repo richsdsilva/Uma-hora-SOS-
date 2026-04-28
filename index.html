@@ -67,6 +67,9 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 .hd-archived .ha-ico{font-size:18px;display:flex;align-items:center;}
 .hd-archived .ha-lbl{font-size:11px;font-weight:700;letter-spacing:.02em;}
 .hd-archived .ha-cnt{font-size:12px;font-weight:800;color:#fff;}
+.hd-clear{display:none;align-items:center;gap:4px;color:rgba(255,255,255,.85);cursor:pointer;padding:4px 6px;border-radius:8px;transition:background .15s;-webkit-tap-highlight-color:transparent;font-size:11px;font-weight:700;letter-spacing:.02em;}
+.hd-clear:active{background:rgba(255,255,255,.12);}
+.hd-clear.visible{display:flex;animation:cnt-pulse 2s ease-in-out infinite;}
 @keyframes cnt-pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .role-chip{background:none;border:none;border-radius:0;padding:0 4px;height:auto;display:flex;align-items:center;font-size:11px;font-weight:800;color:#fff;cursor:pointer;}
 
@@ -764,6 +767,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
       </div>
         <div class="hd-right">
           <div class="role-chip" onclick="toggleRole()" id="roleChip">Atendente</div>
+          <div class="hd-clear" id="clearFormBtn" onclick="resetForm()"><i class="ph ph-x ph-ico" style="font-size:15px;"></i> Limpar</div>
           <div class="hd-archived" onclick="openArchived()">
             <span class="ha-ico"><i class="ph ph-archive ph-ico" style="font-size:18px;"></i></span>
             <span class="ha-lbl">Arquivados</span>
@@ -795,9 +799,9 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
         <div class="sec-title">Foto do Aparelho</div>
         <div class="card" style="position:relative;">
           <div class="photo-zone" id="photoZone" onclick="document.getElementById('pi').click()">
-            <img src="https://images.unsplash.com/photo-1591337676887-a217a6970a8a?w=600&q=80" id="prev">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='145' viewBox='0 0 400 145'%3E%3Crect width='400' height='145' fill='%23F2F2F7'/%3E%3Crect x='174' y='28' width='52' height='89' rx='8' fill='none' stroke='%23C7C7CC' stroke-width='3'/%3E%3Ccircle cx='200' cy='122' r='5' fill='%23C7C7CC'/%3E%3Crect x='188' y='34' width='24' height='4' rx='2' fill='%23C7C7CC'/%3E%3C/svg%3E" id="prev">
             <div class="photo-ov"></div>
-            <div class="photo-detected" id="photo-detected-label"><span class="chk">✓</span> Adicionar foto</div>
+            <div class="photo-detected" id="photo-detected-label">Adicionar foto</div>
             <button id="removePhotoBtn" class="photo-remove" onclick="event.stopPropagation();removePhoto()">×</button>
             <!-- VOICE OVERLAY (inside photo-zone so sibling selector hides acts) -->
             <div class="voice-overlay" id="voiceOverlay" onclick="event.stopPropagation();stopVoice()">
@@ -828,18 +832,18 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
       <div class="sec">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
           <div class="sec-title" style="margin-bottom:0;">Dados do Atendimento</div>
-          <button onclick="toggleClientData()" id="clientToggleBtn" class="sec-toggle">Minimizar ▲</button>
+          <button onclick="toggleClientData()" id="clientToggleBtn" class="sec-toggle">Expandir ▼</button>
         </div>
         <div id="clientSummaryRow" class="card" style="display:none;padding:11px 15px;align-items:center;">
           <div id="clientSummaryName" style="flex:1;font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
         </div>
-        <div class="card" id="clientDataCard">
-          <div id="clientDataBody">
-            <div class="fi"><div class="fii"><i class="ph ph-user ph-ico"></i></div><div class="fic"><div class="lbl">Nome do Cliente</div><input id="clientName" type="text" placeholder="Nome completo..." value="Carlos Mendes"></div></div>
-            <div class="fi"><div class="fii"><i class="ph ph-chat-circle ph-ico"></i></div><div class="fic"><div class="lbl">WhatsApp</div><input id="clientWA" type="tel" placeholder="+55 11 9 0000-0000" value="+55 11 9 8734-2291"></div></div>
-            <div class="fi" onclick="openModelSheet()" style="cursor:pointer;"><div class="fii"><i class="ph ph-device-mobile ph-ico"></i></div><div class="fic"><div class="lbl">Modelo</div><input id="modelInput" type="text" placeholder="Ex: iPhone 14 Pro" value="iPhone 14 Pro" oninput="buildServices()" onclick="event.stopPropagation();openModelSheet()" style="pointer-events:auto;cursor:pointer;caret-color:var(--blue);" readonly></div><div style="color:var(--muted);font-size:11px;font-weight:600;flex-shrink:0;padding-left:4px;">▼</div></div>
+        <div class="card" id="clientDataCard" style="display:none;">
+          <div id="clientDataBody" style="display:none;">
+            <div class="fi"><div class="fii"><i class="ph ph-user ph-ico"></i></div><div class="fic"><div class="lbl">Nome do Cliente</div><input id="clientName" type="text" placeholder="Nome completo..." value=""></div></div>
+            <div class="fi"><div class="fii"><i class="ph ph-chat-circle ph-ico"></i></div><div class="fic"><div class="lbl">WhatsApp</div><input id="clientWA" type="tel" placeholder="+55 11 9 0000-0000" value=""></div></div>
+            <div class="fi" onclick="openModelSheet()" style="cursor:pointer;"><div class="fii"><i class="ph ph-device-mobile ph-ico"></i></div><div class="fic"><div class="lbl">Modelo</div><input id="modelInput" type="text" placeholder="Ex: iPhone 14 Pro" value="" oninput="buildServices()" onclick="event.stopPropagation();openModelSheet()" style="pointer-events:auto;cursor:pointer;caret-color:var(--blue);" readonly></div><div style="color:var(--muted);font-size:11px;font-weight:600;flex-shrink:0;padding-left:4px;">▼</div></div>
             <div class="fi"><div class="fii"><i class="ph ph-key ph-ico"></i></div><div class="fic"><div class="lbl">Senha do iPhone</div><input id="senhaInput" type="text" placeholder="Ex: 123456 ou Sem senha"></div></div>
-            <div class="fi" style="align-items:flex-start;padding-top:12px;"><div class="fii" style="margin-top:1px;"><i class="ph ph-chat-dots ph-ico"></i></div><div class="fic"><div class="lbl">Problema Relatado</div><textarea id="problemInput" placeholder="Descreva o problema..." rows="1" style="background:none;border:none;font-family:var(--sans);font-size:14px;font-weight:600;color:var(--text);width:100%;outline:none;resize:none;overflow:hidden;min-height:22px;line-height:1.5;" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'">Tela quebrada — canto inferior esq.</textarea></div></div>
+            <div class="fi" style="align-items:flex-start;padding-top:12px;"><div class="fii" style="margin-top:1px;"><i class="ph ph-chat-dots ph-ico"></i></div><div class="fic"><div class="lbl">Problema Relatado</div><textarea id="problemInput" placeholder="Descreva o problema..." rows="1" style="background:none;border:none;font-family:var(--sans);font-size:14px;font-weight:600;color:var(--text);width:100%;outline:none;resize:none;overflow:hidden;min-height:22px;line-height:1.5;" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea></div></div>
           </div>
         </div>
       </div>
@@ -877,9 +881,9 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
       <div class="sec">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
           <div class="sec-title" style="margin-bottom:0;">Serviços & Orçamento</div>
-          <button onclick="toggleSvcSection(this)" id="svcToggleBtn" class="sec-toggle">Minimizar ▲</button>
+          <button onclick="toggleSvcSection(this)" id="svcToggleBtn" class="sec-toggle">Expandir ▼</button>
         </div>
-        <div id="svcBody">
+        <div id="svcBody" style="display:none;">
         <div class="card" style="overflow:hidden;margin-bottom:0;">
         <div class="svc-banner" onclick="openModelSheet()">
           <div style="flex:1;"><div class="sba" id="svcTitle">iPhone 14 Pro</div></div>
@@ -1707,6 +1711,7 @@ function toggleSvc(item, el) {
     el.querySelector('.svc-chk').textContent = '✓';
   }
   updateSummary();
+  updateClearBtn();
 }
 
 function updateSummary() {
@@ -1902,7 +1907,7 @@ function selTech(c){c.closest('.tech-selector').querySelectorAll('.tech-chip').f
 const PHOTO_PLACEHOLDER="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='145' viewBox='0 0 400 145'%3E%3Crect width='400' height='145' fill='%23F2F2F7'/%3E%3Crect x='174' y='28' width='52' height='89' rx='8' fill='none' stroke='%23C7C7CC' stroke-width='3'/%3E%3Ccircle cx='200' cy='122' r='5' fill='%23C7C7CC'/%3E%3Crect x='188' y='34' width='24' height='4' rx='2' fill='%23C7C7CC'/%3E%3C/svg%3E";
 function _showRemoveBtn(){const b=document.getElementById('removePhotoBtn');if(b)b.style.display='flex';}
 function _hideRemoveBtn(){const b=document.getElementById('removePhotoBtn');if(b)b.style.display='none';}
-function removePhoto(){currentPhotoData=null;document.getElementById('prev').src=PHOTO_PLACEHOLDER;const lbl=document.getElementById('photo-detected-label');if(lbl)lbl.innerHTML='Adicionar foto';const pi=document.getElementById('pi');if(pi)pi.value='';_hideRemoveBtn();savePhotoToStorage();}
+function removePhoto(){currentPhotoData=null;document.getElementById('prev').src=PHOTO_PLACEHOLDER;const lbl=document.getElementById('photo-detected-label');if(lbl)lbl.innerHTML='Adicionar foto';const pi=document.getElementById('pi');if(pi)pi.value='';_hideRemoveBtn();savePhotoToStorage();updateClearBtn();}
 function handlePhoto(input) {
   if(!input.files||!input.files[0])return;
   const reader=new FileReader();
@@ -1920,7 +1925,7 @@ function handlePhoto(input) {
       document.getElementById('prev').src=data;
       const lbl=document.getElementById('photo-detected-label');
       if(lbl)lbl.innerHTML='<span class="chk">✓</span> Foto capturada';
-      _showRemoveBtn();
+      _showRemoveBtn();updateClearBtn();
     };
     img.src=e.target.result;
   };
@@ -2255,6 +2260,7 @@ function resetForm() {
   currentArchivedNum=null;
   editingExistingNum=null;
   const osSug=document.getElementById('osSuggestionChip');if(osSug)osSug.remove();
+  updateClearBtn();
 }
 
 // ─── PAINEL ───
@@ -2294,6 +2300,7 @@ function renderOSColumn(colId,list,status) {
   }).join('');
   if(_lastChangedNum!==null && list.some(o=>o.num===_lastChangedNum)) _lastChangedNum=null;
 }
+function updateClearBtn(){const has=document.getElementById('clientName').value.trim()||document.getElementById('clientWA').value.trim()||document.getElementById('modelInput').value.trim()||document.getElementById('problemInput').value.trim()||selectedSvcs.length>0||currentPhotoData;const btn=document.getElementById('clearFormBtn');if(btn)btn.classList.toggle('visible',!!has);}
 function renderArchivedCount() {
   const n=osList.filter(o=>o.status==='arquivado').length;
   document.querySelectorAll('.archived-pill-count').forEach(el=>el.textContent=n);
@@ -3298,9 +3305,10 @@ function editOSFromEntrega() {
 // Listen for input changes (error clear)
 ['clientName','clientWA','modelInput','problemInput','osAdesivo'].forEach(id => {
   const el = document.getElementById(id);
-  if(el) el.addEventListener('input', () => { 
+  if(el) el.addEventListener('input', () => {
     const fi = el.closest('.fi');
     if(fi) fi.classList.remove('has-error');
+    updateClearBtn();
   });
 });
 
