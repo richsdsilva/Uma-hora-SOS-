@@ -1124,7 +1124,7 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
           <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-os" style="color:var(--blue)">0</div><div class="rs-lbl">OS entregues</div></div>
           <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-extra" style="color:var(--blue)">R$0</div><div class="rs-lbl">Garantia</div></div>
           <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-ticket" style="color:var(--blue)">—</div><div class="rs-lbl">Ticket Médio</div></div>
-          <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-taxa" style="color:var(--blue)">0%</div><div class="rs-lbl">Garantias Vendidas</div></div>
+          <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-taxa" style="color:var(--blue)">0%</div><div class="rs-lbl">% Garantia</div></div>
         </div>
       </div>
 
@@ -1185,12 +1185,9 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
 
       <!-- FATURAMENTO DO MÊS — fixo na base, rola por trás -->
       <div style="padding:4px 16px calc(44px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,#fff 60%,transparent);">
-        <div class="fin-hero">
-          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px;">
-            <div id="res-mes-label" style="font-size:12px;opacity:.7;font-weight:600;letter-spacing:.06em;text-transform:uppercase;"></div>
-            <div class="fh-lbl" style="margin-bottom:0;">Faturamento do mês</div>
-          </div>
-          <div class="fh-val" id="res-faturado2" style="text-align:right;">R$ 0</div>
+        <div class="fin-hero" style="text-align:center;">
+          <div class="fh-lbl" style="margin-bottom:6px;">Faturamento · <span id="res-mes-label"></span></div>
+          <div class="fh-val" id="res-faturado2" style="margin-bottom:0;">R$ 0</div>
         </div>
       </div>
     </div>
@@ -1402,20 +1399,8 @@ let osCounter = 2848;
 function loadStorage() {
   try {
     const saved = localStorage.getItem('1hora_os');
-    osList = saved ? JSON.parse(saved) : null;
-    if (!osList) {
-      const now = Date.now();
-      osList = [
-        {id:'#2847',num:2847,clientName:'Carlos Mendes',clientWA:'+5511987342291',model:'iPhone 14 Pro',problem:'Tela quebrada — canto inf. esq.',photo:null,diagnosis:[{label:'Face ID',ok:true},{label:'Tela & Display',ok:false},{label:'Touch Screen',ok:true},{label:'Alto-falante',ok:true},{label:'Câmera Frontal',ok:true},{label:'Câmera Traseira',ok:true},{label:'Botões Físicos',ok:true},{label:'Conector',ok:true}],battery:34,services:[{nm:'Troca de Tela OLED Original',price:480,group:'tela'},{nm:'Higienização Completa',price:50},{nm:'Garantia 3 meses',price:120,guarantee:true,group:'garantia'}],total:650,prazo:'1h',status:'fila',tecnico:null,createdAt:now-12*60000,updatedAt:now-12*60000},
-        {id:'#2846',num:2846,clientName:'Ana Santos',clientWA:'',model:'iPhone 13',problem:'Bateria fraca',photo:null,diagnosis:[],battery:72,services:[{nm:'Troca de Bateria Original',price:220}],total:220,prazo:'1h',status:'fila',tecnico:null,createdAt:now-8*60000,updatedAt:now-8*60000},
-        {id:'#2845',num:2845,clientName:'Rafael Lima',clientWA:'',model:'iPhone 15 Pro',problem:'Tela manchada',photo:null,diagnosis:[],battery:89,services:[{nm:'Troca de Tela OLED Original',price:580}],total:580,prazo:'1h',status:'fila',tecnico:null,createdAt:now-25*60000,updatedAt:now-25*60000},
-        {id:'#2839',num:2839,clientName:'Fernanda Costa',clientWA:'',model:'iPhone 12 Pro Max',problem:'Tela + câmera',photo:null,diagnosis:[],battery:91,services:[{nm:'Troca de Tela OLED Original',price:380},{nm:'Câmera Traseira',price:320}],total:700,prazo:'⏱ 2h',status:'conserto',tecnico:'Wei Zhang',createdAt:now-90*60000,updatedAt:now-72*60000},
-        {id:'#2836',num:2836,clientName:'Pedro Alves',clientWA:'',model:'iPhone 14',problem:'Conector',photo:null,diagnosis:[],battery:85,services:[{nm:'Conector USB-C / Lightning',price:190}],total:190,prazo:'1h',status:'conserto',tecnico:'Li Chen',createdAt:now-70*60000,updatedAt:now-52*60000},
-        {id:'#2831',num:2831,clientName:'João Vitor',clientWA:'',model:'iPhone 13 Mini',problem:'Tela',photo:null,diagnosis:[],battery:78,services:[{nm:'Troca de Tela Compatível',price:220}],total:220,prazo:'1h',status:'pronto',tecnico:'Juan Park',createdAt:now-100*60000,updatedAt:now-48*60000},
-        {id:'#2829',num:2829,clientName:'Patrícia Nunes',clientWA:'',model:'iPhone 15 Pro',problem:'Alto-falante',photo:null,diagnosis:[],battery:93,services:[{nm:'Alto-falante',price:150}],total:150,prazo:'1h',status:'pronto',tecnico:'Wei Zhang',createdAt:now-85*60000,updatedAt:now-35*60000},
-      ];
-      osCounter = 2848;
-    }
+    osList = saved ? JSON.parse(saved) : [];
+    if (!Array.isArray(osList)) osList = [];
     // Limpar duplicatas: se existe OS ativa (fila/conserto/pronto/entregue) e arquivada com mesmo num,
     // remove o arquivado (o ativo tem precedência — resultado do bug anterior)
     const activeNums=new Set(osList.filter(o=>o.status!=='arquivado').map(o=>o.num));
@@ -2876,8 +2861,7 @@ function renderResultados() {
   const osCount=entregues.length;
   const extra=entregues.reduce((s,o)=>s+(o.services?o.services.filter(sv=>sv.guarantee&&sv.price>0).reduce((a,sv)=>a+sv.price,0):0),0);
   const ticket=osCount>0?Math.round(faturado/osCount):0;
-  const comGarantia=entregues.filter(o=>o.services&&o.services.some(sv=>sv.guarantee&&sv.price>0)).length;
-  const taxa=osCount>0?Math.round(comGarantia/osCount*100):0;
+  const taxa=faturado>0?Math.round(extra/faturado*100):0;
   const mesEntregues=osList.filter(o=>o.status==='entregue'&&o.updatedAt>=monthStart);
   const mesFaturado=mesEntregues.reduce((s,o)=>s+(o.total||0),0);
   const mesCount=mesEntregues.length;
