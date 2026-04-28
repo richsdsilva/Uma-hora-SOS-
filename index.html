@@ -525,7 +525,7 @@ html,body{height:100%;background:#fff;font-family:var(--sans);color:var(--text);
 /* ─── FINANCEIRO ─── */
 .fin-hero{background:var(--blue);margin:0;border-radius:var(--radius-card);padding:18px 20px;color:#fff;box-shadow:0 4px 20px rgba(26,92,200,.28);}
 .fh-lbl{font-size:12px;opacity:.7;text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:4px;}
-.fh-val{font-size:34px;font-weight:800;letter-spacing:-1px;margin-bottom:12px;}
+.fh-val{font-size:34px;font-weight:800;letter-spacing:-1px;}
 .fh-row{display:flex;justify-content:space-between;}
 .fm-lbl{font-size:11px;opacity:.65;font-weight:600;}
 .fm-val{font-size:16px;font-weight:800;}
@@ -1124,7 +1124,7 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
           <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-os" style="color:var(--blue)">0</div><div class="rs-lbl">OS entregues</div></div>
           <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-extra" style="color:var(--blue)">R$0</div><div class="rs-lbl">Garantia</div></div>
           <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-ticket" style="color:var(--blue)">—</div><div class="rs-lbl">Ticket Médio</div></div>
-          <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-taxa" style="color:var(--blue)">0%</div><div class="rs-lbl">Taxa de Aprovação</div></div>
+          <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-taxa" style="color:var(--blue)">0%</div><div class="rs-lbl">Garantias Vendidas</div></div>
         </div>
       </div>
 
@@ -1186,15 +1186,11 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
       <!-- FATURAMENTO DO MÊS — fixo na base, rola por trás -->
       <div style="padding:4px 16px calc(44px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,#fff 60%,transparent);">
         <div class="fin-hero">
-          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2px;">
-            <div class="fh-lbl">Faturamento do mês</div>
-            <div id="res-mes-label" style="font-size:10px;opacity:.55;font-weight:700;letter-spacing:.06em;text-transform:uppercase;"></div>
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px;">
+            <div id="res-mes-label" style="font-size:12px;opacity:.7;font-weight:600;letter-spacing:.06em;text-transform:uppercase;"></div>
+            <div class="fh-lbl" style="margin-bottom:0;">Faturamento do mês</div>
           </div>
-          <div class="fh-val" id="res-faturado2">R$ 0</div>
-          <div class="fh-row">
-            <div><div class="fm-lbl">Entregues no mês</div><div class="fm-val" id="res-os2">0</div></div>
-            <div style="text-align:right"><div class="fm-lbl">Ticket médio</div><div class="fm-val" id="res-ticket2">—</div></div>
-          </div>
+          <div class="fh-val" id="res-faturado2" style="text-align:right;">R$ 0</div>
         </div>
       </div>
     </div>
@@ -2880,7 +2876,8 @@ function renderResultados() {
   const osCount=entregues.length;
   const extra=entregues.reduce((s,o)=>s+(o.services?o.services.filter(sv=>sv.guarantee&&sv.price>0).reduce((a,sv)=>a+sv.price,0):0),0);
   const ticket=osCount>0?Math.round(faturado/osCount):0;
-  const taxa=(aprovadas+recusadas)>0?Math.round(aprovadas/(aprovadas+recusadas)*100):0;
+  const comGarantia=entregues.filter(o=>o.services&&o.services.some(sv=>sv.guarantee&&sv.price>0)).length;
+  const taxa=osCount>0?Math.round(comGarantia/osCount*100):0;
   const mesEntregues=osList.filter(o=>o.status==='entregue'&&o.updatedAt>=monthStart);
   const mesFaturado=mesEntregues.reduce((s,o)=>s+(o.total||0),0);
   const mesCount=mesEntregues.length;
