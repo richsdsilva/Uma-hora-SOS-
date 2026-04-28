@@ -2861,7 +2861,7 @@ function renderResultados() {
   const osCount=entregues.length;
   const extra=entregues.reduce((s,o)=>s+(o.services?o.services.filter(sv=>sv.guarantee&&sv.price>0).reduce((a,sv)=>a+sv.price,0):0),0);
   const ticket=osCount>0?Math.round(faturado/osCount):0;
-  const taxa=faturado>0?Math.round(extra/faturado*100):0;
+  const taxa=faturado>0?(extra/faturado*100).toFixed(1):null;
   const mesEntregues=osList.filter(o=>o.status==='entregue'&&o.updatedAt>=monthStart);
   const mesFaturado=mesEntregues.reduce((s,o)=>s+(o.total||0),0);
   const mesCount=mesEntregues.length;
@@ -2873,7 +2873,7 @@ function renderResultados() {
   set('res-os',osCount);
   set('res-extra',extra>0?'R$'+extra.toLocaleString('pt-BR'):'R$0');
   set('res-ticket',ticket>0?'R$'+ticket.toLocaleString('pt-BR'):'—');
-  set('res-taxa',taxa+'%');
+  set('res-taxa',taxa!==null?(taxa.replace('.',',')+('%')):'—');
   set('res-faturado2','R$ '+mesFaturado.toLocaleString('pt-BR'));
   set('res-os2',mesCount);
   set('res-ticket2',mesTicket>0?'R$'+mesTicket.toLocaleString('pt-BR'):'—');
