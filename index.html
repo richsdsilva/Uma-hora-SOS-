@@ -1125,8 +1125,8 @@ Uma Hora Assistência Técnica 🔵🔴</textarea>
       <div class="sec">
         <div class="results-summary" style="grid-template-columns:repeat(2,1fr);">
           <div class="rs-card" style="text-align:center;grid-column:span 2;"><div class="rs-num" id="res-faturado" style="color:var(--red)">R$0</div><div class="rs-lbl">Faturado hoje</div></div>
-          <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-extra" style="color:var(--blue)">R$0</div><div class="rs-lbl">Garantia</div></div>
-          <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-taxa" style="color:var(--blue)">—</div><div class="rs-lbl">% Garantia</div></div>
+          <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-extra" style="color:var(--blue)">R$0</div><div class="rs-lbl">Garantia / mês</div></div>
+          <div class="rs-card" style="text-align:center;"><div class="rs-num" id="res-taxa" style="color:var(--blue)">—</div><div class="rs-lbl">% do fat.</div></div>
         </div>
       </div>
 
@@ -2864,19 +2864,19 @@ function renderResultados() {
   const recusadas=todayOS.filter(o=>o.status==='arquivado').length;
   const faturado=entregues.reduce((s,o)=>s+(o.total||0),0);
   const osCount=entregues.length;
-  const extra=entregues.reduce((s,o)=>s+(o.services?o.services.filter(sv=>sv.guarantee&&sv.price>0).reduce((a,sv)=>a+sv.price,0):0),0);
   const ticket=osCount>0?Math.round(faturado/osCount):0;
-  const taxa=faturado>0?(extra/faturado*100).toFixed(2):null;
   const mesEntregues=osList.filter(o=>o.status==='entregue'&&o.updatedAt>=monthStart);
   const mesFaturado=mesEntregues.reduce((s,o)=>s+(o.total||0),0);
   const mesCount=mesEntregues.length;
   const mesTicket=mesCount>0?Math.round(mesFaturado/mesCount):0;
+  const mesExtra=mesEntregues.reduce((s,o)=>s+(o.services?o.services.filter(sv=>sv.guarantee&&sv.price>0).reduce((a,sv)=>a+sv.price,0):0),0);
+  const taxa=mesFaturado>0?(mesExtra/mesFaturado*100).toFixed(2):null;
   const meses=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
   const mesLabel=meses[today.getMonth()]+' '+today.getFullYear();
   const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
   set('res-faturado',faturado>0?'R$'+faturado.toLocaleString('pt-BR'):'R$0');
   set('res-os',osCount);
-  set('res-extra',extra>0?'R$'+extra.toLocaleString('pt-BR'):'R$0');
+  set('res-extra',mesExtra>0?'R$'+mesExtra.toLocaleString('pt-BR'):'R$0');
   set('res-ticket',ticket>0?'R$'+ticket.toLocaleString('pt-BR'):'—');
   set('res-taxa',taxa!==null?(taxa.replace('.',',')+('%')):'—');
   set('res-faturado2','R$ '+mesFaturado.toLocaleString('pt-BR'));
